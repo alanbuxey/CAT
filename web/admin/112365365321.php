@@ -1,133 +1,91 @@
 <?php
-/* * *********************************************************************************
- * (c) 2011-15 GÉANT on behalf of the GN3, GN3plus and GN4 consortia
- * License: see the LICENSE file in the root directory
- * ********************************************************************************* */
-?>
-<?php
-/**
- * The $Tests array lists the config tests to be run
+/*
+ * *****************************************************************************
+ * Contributions to this work were made on behalf of the GÉANT project, a 
+ * project that has received funding from the European Union’s Framework 
+ * Programme 7 under Grant Agreements No. 238875 (GN3) and No. 605243 (GN3plus),
+ * Horizon 2020 research and innovation programme under Grant Agreements No. 
+ * 691567 (GN4-1) and No. 731122 (GN4-2).
+ * On behalf of the aforementioned projects, GEANT Association is the sole owner
+ * of the copyright in all material which was developed by a member of the GÉANT
+ * project. GÉANT Vereniging (Association) is registered with the Chamber of 
+ * Commerce in Amsterdam with registration number 40535155 and operates in the 
+ * UK as a branch of GÉANT Vereniging.
+ * 
+ * Registered office: Hoekenrode 3, 1102BR Amsterdam, The Netherlands. 
+ * UK branch address: City House, 126-130 Hills Road, Cambridge CB2 1PQ, UK
+ *
+ * License: see the web/copyright.inc.php file in the file structure or
+ *          <base_url>/copyright.php after deploying the software
  */
-$Tests = [
-'ssp',
-'security',
-'php',
-'phpModules',
-'openssl',
-'makensis',
-'makensis=>NSISmodules',
-'makensis=>NSIS_GetVersion',
-'zip',
-'eapol_test',
-'directories',
-'locales',
-'defaults',
-'databases',
-'device_cache',
-'mailer',
-];
 
-ini_set('display_errors', '0');
-require_once(dirname(dirname(dirname(__FILE__))) . "/config/_config.php");
-require_once("../resources/inc/header.php");
-require_once("../resources/inc/footer.php");
-require_once("CAT.php");
-require_once("User.php");
-require_once("Federation.php");
-require_once('devices/devices.php');
-require_once("DBConnection.php");
-require_once("inc/common.inc.php");
+require_once dirname(dirname(__DIR__)) . '/config/_config.php';
 
-if (!in_array("I do not care about security!", Config::$SUPERADMINS)) {
-    require_once("inc/auth.inc.php");
-    authenticate();
-    $no_security = 0;
-} else {
-   $no_security = 1;
+$uiElements = new web\lib\admin\UIElements();
+
+$security = 0;
+if (!in_array("I do not care about security!", \config\Master::SUPERADMINS)) {
+    $auth = new \web\lib\admin\Authentication();
+    $auth->authenticate();
+    $security = 1;
+    $user = new \core\User($_SESSION['user']);
+    if (!in_array($user->userName, \config\Master::SUPERADMINS)) {
+        header("Location: overview_user.php");
+        exit;
+    }
 }
-$user = new User((!in_array("I do not care about security!", Config::$SUPERADMINS) ? $_SESSION['user'] : "UNIDENTIFIED"));
 
-if (!in_array($user->identifier, Config::$SUPERADMINS) && !in_array("I do not care about security!", Config::$SUPERADMINS))
-    header("Location: overview_user.php");
+$deco = new \web\lib\admin\PageDecoration();
 
-$cat = pageheader("By. Your. Command.","SUPERADMIN", FALSE); // no auth in pageheader; we did our own before
+echo $deco->pageheader("By. Your. Command.", "SUPERADMIN", FALSE); // no auth in pageheader; we did our own before
 
+$dbHandle = \core\DBConnection::handle("FRONTEND");
 ?>
-    <h1>By. Your. Command.</h1>
-  <form action="112365365321.php" method="POST" accept-charset="UTF-8">
-        <fieldset class="option_container">
-            <legend>
-                <strong>Configuration Check</strong>
-            </legend>
-<?php
-            if (isset($_POST['admin_action'])) {
-               if($_POST['admin_action'] == BUTTON_SANITY_TESTS)
-                        include("sanity_tests.php");
-            }
-?>
-<button type="submit" name="admin_action" value="<?php echo BUTTON_SANITY_TESTS; ?>">Run configuration check</button>
-</fieldset>
-<?php if($no_security) {
-     print "<h2 style='color: red'>In order to do more you need to configure the SUPERADMIN section  in config/config.php and login as one.</h2>";
-
-   } else {
-?>
+<h1>By. Your. Command.</h1>
+<form action="112365365321.php" method="POST" accept-charset="UTF-8">
+    <fieldset class="option_container">
+        <legend>
+            <strong>Configuration Check</strong>
+        </legend>
+        <?php
+        if (isset($_POST['admin_action']) && ($_POST['admin_action'] == web\lib\common\FormElements::BUTTON_SANITY_TESTS)) {
+            include "sanity_tests.php";
+        }
+        ?>
+        <button type="submit" name="admin_action" value="<?php echo web\lib\common\FormElements::BUTTON_SANITY_TESTS; ?>">Run configuration check</button>
+    </fieldset>
+    <?php
+    if ($security == 0) {
+        print "<h2 style='color: red'>In order to do more you need to configure the SUPERADMIN section  in config/config-master.php and login as one.</h2>";
+    } else {
+        ?>
         <fieldset class="option_container">
             <legend>
                 <strong>Administrative actions</strong>
             </legend>
             <?php
-            if (isset($_POST['admin_action']))
+            if (isset($_POST['admin_action'])) {
                 switch ($_POST['admin_action']) {
-                    case BUTTON_PURGECACHE:
-                        $result = DBConnection::exec("INST", "UPDATE downloads SET download_path = NULL");
+                    case web\lib\common\FormElements::BUTTON_PURGECACHE:
+                        $result = $dbHandle->exec("UPDATE downloads SET download_path = NULL");
                     // we do NOT break here - after the DB deletion comes the normal
                     // filesystem cleanup
-                    case BUTTON_DELETE:
-                        $downloads = dirname(dirname(dirname(__FILE__))) . "/var/installer_cache";
-                        $tm = time();
-                        $i = 0;
-
-                        $Cache = [];
-                        $result = DBConnection::exec("INST", "SELECT download_path FROM downloads WHERE download_path IS NOT NULL");
-                        while ($r = mysqli_fetch_row($result)) {
-                            $e = explode('/', $r[0]);
-                            $Cache[$e[count($e) - 2]] = 1;
-                        }
-
-                        if ($handle = opendir($downloads)) {
-
-                            /* This is the correct way to loop over the directory. */
-                            while (false !== ($entry = readdir($handle))) {
-                                if ($entry === '.' || $entry === '..')
-                                    continue;
-                                $ftime = $tm - filemtime($downloads . '/' . $entry);
-                                if ($ftime < 3600)
-                                    continue;
-                                if (isset($Cache[$entry])) {
-//          print "Keep: $entry\n";
-                                    continue;
-                                }
-                                rrmdir($downloads . '/' . $entry);
-                                $i++;
-                            }
-
-                            closedir($handle);
-                        }
-                        echo "<div class='ca-summary'><table>" . UI_remark(sprintf("Deleted %d cache directories.", $i), "Cache deleted") . "</table></div>";
+                    case web\lib\common\FormElements::BUTTON_DELETE:
+                        $i = web\lib\admin\Maintenance::deleteObsoleteTempDirs();
+                        echo "<div class='ca-summary'><table>" . $uiElements->boxRemark(sprintf("Deleted %d cache directories.", $i), "Cache deleted") . "</table></div>";
                         break;
-
                     default:
                         break;
                 }
+            }
             ?>
             <p>Use this button to delete old temporary directories inside 'downloads'. Cached installers which are still valid will not be deleted.</p>
-            <button type="submit" name="admin_action" value="<?php echo BUTTON_DELETE; ?>">Delete OBSOLETE download directories</button>
+            <button type="submit" name="admin_action" value="<?php echo web\lib\common\FormElements::BUTTON_DELETE; ?>">Delete OBSOLETE download directories</button>
             <p>Use this button to delete all directories inside 'downloads', including valid cached installers. Usually, this is only necessary when updating the product or one of the device modules.</p>
-            <button type="submit" name="admin_action" value="<?php echo BUTTON_PURGECACHE; ?>">Delete ALL download directories</button>
+            <button type="submit" name="admin_action" value="<?php echo web\lib\common\FormElements::BUTTON_PURGECACHE; ?>">Delete ALL download directories</button>
         </fieldset>
 
-       <fieldset class="option_container">
+        <fieldset class="option_container">
             <legend>
                 <strong>Registered Identity Providers</strong>
             </legend>
@@ -137,6 +95,9 @@ $cat = pageheader("By. Your. Command.","SUPERADMIN", FALSE); // no auth in pageh
                     <th>Configured</th>
                     <th>Public Download</th>
                 </tr>
+                <?php
+                $cat = new \core\CAT();
+                ?>
                 <tr>
                     <td>
                         <?php
@@ -156,7 +117,7 @@ $cat = pageheader("By. Your. Command.","SUPERADMIN", FALSE); // no auth in pageh
                 </tr>
             </table>
         </fieldset>
-       <fieldset class="option_container">
+        <fieldset class="option_container">
             <legend>
                 <strong>Total Downloads</strong>
             </legend>
@@ -164,18 +125,23 @@ $cat = pageheader("By. Your. Command.","SUPERADMIN", FALSE); // no auth in pageh
                 <tr>
                     <th>Device</th>
                     <th>Admin Downloads</th>
-                    <th>User Downloads</th>
+                    <th>User Downloads (classic)</th>
+                    <th>User Downloads (<?php echo \core\ProfileSilverbullet::PRODUCTNAME; ?>)</th>
+                    <th>User Downloads (total)</th>
                 </tr>
                 <?php
                 $gross_admin = 0;
                 $gross_user = 0;
-                foreach (Devices::listDevices() as $index => $device_array) {
+                $gross_silverbullet = 0;
+                foreach (\devices\Devices::listDevices() as $index => $device_array) {
                     echo "<tr>";
-                    $admin_query = DBConnection::exec("INST", "SELECT SUM(downloads_admin) AS admin, SUM(downloads_user) AS user FROM downloads WHERE device_id = '$index'");
-                    while ($a = mysqli_fetch_object($admin_query)) {
-                        echo "<td>" . $device_array['display'] . "</td><td>" . $a->admin . "</td><td>" . $a->user . "</td>";
+                    $admin_query = $dbHandle->exec("SELECT SUM(downloads_admin) AS admin, SUM(downloads_user) AS user, SUM(downloads_silverbullet) as silverbullet FROM downloads WHERE device_id = '$index'");
+                    // SELECT -> mysqli_result, not boolean
+                    while ($a = mysqli_fetch_object(/** @scrutinizer ignore-type */ $admin_query)) {
+                        echo "<td>" . $device_array['display'] . "</td><td>" . $a->admin . "</td><td>" . $a->user . "</td><td>" . $a->silverbullet . "</td><td>" . sprintf("%s", $a->user + $a->silverbullet) . "</td>";
                         $gross_admin = $gross_admin + $a->admin;
                         $gross_user = $gross_user + $a->user;
+                        $gross_silverbullet = $gross_silverbullet + $a->silverbullet;
                     }
                     echo "</tr>";
                 }
@@ -184,11 +150,12 @@ $cat = pageheader("By. Your. Command.","SUPERADMIN", FALSE); // no auth in pageh
                     <td><strong>TOTAL</strong></td>
                     <td><strong><?php echo $gross_admin; ?></strong></td>
                     <td><strong><?php echo $gross_user; ?></strong></td>
+                    <td><strong><?php echo $gross_silverbullet; ?></strong></td>
+                    <td><strong><?php echo $gross_user + $gross_silverbullet; ?></strong></td>
                 </tr>
             </table>
         </fieldset>
-<?php } ?>
-    </form>
-    <?php
-    footer();
-    
+    <?php } ?>
+</form>
+<?php
+echo $deco->footer();

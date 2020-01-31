@@ -1,316 +1,335 @@
+# SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
-# Stefan Winter, 2012.
-#   <stefan.winter@restena.lu>, 2011, 2014, 2015.
+# eduroam_devel <stefan.winter@restena.lu>, 2015,2018
+# Stefan Winter, 2012
+# eduroam_devel <stefan.winter@restena.lu>, 2019
+# Steffen Klemer <klemer@dfn.de>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: eduroam CAT\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-14 13:36+0200\n"
-"PO-Revision-Date: 2015-04-03 10:48+0200\n"
-"Last-Translator:  <stefan.winter@restena.lu>\n"
-"Language-Team: German <kde-i18n-de@kde.org>\n"
-"Language: de\n"
+"POT-Creation-Date: 2019-04-05 11:11+0200\n"
+"PO-Revision-Date: 2019-04-04 07:24+0000\n"
+"Last-Translator: eduroam_devel <stefan.winter@restena.lu>\n"
+"Language-Team: German (Germany) (http://www.transifex.com/eduroam_devel/cat/"
+"language/de_DE/)\n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"de/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 1.5\n"
 
-#: core/CAT.php:81
+#: core/CAT.php:108
+msgid ""
+"Unreleased <a href='https://github.com/GEANT/CAT/tree/master/Changes.md'>Git "
+"Revision</a>"
+msgstr ""
+"Unveröffentlichte <a href='https://github.com/GEANT/CAT/tree/master/Changes."
+"md'>Git-Version</a>"
+
+#: core/CAT.php:118
 #, php-format
-msgid "Release %s"
-msgstr ""
+msgid "Release <a href='%s'>%s</a>"
+msgstr "Version <a href='%s'>%s</a>"
 
-#: core/CAT.php:84
-msgid "Unreleased SVN Revision"
-msgstr ""
+#: core/CAT.php:127
+msgid "Andorra"
+msgstr "Andorra"
 
-#: core/DeviceConfig.php:129
+#: core/CAT.php:128
+msgid "Austria"
+msgstr "Österreich"
+
+#: core/CAT.php:129
+msgid "Belgium"
+msgstr "Belgien"
+
+#: core/CAT.php:130
+msgid "Bulgaria"
+msgstr "Bulgarien"
+
+#: core/CAT.php:131
+msgid "Cyprus"
+msgstr "Zypern"
+
+#: core/CAT.php:132
+msgid "Czech Republic"
+msgstr "Tschechische Republik"
+
+#: core/CAT.php:133
+msgid "Denmark"
+msgstr "Dänemark"
+
+#: core/CAT.php:134
+msgid "Estonia"
+msgstr "Estland"
+
+#: core/CAT.php:135
+msgid "Finland"
+msgstr "Finnland"
+
+#: core/CAT.php:136
+msgid "France"
+msgstr "Frankreich"
+
+#: core/CAT.php:137
+msgid "Germany"
+msgstr "Deutschland"
+
+#: core/CAT.php:138
+msgid "Greece"
+msgstr "Griechenland"
+
+#: core/CAT.php:139
+msgid "Croatia"
+msgstr "Kroatien"
+
+#: core/CAT.php:140
+msgid "Ireland"
+msgstr "Irland"
+
+#: core/CAT.php:141
+msgid "Iceland"
+msgstr "Island"
+
+#: core/CAT.php:142
+msgid "Italy"
+msgstr "Italien"
+
+#: core/CAT.php:143
+msgid "Hungary"
+msgstr "Ungarn"
+
+#: core/CAT.php:144
+msgid "Luxembourg"
+msgstr "Luxemburg"
+
+#: core/CAT.php:145
+msgid "Latvia"
+msgstr "Lettland"
+
+#: core/CAT.php:146
+msgid "Lithuania"
+msgstr "Litauen"
+
+#: core/CAT.php:147
+msgid "Macedonia"
+msgstr "Mazedonien"
+
+#: core/CAT.php:148
+msgid "Serbia"
+msgstr "Serbien"
+
+#: core/CAT.php:149
+msgid "Netherlands"
+msgstr "Niederlande"
+
+#: core/CAT.php:150
+msgid "Norway"
+msgstr "Norwegen"
+
+#: core/CAT.php:151
+msgid "Poland"
+msgstr "Polen"
+
+#: core/CAT.php:152
+msgid "Portugal"
+msgstr "Portugal"
+
+#: core/CAT.php:153
+msgid "Romania"
+msgstr "Romänien"
+
+#: core/CAT.php:154
+msgid "Slovenia"
+msgstr "Slowenien"
+
+#: core/CAT.php:155
+msgid "Spain"
+msgstr "Spanien"
+
+#: core/CAT.php:156
+msgid "Sweden"
+msgstr "Schweden"
+
+#: core/CAT.php:157
+msgid "Slovakia"
+msgstr "Slowakei"
+
+#: core/CAT.php:158
+msgid "Switzerland"
+msgstr "Schweiz"
+
+#: core/CAT.php:159
+msgid "Turkey"
+msgstr "Türkei"
+
+#: core/CAT.php:160
+msgid "United Kingdom"
+msgstr "Vereinigtes Königreich"
+
+#: core/CAT.php:162
+msgid "Australia"
+msgstr "Australien"
+
+#: core/CAT.php:163
+msgid "Canada"
+msgstr "Kanada"
+
+#: core/CAT.php:164
+msgid "Israel"
+msgstr "Isreal"
+
+#: core/CAT.php:165
+msgid "Japan"
+msgstr "Japan"
+
+#: core/CAT.php:166
+msgid "New Zealand"
+msgstr "Neu Seeland"
+
+#: core/CAT.php:167
+msgid "U.S.A."
+msgstr "U.S.A."
+
+#: core/CAT.php:168
+msgid "Brazil"
+msgstr "Brasilien"
+
+#: core/CAT.php:169
+msgid "Chile"
+msgstr "Chile"
+
+#: core/CAT.php:170
+msgid "Peru"
+msgstr "Peru"
+
+#: core/CAT.php:171
+msgid "Venezuela"
+msgstr "Venezuela"
+
+#: core/CAT.php:172
+msgid "Default"
+msgstr "Standard"
+
+#: core/CAT.php:173
+msgid "Armenia"
+msgstr "Armenien"
+
+#: core/CAT.php:174
+msgid "Azerbaijan"
+msgstr "Aserbaidschan"
+
+#: core/CAT.php:175
+msgid "Belarus"
+msgstr "Weißrussland"
+
+#: core/CAT.php:176
+msgid "Ecuador"
+msgstr "Ecuador"
+
+#: core/CAT.php:177
+msgid "Hong Kong"
+msgstr "Hong Kong"
+
+#: core/CAT.php:178
+msgid "Kenya"
+msgstr "Kenia"
+
+#: core/CAT.php:179
+msgid "Kyrgyzstan"
+msgstr "Kirgisistan"
+
+#: core/CAT.php:180
+msgid "Korea"
+msgstr "Südkorea"
+
+#: core/CAT.php:181
+msgid "Kazakhstan"
+msgstr "Kasachstan"
+
+#: core/CAT.php:182
+msgid "Morocco"
+msgstr "Marokko"
+
+#: core/CAT.php:183
+msgid "Moldova"
+msgstr "Moldawien"
+
+#: core/CAT.php:184
+msgid "Montenegro"
+msgstr "Montenegro"
+
+#: core/CAT.php:185
+msgid "Macau"
+msgstr "Macau"
+
+#: core/CAT.php:186
+msgid "Malta"
+msgstr "Malta"
+
+#: core/CAT.php:187
+msgid "Russia"
+msgstr "Russland"
+
+#: core/CAT.php:188
+msgid "Singapore"
+msgstr "Singapur"
+
+#: core/CAT.php:189
+msgid "Thailand"
+msgstr "Thailand"
+
+#: core/CAT.php:190
+msgid "Taiwan"
+msgstr "Taiwan"
+
+#: core/CAT.php:191
+msgid "South Africa"
+msgstr "Südafrika"
+
+#: core/CAT.php:466 core/IdPlist.php:111
+msgid "Unnamed Entity"
+msgstr "Entität ohne Namen"
+
+#: core/DeviceConfig.php:186
 #, php-format
 msgid "your local %s support"
-msgstr "ihre lokale %s Unterstützung"
+msgstr "ihr lokales %s Service-Center"
 
-#: core/DeviceConfig.php:130
+#: core/DeviceConfig.php:187
 #, php-format
 msgid "your local %s support page"
 msgstr "ihre lokale %s Informations-Webseite"
 
-#: core/DeviceConfig.php:162
+#: core/DeviceConfig.php:223
 msgid "Sorry, this should not happen - no additional information is available"
 msgstr ""
 "Entschuldigung, das sollte nicht passieren - es ist keine weitere "
 "Information verfügbar"
 
-#: core/Federation.php:128
-msgid "Andorra"
-msgstr "Andorra"
-
-#: core/Federation.php:129
-msgid "Austria"
-msgstr "Österreich"
-
-#: core/Federation.php:130
-msgid "Belgium"
-msgstr "Belgien"
-
-#: core/Federation.php:131
-msgid "Bulgaria"
-msgstr "Bulgarien"
-
-#: core/Federation.php:132
-msgid "Cyprus"
-msgstr "Zypern"
-
-#: core/Federation.php:133
-msgid "Czech Republic"
-msgstr "Tschechische Republik"
-
-#: core/Federation.php:134
-msgid "Denmark"
-msgstr "Dänemark"
-
-#: core/Federation.php:135
-msgid "Estonia"
-msgstr "Estland"
-
-#: core/Federation.php:136
-msgid "Finland"
-msgstr "Finnland"
-
-#: core/Federation.php:137
-msgid "France"
-msgstr "Frankreich"
-
-#: core/Federation.php:138
-msgid "Germany"
-msgstr "Deutschland"
-
-#: core/Federation.php:139
-msgid "Greece"
-msgstr "Griechenland"
-
-#: core/Federation.php:140
-msgid "Croatia"
-msgstr "Kroatien"
-
-#: core/Federation.php:141
-msgid "Ireland"
-msgstr "Irland"
-
-#: core/Federation.php:142
-msgid "Iceland"
-msgstr "Island"
-
-#: core/Federation.php:143
-msgid "Italy"
-msgstr "Italien"
-
-#: core/Federation.php:144
-msgid "Hungary"
-msgstr "Ungarn"
-
-#: core/Federation.php:145
-msgid "Luxembourg"
-msgstr "Luxemburg"
-
-#: core/Federation.php:146
-msgid "Latvia"
-msgstr "Lettland"
-
-#: core/Federation.php:147
-msgid "Lithuania"
-msgstr "Litauen"
-
-#: core/Federation.php:148
-msgid "Macedonia"
-msgstr "Mazedonien"
-
-#: core/Federation.php:149
-msgid "Serbia"
-msgstr "Serbien"
-
-#: core/Federation.php:150
-msgid "Netherlands"
-msgstr "Niederlande"
-
-#: core/Federation.php:151
-msgid "Norway"
-msgstr "Norwegen"
-
-#: core/Federation.php:152
-msgid "Poland"
-msgstr "Polen"
-
-#: core/Federation.php:153
-msgid "Portugal"
-msgstr "Portugal"
-
-#: core/Federation.php:154
-msgid "Romania"
-msgstr "Romänien"
-
-#: core/Federation.php:155
-msgid "Slovenia"
-msgstr "Slowenien"
-
-#: core/Federation.php:156
-msgid "Spain"
-msgstr "Spanien"
-
-#: core/Federation.php:157
-msgid "Sweden"
-msgstr "Schweden"
-
-#: core/Federation.php:158
-msgid "Slovakia"
-msgstr "Slowakei"
-
-#: core/Federation.php:159
-msgid "Switzerland"
-msgstr "Schweiz"
-
-#: core/Federation.php:160
-msgid "Turkey"
-msgstr "Türkei"
-
-#: core/Federation.php:161
-msgid "United Kingdom"
-msgstr "Vereinigtes Königreich"
-
-#: core/Federation.php:163
-msgid "Australia"
-msgstr "Australien"
-
-#: core/Federation.php:164
-msgid "Canada"
-msgstr "Kanada"
-
-#: core/Federation.php:165
-msgid "Israel"
-msgstr "Isreal"
-
-#: core/Federation.php:166
-msgid "Japan"
-msgstr "Japan"
-
-#: core/Federation.php:167
-msgid "New Zealand"
-msgstr "Neu Seeland"
-
-#: core/Federation.php:168
-msgid "U.S.A."
-msgstr "U.S.A."
-
-#: core/Federation.php:169
-msgid "Brazil"
-msgstr "Brasilien"
-
-#: core/Federation.php:170
-msgid "Chile"
-msgstr "Chile"
-
-#: core/Federation.php:171
-msgid "Peru"
-msgstr "Peru"
-
-#: core/Federation.php:172
-msgid "Venezuela"
-msgstr "Venezuela"
-
-#: core/Federation.php:173
-msgid "Default"
-msgstr "Standard"
-
-#: core/Federation.php:174
-msgid "Armenia"
-msgstr "Armenien"
-
-#: core/Federation.php:175
-msgid "Azerbaijan"
-msgstr "Aserbaidschan"
-
-#: core/Federation.php:176
-msgid "Belarus"
-msgstr "Weißrussland"
-
-#: core/Federation.php:177
-msgid "Ecuador"
-msgstr "Ecuador"
-
-#: core/Federation.php:178
-msgid "Hong Kong"
-msgstr "Hong Kong"
-
-#: core/Federation.php:179
-msgid "Kenya"
-msgstr "Kenia"
-
-#: core/Federation.php:180
-msgid "Kyrgyzstan"
-msgstr "Kirgisistan"
-
-#: core/Federation.php:181
-msgid "Korea"
-msgstr "Südkorea"
-
-#: core/Federation.php:182
-msgid "Kazakhstan"
-msgstr "Kasachstan"
-
-#: core/Federation.php:183
-msgid "Morocco"
-msgstr "Marokko"
-
-#: core/Federation.php:184
-msgid "Moldova"
-msgstr "Moldawien"
-
-#: core/Federation.php:185
-msgid "Montenegro"
-msgstr "Montenegro"
-
-#: core/Federation.php:186
-msgid "Macau"
-msgstr "Macau"
-
-#: core/Federation.php:187
-msgid "Malta"
-msgstr "Malta"
-
-#: core/Federation.php:188
-msgid "Russia"
-msgstr "Russland"
-
-#: core/Federation.php:189
-msgid "Singapore"
-msgstr "Singapur"
-
-#: core/Federation.php:190
-msgid "Thailand"
-msgstr "Thailand"
-
-#: core/Federation.php:191
-msgid "Taiwan"
-msgstr "Taiwan"
-
-#: core/Federation.php:192
-msgid "South Africa"
-msgstr "Südafrika"
-
-#: core/Federation.php:432
-msgid "Could not create a new Institution!"
-msgstr "Neue Institution konnte nicht angelegt werden!"
-
-#: core/IdP.php:355
+#. this device has stats, but doesn't exist in current config. We don't even know its display name, so display its raw representation
+#: core/Federation.php:90
+#, php-format
+msgid "(discontinued) %s"
+msgstr "(nicht mehr unterstützt) %s"
+
+#. / arguments are: 1. nomenclature for "institution"
+#. 2. IdP name;
+#. /                3. consortium name (e.g. eduroam);
+#. /                4. federation shortname, e.g. "LU";
+#. /                5. product name (e.g. eduroam CAT);
+#. /                6. product long name (e.g. eduroam Configuration Assistant Tool)
+#: core/Federation.php:253
 #, php-format
 msgid ""
 "Hi,\n"
 "\n"
-"the Identity Provider %s in your %s federation %s has been deleted from %s.\n"
+"the invitation for the new %s %s in your %s federation %s has been used and "
+"the IdP was created in %s.\n"
 "\n"
 "We thought you might want to know.\n"
 "\n"
@@ -320,7 +339,8 @@ msgid ""
 msgstr ""
 "Hallo,\n"
 "\n"
-"Der Identitätsprovider %s in Ihrer %s Föderation %s wurde aus %s gelöscht.\n"
+"die Einladung für den neuen %s %s in Ihrer %s Föderation %s wurde eingelöst "
+"und der neue IdP wurde in %s erstellt.\n"
 "\n"
 "Wir dachten, Sie wollen das vielleicht wissen.\n"
 "\n"
@@ -328,22 +348,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: core/IdP.php:364
-msgid "IdP in your federation was deleted"
-msgstr "IdP in Ihrer Föderation wurde gelöscht"
+#: core/Federation.php:262
+#, php-format
+msgid "%s in your federation was created"
+msgstr "%s in Ihrer Föderation wurde erstellt"
 
-#. / arguments are: 1. IdP name;
-#. /                2. consortium name (e.g. eduroam);
-#. /                3. federation shortname, e.g. "LU";
-#. /                4. product name (e.g. eduroam CAT);
-#. /                5. product long name (e.g. eduroam Configuration Assistant Tool)
-#: core/UserManagement.php:150
+#: core/IdP.php:351
 #, php-format
 msgid ""
 "Hi,\n"
 "\n"
-"the invitation for the new Identity Provider %s in your %s federation %s has "
-"been used and the IdP was created in %s.\n"
+"the %s %s in your %s federation %s has been deleted from %s.\n"
 "\n"
 "We thought you might want to know.\n"
 "\n"
@@ -353,8 +368,7 @@ msgid ""
 msgstr ""
 "Hallo,\n"
 "\n"
-"die Einladung für den neuen Identitätsprovider %s in Ihrer %s Föderation %s "
-"wurde eingelöst. Der neue IdP wurde in %s erstellt.\n"
+"der %s %s in Ihrer %s Föderation %s wurde aus %s gelöscht.\n"
 "\n"
 "Wir dachten, Sie wollen das vielleicht wissen.\n"
 "\n"
@@ -362,302 +376,287 @@ msgstr ""
 "\n"
 "%s"
 
-#: core/UserManagement.php:159
-msgid "IdP in your federation was created"
-msgstr "IdP in Ihrer Föderation wurde erstellt"
+#: core/IdP.php:360
+#, php-format
+msgid "%s in your federation was deleted"
+msgstr "%s in Ihrer Föderation wurde gelöscht"
 
-#: core/User.php:256
+#: core/SilverbulletInvitation.php:230
+#, php-format
+msgid "Your %s access is ready"
+msgstr "Ihr %s-Zugang ist bereit."
+
+#: core/SilverbulletInvitation.php:242
+msgid "Hello!"
+msgstr "Hallo!"
+
+#: core/SilverbulletInvitation.php:244
+#, php-format
+msgid ""
+"A new %s access credential has been created for you by your network "
+"administrator."
+msgstr ""
+"Ein neuer %s-Zugangscode wurde für Sie von Ihrem Netzwerkadministrator "
+"erstellt."
+
+#: core/SilverbulletInvitation.php:246
+#, php-format
+msgid ""
+"Please follow the following link with the device you want to enable for %s "
+"to get a custom %s installation program just for you. You can click on the "
+"link, copy and paste it into a browser or scan the attached QR code."
+msgstr ""
+"Bitte öffnen Sie den folgenden Link auf dem Gerät, auf dem Sie %s einrichten "
+"wollen. Sie erhalten ein dort ein angepasstes %s-Installationsprogramm. Sie "
+"können den Link zB direkt anklicken, kopieren und im Browser einfügen oder "
+"den QR-Code scannen."
+
+#. gets replaced with the token value by getBody()
+#: core/SilverbulletInvitation.php:248
+#, php-format
+msgid ""
+"Please keep this email or bookmark this link for future use. After picking "
+"up your %s installation program, you can use the same link to get status "
+"information about your %s account."
+msgstr ""
+"Bitte speichern Sie diese Mail oder den Link. Nachdem Sie ihr %s-"
+"Installationspgramm heruntergeladen haben, können Sie unter dem selben Link "
+"Informationen über Ihren %s-Account abrufen."
+
+#: core/SilverbulletInvitation.php:250
+msgid "Regards,"
+msgstr "Mit freundlichen Grüßen,"
+
+#: core/SilverbulletInvitation.php:299
+#, php-format
+msgid ""
+"Your %s access is ready! Click here: %s (on Android, first install the app "
+"'%s'!)"
+msgstr ""
+"Ihr %s Zugang ist bereit! Klicken Sie hier: %s (auf Android, bitte zuerst "
+"die App '%s' installieren!)"
+
+#: core/SilverbulletInvitation.php:321
+#, php-format
+msgid "%s Invitation System"
+msgstr "%s Einladungssystem"
+
+#: core/User.php:158
 msgid "Feedback"
 msgstr "Rückmeldung"
 
-#~ msgid "eduPKI"
-#~ msgstr "eduPKI"
+#: core/common/EAP.php:380
+msgid "PEAP-MSCHAPv2"
+msgstr "PEAP-MSCHAPv2"
 
-#~ msgid "Nicolaus Copernicus University"
-#~ msgstr "Nikolaus Kopernikus Universität"
+#: core/common/EAP.php:381
+msgid "TLS"
+msgstr "TLS"
 
-#~ msgid "accredited"
-#~ msgstr "akkreditiert"
+#: core/common/EAP.php:382
+msgid "TTLS-PAP"
+msgstr "TTLS-PAP"
 
-#~ msgid "non-accredited"
-#~ msgstr "nicht akkreditiert"
+#: core/common/EAP.php:383
+msgid "TTLS-MSCHAPv2"
+msgstr "TTLS-MSCHAPv2"
 
-#~ msgid "correct certificate"
-#~ msgstr "Korrektes Zertifikat"
+#: core/common/EAP.php:384
+msgid "TTLS-GTC"
+msgstr "TTLS-GTC"
 
-#~ msgid "certificate with wrong policy OID"
-#~ msgstr "Zertifikat mit falscher Policy OID"
+#: core/common/EAP.php:385
+msgid "FAST-GTC"
+msgstr "FAST-GTC"
 
-#~ msgid "expired certificate"
-#~ msgstr "Abgelaufenes Zertifikat"
+#: core/common/EAP.php:386
+msgid "EAP-pwd"
+msgstr "EAP-pwd"
 
-#~ msgid "revoked certificate"
-#~ msgstr "Gesperrtes Zertifikat"
+#. some config elements are displayable. We need some dummies to
+#. translate the common values for them. If a deployment chooses a
+#. different wording, no translation, sorry
+#: core/common/Entity.php:116
+msgid "National Roaming Operator"
+msgstr "Nationaler Roaming Betreiber"
 
-#~ msgid "pass"
-#~ msgstr "Akzeptieren"
+#: core/common/Entity.php:117
+msgid "identity provider"
+msgstr "Identitätsprovider"
 
-#~ msgid "fail"
-#~ msgstr "Ablehnen"
+#: core/common/Entity.php:118 core/common/Entity.php:124
+msgid "organisation"
+msgstr "Organisation"
 
-#~ msgid "eduroam-accredited CA (now only for tests)"
-#~ msgstr "eduroam-akkreditierte CA (nur für Testzwecke)"
+#: core/common/Entity.php:119
+msgid "Identity Provider"
+msgstr "Identitätsprovider"
 
-#~ msgid "Completed"
-#~ msgstr "Abgeschlossen"
+#: core/common/Entity.php:120
+msgid "Wi-Fi Hotspot"
+msgstr ""
 
-#~ msgid "This check was skipped."
-#~ msgstr "Dieser Test wurde übersprungen."
+#: core/common/Entity.php:121
+msgid "Hotspot"
+msgstr ""
 
-#~ msgid "There were errors during the test."
-#~ msgstr "Im Test sind Fehler aufgetreten."
+#: core/common/Entity.php:122
+#, fuzzy
+msgid "Service Provider"
+msgstr "Identitätsprovider"
 
-#~ msgid "This realm has no NAPTR records."
-#~ msgstr "Dieser Realm hat keine NAPTR Einträge."
+#: core/common/Entity.php:123
+msgid "participant"
+msgstr ""
 
-#~ msgid ""
-#~ "NAPTR records were found, but all of them refer to unrelated services."
-#~ msgstr ""
-#~ "NAPTR Einträge wurden gefunden, haben aber nicht den erwarteten "
-#~ "Dienstbezeichner."
+#: core/common/Entity.php:125
+#, fuzzy
+msgid "organization"
+msgstr "Organisation"
 
-#~ msgid "There was no reply at all from the RADIUS server."
-#~ msgstr "Der RADIUS Server hat nicht geantwortet."
+#: core/common/Entity.php:126
+#, fuzzy
+msgid "entity"
+msgstr "Entität ohne Namen"
 
-#~ msgid ""
-#~ "There was a bidirectional communication with the RADIUS server, but it "
-#~ "ended halfway through."
-#~ msgstr ""
-#~ "Es gab zwar eine bidirektionale Kommunikation mit dem RADIUS Server, aber "
-#~ "sie endete frühzeitig."
+#: core/common/OutsideComm.php:267
+#, php-format
+msgid "%s and %s"
+msgstr ""
 
-#~ msgid ""
-#~ "The RADIUS server immediately rejected the authentication request in its "
-#~ "first reply."
-#~ msgstr ""
-#~ "Der RADIUS Server antwortete im ersten Antwortpaket sofort mit einer "
-#~ "Ablehnung der Anfrage."
+#: core/common/OutsideComm.php:277
+#, php-format
+msgid ""
+"a %s of the %s %s \"%s\" has invited you to manage the %s together with him."
+msgstr ""
+"ein %s des %s %s \"%s\" hat Sie eingeladen, den %s gemeinsam zu "
+"administrieren."
 
-#~ msgid ""
-#~ "The RADIUS server rejected the authentication request after an EAP "
-#~ "conversation."
-#~ msgstr ""
-#~ "Der RADIUS Server antwortete nach Durchführung einer EAP Konversation mit "
-#~ "einer Ablehnung der Anfrage."
+#: core/common/OutsideComm.php:278
+#, fuzzy, php-format
+msgid ""
+"a %s %s has invited you to manage the future %s  \"%s\" (%s). The "
+"organisation will be a %s."
+msgstr ""
+"ein %s %s hat Sie eingeladen, den zukünftigen %s \"%s\" (%s) zu "
+"administrieren."
 
-#~ msgid "Connection refused"
-#~ msgstr "Verbindungsaufbau abgelehnt."
+#: core/common/OutsideComm.php:279
+#, fuzzy, php-format
+msgid "a %s %s has invited you to manage the %s  \"%s\". This is a %s."
+msgstr "ein %s %s hat sie eingeladen, den %s \"%s\" zu administrieren."
 
-#~ msgid "Not enough data provided to perform an authentication"
-#~ msgstr ""
-#~ "Es sind nicht genügend Daten vorhanden, um eine Authentifizierungsanfrage "
-#~ "durchzuführen"
+#: core/common/OutsideComm.php:281
+#, php-format
+msgid "This invitation is valid for 24 hours from now, i.e. until %s."
+msgstr "Diese Einladung ist 24 Stunden lang gültig, also bis %s."
 
-#~ msgid ""
-#~ "The certificate password you provided does not match the certificate file."
-#~ msgstr ""
-#~ "Das von Ihnen angegebene Zertifikatspasswort passt nicht zum Zertifikat."
+#. then, send out the mail
+#: core/common/OutsideComm.php:289
+msgid "Hello,"
+msgstr "Hallo,"
 
-#~ msgid ""
-#~ "The certificate chain includes the root CA certificate. This does not "
-#~ "serve any useful purpose but inflates the packet exchange, possibly "
-#~ "leading to more round-trips and thus slower authentication."
-#~ msgstr ""
-#~ "Die empfangene Zertifikatskette enthält das Wurzelzertifikat der CA. Das "
-#~ "ist nicht zweckdienlich, und führt lediglich zu einer Vergrößerung der zu "
-#~ "übertragenden Datenmenge und damit zu längeren Wartezeiten bei der "
-#~ "Authentifizierung."
+#. default means we don't have a Reply-To.
+#: core/common/OutsideComm.php:291
+msgid ""
+"manually. Please do not reply to this mail; this is a send-only address."
+msgstr ""
+"händisch. Bitte antworten Sie nicht auf diese E-Mail; die Adresse wird nur "
+"zum Versenden benutzt."
 
-#~ msgid "There is more than one server certificate in the chain."
-#~ msgstr ""
-#~ "In der Zertifikatskette befindet sich mehr als ein Serverzertifikat."
+#: core/common/OutsideComm.php:297
+#, php-format
+msgid "Additional message from your %s administrator:"
+msgstr "Zusätzliche Nachricht Ihres %s Administrators:"
 
-#~ msgid "There is no server certificate in the chain."
-#~ msgstr "In der Zertifikatskette befindet sich KEIN Serverzertifikat."
+#: core/common/OutsideComm.php:305
+#, php-format
+msgid "%s administrator"
+msgstr "%s Administrator"
 
-#~ msgid ""
-#~ "At least one certificate in the chain is signed with the MD5 signature "
-#~ "algorithm. Many Operating Systems, including Apple iOS, will fail to "
-#~ "validate this certificate."
-#~ msgstr ""
-#~ "Mindestens ein Zertifikat ist dem MD5-Signaturalgorithmus signiert. Viele "
-#~ "Betriebssysteme, darunter Apple iOS, akzeptieren solche Zertifikate nicht."
+#: core/common/OutsideComm.php:308
+#, php-format
+msgid ""
+"manually. If you reply to this mail, you will reach your %s administrators."
+msgstr ""
+"händisch. Wenn Sie auf diese E-Mail antworten, erreichen Sie Ihre %s "
+"Administratoren."
 
-#~ msgid ""
-#~ "At least one certificate in the chain had a public key of less than 1024 "
-#~ "bits. Many recent operating systems consider this unacceptable and will "
-#~ "fail to validate the server certificate."
-#~ msgstr ""
-#~ "Mindestens ein Zertifkat hat einen öffentlichen Schlüssel von weniger als "
-#~ "1024 Bit. Viele moderne Betriebssysteme akzeptieren solche Zertifikate "
-#~ "nicht."
+#: core/common/OutsideComm.php:313
+#, php-format
+msgid ""
+"To enlist as an administrator for that %s, please click on the following "
+"link:"
+msgstr ""
+"Um sich als Administator für diesen %s anzumelden, klicken Sie bitte auf den "
+"folgenden Link:"
 
-#~ msgid ""
-#~ "The server certificate does not have the extension 'extendedKeyUsage: TLS "
-#~ "Web Server Authentication'. Most Microsoft Operating Systems will fail to "
-#~ "validate this certificate."
-#~ msgstr ""
-#~ "Das Serverzertifikat enthält keine 'extendedKeyUsage: TLS Web Server "
-#~ "Authentication'. Die meisten Microsoft Betriebssysteme akzeptieren dieses "
-#~ "Zertifikat nicht."
+#: core/common/OutsideComm.php:315
+#, php-format
+msgid ""
+"If clicking the link doesn't work, you can also go to the %s Administrator "
+"Interface at"
+msgstr ""
+"Falls das Anklicken der Adresse nicht funktioniert, können Sie auch zur %s "
+"Administrationsschnittstelle bei"
 
-#~ msgid ""
-#~ "The server certificate did not include a CRL Distribution Point, creating "
-#~ "compatibility problems with Windows Phone 8."
-#~ msgstr ""
-#~ "Das Serverzertifikat enthält keinen Verweis auf einen CRL Distribution "
-#~ "Point. Unter Windows Phone 8 führt dies zu Problemen."
+#: core/common/OutsideComm.php:317
+msgid "and enter the invitation token"
+msgstr "gehen und dort den Einladungs-Token"
 
-#~ msgid ""
-#~ "The server certificate's 'CRL Distribution Point' extension does not "
-#~ "point to an HTTP/HTTPS URL. Some Operating Systems may fail to validate "
-#~ "this certificate. Checking server certificate validity against a CRL will "
-#~ "not be possible."
-#~ msgstr ""
-#~ "Das Serverzertifikat enthält keinen Verweis auf einen 'CRL Distribution "
-#~ "Point' mit HTTP/HTTPS Protokoll. Einige Betriebssysteme akzeptieren "
-#~ "dieses Zertifikat daher nicht. Für alle Betriebssystem gilt, dass der CRL "
-#~ "Status des Zertifikats nicht überprüfbar ist."
+#: core/common/OutsideComm.php:319
+msgid ""
+"Do NOT forward the mail before the token has expired - or the recipients may "
+"be able to consume the token on your behalf!"
+msgstr ""
+"Leiten Sie diese E-Mail NICHT weiter bevor der Zugangscode abgelaufen ist - "
+"Empfänger können den Code in Ihrem Namen einlösen!"
 
-#~ msgid ""
-#~ "The extension 'CRL Distribution Point' in the server certificate points "
-#~ "to a non-existing location. Some Operating Systems check certificate "
-#~ "validity by consulting the CRL and will fail to validate the certificate. "
-#~ "Checking server certificate validity against a CRL will not be possible."
-#~ msgstr ""
-#~ "Der Verweis auf den 'CRL Distribution Point' im Serverzertifikat zeigt "
-#~ "auf eine nicht existierendes Ziel. Einige Betriebssysteme konsultieren "
-#~ "die CRL zur Zertifikatsüberprüfung, und werden das Zertifikat "
-#~ "zurückweisen."
+#: core/common/OutsideComm.php:320
+#, php-format
+msgid "We wish you a lot of fun with the %s."
+msgstr "Wir wünschen Ihnen viel Spaß mit %s."
 
-#~ msgid "The server certificate was revoked by the CA!"
-#~ msgstr "Das Serverzertifikat wurde von der CA gesperrt!"
+#: core/common/OutsideComm.php:321
+#, php-format
+msgid ""
+"Sincerely,\n"
+"\n"
+"Your friendly folks from %s Operations"
+msgstr ""
+"Mit freundlichen Grüßen,\n"
+"\n"
+"Ihr %s Team"
 
-#~ msgid ""
-#~ "The certificate contained a CN or subjectAltName:DNS which does not parse "
-#~ "as a hostname. This can be problematic on some supplicants. If the "
-#~ "certificate also contains names which are a proper hostname, and you only "
-#~ "use those for your supplicant configuration, then you can safely ignore "
-#~ "this notice."
-#~ msgstr ""
-#~ "Das Zertifikat enthält einen CN oder subjectAltName:DNS, der kein "
-#~ "gültiger Rechnername im DNS ist. Auf einigen Plattformen können solche "
-#~ "Namen problematisch sein. Sofern das Zertifikat auch weitere Namen "
-#~ "enthält die gültige Rechnernamen sind, und Sie nur diese Namen für die "
-#~ "Gerätekonfiguration verwenden, können Sie diesen Hinweis ignorieren."
+#: core/common/OutsideComm.php:357
+#, php-format
+msgid "%s: you have been invited to manage an %s"
+msgstr "%s: Sie wurden eingeladen, einen %s zu administrieren"
 
-#~ msgid ""
-#~ "The certificate contained a CN or subjectAltName:DNS which contains a "
-#~ "wildcard ('*'). This can be problematic on some supplicants. If the "
-#~ "certificate also contains names which are wildcardless, and you only use "
-#~ "those for your supplicant configuration, then you can safely ignore this "
-#~ "notice."
-#~ msgstr ""
-#~ "Das Zertifikat enthält einen CN oder subjectAltName:DNS, der eine "
-#~ "Wildcard enthält ('*'). Auf einigen Plattformen können solche Namen "
-#~ "problematisch sein. Sofern das Zertifikat auch weitere Namen enthält die "
-#~ "keine Wildcard enthalten, und Sie nur diese Namen für die "
-#~ "Gerätekonfiguration verwenden, können Sie diesen Hinweis ignorieren."
+#: web/lib/common/InputValidation.php:40
+msgid "Input validation error: "
+msgstr "Fehler bei der Eingabeprüfung: "
 
-#~ msgid ""
-#~ "At least one certificate is outside its validity period (not yet valid, "
-#~ "or already expired)!"
-#~ msgstr ""
-#~ "Mindestens ein Zertifikat liegt außerhalb seines Gültigkeitszeitraums "
-#~ "(entweder noch nicht gültig, oder nicht mehr gültig)!"
+#: web/lib/common/InputValidation.php:252
+msgid "Realm is empty!"
+msgstr "Der Realm enthält kein Zeichen."
 
-#~ msgid ""
-#~ "At least one intermediate certificate in your CAT profile is outside its "
-#~ "validity period (not yet valid, or already expired), but this certificate "
-#~ "was not used for server validation. Consider removing it from your %s "
-#~ "configuration."
-#~ msgstr ""
-#~ "Mindestens ein Zertifikat liegt außerhalb seines Gültigkeitszeitraums "
-#~ "(entweder noch nicht gültig, oder nicht mehr gültig). Für die Überprüfung "
-#~ "des Serverzertifikats wird es aber nicht benötigt. Sie sollten dieses "
-#~ "Zertifikat aus der %s Konfiguration löschen."
+#: web/lib/common/InputValidation.php:261
+msgid "Realm contains an @ sign!"
+msgstr "Der Realm enthält ein @ Zeichen!"
 
-#~ msgid ""
-#~ "The server certificate could not be verified to the root CA you "
-#~ "configured in your profile!"
-#~ msgstr ""
-#~ "Das Serverzertifikat passt nicht zum CA Wurzelzertifikat im zugehörigen "
-#~ "Profil!"
+#: web/lib/common/InputValidation.php:262
+msgid "Realm begins with a . (dot)!"
+msgstr "Der Realm beginnt mit einem . (Punkt)!"
 
-#~ msgid ""
-#~ "The certificate chain as received in EAP was not sufficient to verify the "
-#~ "certificate to the root CA in your profile. It was verified using the "
-#~ "intermediate CAs in your profile though. You should consider sending the "
-#~ "required intermediate CAs inside the EAP conversation."
-#~ msgstr ""
-#~ "Die Zertifikatskette die über EAP übertragen wurde war nicht ausreichend, "
-#~ "um das Serverzertifikat bis zum CA Wurzelzertifikat zu überprüfen. Es "
-#~ "konnte allerdings unter Hinzunahme der im Profil angegebenen "
-#~ "Zwischenzertifizierungsstellen erfolgreich überprüft werden. Sie sollten "
-#~ "in Erwägung ziehen, die Zwischenzertifizierungsstellen während der EAP "
-#~ "Konversation mitzuübertragen."
+#: web/lib/common/InputValidation.php:263
+msgid "Realm ends with a . (dot)!"
+msgstr "Der Realm endet mit einem . (Punkt)!"
 
-#~ msgid ""
-#~ "The EAP server name does not match any of the configured names in your "
-#~ "profile!"
-#~ msgstr ""
-#~ "Der empfangene Servername passt nicht zu den im zugehörigen Profil "
-#~ "angegebenen Namen!"
+#: web/lib/common/InputValidation.php:264
+msgid "Realm contains spaces!"
+msgstr "De Realm enthält Leerzeichen!"
 
-#~ msgid ""
-#~ "The configured EAP server name matches either the CN or a subjectAltName:"
-#~ "DNS of the incoming certificate; best current practice is that the "
-#~ "certificate should contain the name in BOTH places."
-#~ msgstr ""
-#~ "Der empfangene Servername passt nur mit einem der beiden: CN oder "
-#~ "subjectAltName:DNS zu dem im zugehörigen Profil angegebenen Servernamen; "
-#~ "empfohlen ist, dass der Name in BEIDEN Zertifikatsattributen eingetragen "
-#~ "ist."
-
-#~ msgid ""
-#~ "At least one certificate did not contain any BasicConstraints extension; "
-#~ "which makes it unclear if it's a CA certificate or end-entity "
-#~ "certificate. At least Mac OS X 10.8 (Mountain Lion) will not validate "
-#~ "this certificate for EAP purposes!"
-#~ msgstr ""
-#~ "Mindestens ein Zertifikat enthielt nicht die Zertifikatserweiterung "
-#~ "\"BasicConstraints\"; dadurch ist unklar, ob es sich bei dem Zertifikat "
-#~ "um ein Serverzertifikat oder eine CA handelt. Zumindest Mac OS X 10.8 "
-#~ "(Mountain Lion) wird dieses Zertifikat für EAP nicht akzeptieren!"
-
-#~ msgid "The server presented a certificate from an unknown authority."
-#~ msgstr ""
-#~ "Der Server sendete ein Zertifikat von einer unbekannten "
-#~ "Zertifizierungsstelle."
-
-#~ msgid "The server accepted the INVALID client certificate."
-#~ msgstr "Der Server akzeptierte ein UNGÜLTIGES Zertifikat."
-
-#~ msgid ""
-#~ "The server rejected the client certificate, even though it was valid."
-#~ msgstr ""
-#~ "Der Server lehnte das angebotene Zertifikat ab, obwohl es gültig war."
-
-#~ msgid "The server rejected the client certificate as expected."
-#~ msgstr "Der Server lehnte das angebotene Zertifikat wie erwartet ab."
-
-#~ msgid "The CRL of a certificate could not be found."
-#~ msgstr "Die CRL zu diesem Zertifikat wurde nicht gefunden."
-
-#~ msgid "EAP method negotiation failed!"
-#~ msgstr "Die Aushandlung der zu verwendenden EAP Methode ist fehlgeschlagen!"
-
-#~ msgid "certificate expired"
-#~ msgstr "Zertifikat abgelaufen"
-
-#~ msgid "certificate was revoked"
-#~ msgstr "Zertifikat gesperrt"
-
-#~ msgid "bad policy"
-#~ msgstr "abweichende Policy"
-
-#~ msgid "unknown authority"
-#~ msgstr "unbekannte Zertifizierungsstelle"
-
-#~ msgid "unknown authority or no certificate policy or another problem"
-#~ msgstr "Unbekannte Zertifizierungsstelle, keine Policy oder anderes Problem"
+#: web/lib/common/InputValidation.php:277
+msgid "Realm does not contain at least one . (dot)!"
+msgstr "Der Realm enthält keinen . (Punkt)!"

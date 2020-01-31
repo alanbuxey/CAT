@@ -1,103 +1,36 @@
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/*
+ * *****************************************************************************
+ * Contributions to this work were made on behalf of the GÉANT project, a 
+ * project that has received funding from the European Union’s Framework 
+ * Programme 7 under Grant Agreements No. 238875 (GN3) and No. 605243 (GN3plus),
+ * Horizon 2020 research and innovation programme under Grant Agreements No. 
+ * 691567 (GN4-1) and No. 731122 (GN4-2).
+ * On behalf of the aforementioned projects, GEANT Association is the sole owner
+ * of the copyright in all material which was developed by a member of the GÉANT
+ * project. GÉANT Vereniging (Association) is registered with the Chamber of 
+ * Commerce in Amsterdam with registration number 40535155 and operates in the 
+ * UK as a branch of GÉANT Vereniging.
+ * 
+ * Registered office: Hoekenrode 3, 1102BR Amsterdam, The Netherlands. 
+ * UK branch address: City House, 126-130 Hills Road, Cambridge CB2 1PQ, UK
+ *
+ * License: see the web/copyright.inc.php file in the file structure or
+ *          <base_url>/copyright.php after deploying the software
  */
 
 /* General function for doing HTTP XML GET requests. */
 
-function getXML( funct, URL ) {
+function getXML(attribute_class) {
     var client = new XMLHttpRequest();
-    client.onreadystatechange = funct;
-    client.open( "GET", URL+"&etype=XML" );
+    client.attribute_class = attribute_class;
+    client.onreadystatechange = addOption;
+    client.open("GET", "inc/option_xhr.inc.php?class=" + attribute_class + "&etype=XML");
     client.send();
 }
 
-function postXML( funct, form ) {
-    var client = new XMLHttpRequest();
-    client.onreadystatechange = funct;
-    client.open( "POST", form.action );
-    client.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded" );
-    var form_values = "";
-    for (var i = 0; i<form.elements.length; i++)
-        form_values = form_values + (form_values === "" ? "" : "&") + encodeURIComponent(form.elements[i].name) + "=" + encodeURIComponent(form.elements[i].value);
-    client.send( form_values );
-}
-
-function addSupportOption() {
-    if( this.readyState === 4 && this.status === 200 ) {
-        var field = document.getElementById("expandable_support_options");
-        var div = document.createElement('tbody');
-        div.innerHTML = this.responseText;
-        field.appendChild(div.firstChild);
-    }
-}
-
-function addInstOption() {
-    if( this.readyState === 4 && this.status === 200 ) {
-        var field = document.getElementById("expandable_inst_options");
-        var div = document.createElement('tbody');
-        div.innerHTML = this.responseText;
-        field.appendChild(div.firstChild);
-    }
-}
-
-function addUserOption() {
-    if( this.readyState === 4 && this.status === 200 ) {
-        var field = document.getElementById("expandable_user_options");
-        var div = document.createElement('tbody');
-        div.innerHTML = this.responseText;
-        field.appendChild(div.firstChild);
-    }
-}
-
-function addProfileOption() {
-    if( this.readyState === 4 && this.status === 200 ) {
-        var field = document.getElementById("expandable_profile_options");
-        var div = document.createElement('tbody');
-        div.innerHTML = this.responseText;
-        field.appendChild(div.firstChild);
-    }
-}
-
-function addEapServerOption() {
-    if( this.readyState === 4 && this.status === 200 ) {
-        var field = document.getElementById("expandable_eapserver_options");
-        var div = document.createElement('tbody');
-        div.innerHTML = this.responseText;
-        field.appendChild(div.firstChild);
-    }
-}
-
-function addMediaOption() {
-    if( this.readyState === 4 && this.status === 200 ) {
-        var field = document.getElementById("expandable_media_options");
-        var div = document.createElement('tbody');
-        div.innerHTML = this.responseText;
-        field.appendChild(div.firstChild);
-    }
-}
-
-function addFedOption() {
-    if( this.readyState === 4 && this.status === 200 ) {
-        var field = document.getElementById("expandable_fed_options");
-        var div = document.createElement('tbody');
-        div.innerHTML = this.responseText;
-        field.appendChild(div.firstChild);
-    }
-}
-
-function addDeviceOption() {
-    if( this.readyState === 4 && this.status === 200 ) {
-        var field = document.getElementById("expandable_device-specific_options");
-        var div = document.createElement('tbody');
-        div.innerHTML = this.responseText;
-        field.appendChild(div.firstChild);
-    }
-}
-
-function addEapSpecificOption() {
-    if( this.readyState === 4 && this.status === 200 ) {
-        var field = document.getElementById("expandable_eap-specific_options");
+function addOption() {
+    if (this.readyState === 4 && this.status === 200) {
+        var field = document.getElementById("expandable_" + this.attribute_class + "_options");
         var div = document.createElement('tbody');
         div.innerHTML = this.responseText;
         field.appendChild(div.firstChild);
@@ -105,56 +38,21 @@ function addEapSpecificOption() {
 }
 
 function processCredentials() {
-    if( this.readyState === 4 && this.status === 200 ) {
+    if (this.readyState === 4 && this.status === 200) {
         var field = document.getElementById("disposable_credential_container");
         field.innerHTML = this.responseText;
     }
-}
-
-function addDefaultSupportOptions() {
-    getXML(addSupportOption,"inc/option_xhr.inc.php?class=support")
-}
-
-function addDefaultInstOptions() {
-    getXML(addInstOption,"inc/option_xhr.inc.php?class=general");
-}
-
-function addDefaultUserOptions() {
-    getXML(addUserOption,"inc/option_xhr.inc.php?class=user");
-}
-
-function addDefaultProfileOptions() {
-    getXML(addProfileOption,"inc/option_xhr.inc.php?class=profile");
-}
-
-function addDefaultEapServerOptions() {
-    getXML(addEapServerOption,"inc/option_xhr.inc.php?class=eap");
-}
-
-function addDefaultMediaOptions() {
-    getXML(addMediaOption,"inc/option_xhr.inc.php?class=media");
-}
-
-function addDefaultFedOptions() {
-    getXML(addFedOption,"inc/option_xhr.inc.php?class=fed");
-}
-
-function addDeviceOptions() {
-    getXML(addDeviceOption,"inc/option_xhr.inc.php?class=device-specific");
-}
-
-function addEapSpecificOptions() {
-    getXML(addEapSpecificOption,"inc/option_xhr.inc.php?class=eap-specific");
 }
 
 function doCredentialCheck(form) {
     postXML(processCredentials, form);
 }
 
-function deleteOption(e,identifier) {
+function deleteOption(identifier) {
     var field = document.getElementById(identifier);
-           if(e) {
-             marks[e - 1].setOptions({visible: false});
-        }
-        field.parentNode.removeChild(field);
+    field.parentNode.removeChild(field);
+}
+
+function MapGoogleDeleteCoord(e) {
+    marks[e - 1].setOptions({visible: false});
 }

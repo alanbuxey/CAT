@@ -7,17 +7,18 @@
 # blazdivjak <blaz.divjak@gmail.com>, 2012
 # Blaž Divjak <blaz.divjak@guest.arnes.si>, 2012
 # blazdivjak <blaz.divjak@gmail.com>, 2013
+# Kaja Kumer <kaja.kumer@arnes.si>, 2018
 # rokpapez <rok.papez@arnes.si>, 2015
 # rokpapez <rok.papez@arnes.si>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: eduroam CAT\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-14 13:36+0200\n"
-"PO-Revision-Date: 2015-04-12 02:05+0000\n"
-"Last-Translator: rokpapez <rok.papez@arnes.si>\n"
-"Language-Team: Slovenian (Slovenia) (http://www.transifex.com/projects/p/cat/"
-"language/sl_SI/)\n"
+"POT-Creation-Date: 2019-04-05 11:11+0200\n"
+"PO-Revision-Date: 2019-03-22 20:48+0000\n"
+"Last-Translator: eduroam_devel <stefan.winter@restena.lu>\n"
+"Language-Team: Slovenian (Slovenia) (http://www.transifex.com/eduroam_devel/"
+"cat/language/sl_SI/)\n"
 "Language: sl_SI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,296 +26,313 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
 "%100==4 ? 2 : 3);\n"
 
-#: core/CAT.php:81
+#: core/CAT.php:108
+msgid ""
+"Unreleased <a href='https://github.com/GEANT/CAT/tree/master/Changes.md'>Git "
+"Revision</a>"
+msgstr ""
+"Neizdan <a href='https://github.com/GEANT/CAT/tree/master/Changes.md'>Git "
+"Pregled</a>"
+
+#: core/CAT.php:118
 #, php-format
-msgid "Release %s"
-msgstr ""
+msgid "Release <a href='%s'>%s</a>"
+msgstr "Izdan/a <a href='%s'>%s</a>"
 
-#: core/CAT.php:84
-msgid "Unreleased SVN Revision"
-msgstr ""
+#: core/CAT.php:127
+msgid "Andorra"
+msgstr "Andora"
 
-#: core/DeviceConfig.php:129
+#: core/CAT.php:128
+msgid "Austria"
+msgstr "Avstrija"
+
+#: core/CAT.php:129
+msgid "Belgium"
+msgstr "Belgija"
+
+#: core/CAT.php:130
+msgid "Bulgaria"
+msgstr "Bolgarija"
+
+#: core/CAT.php:131
+msgid "Cyprus"
+msgstr "Ciper"
+
+#: core/CAT.php:132
+msgid "Czech Republic"
+msgstr "Češka"
+
+#: core/CAT.php:133
+msgid "Denmark"
+msgstr "Danska"
+
+#: core/CAT.php:134
+msgid "Estonia"
+msgstr "Estonija"
+
+#: core/CAT.php:135
+msgid "Finland"
+msgstr "Finska"
+
+#: core/CAT.php:136
+msgid "France"
+msgstr "Francija"
+
+#: core/CAT.php:137
+msgid "Germany"
+msgstr "Nemčija"
+
+#: core/CAT.php:138
+msgid "Greece"
+msgstr "Grčija"
+
+#: core/CAT.php:139
+msgid "Croatia"
+msgstr "Hrvaška"
+
+#: core/CAT.php:140
+msgid "Ireland"
+msgstr "Irska"
+
+#: core/CAT.php:141
+msgid "Iceland"
+msgstr "Islandija"
+
+#: core/CAT.php:142
+msgid "Italy"
+msgstr "Italija"
+
+#: core/CAT.php:143
+msgid "Hungary"
+msgstr "Madžarska"
+
+#: core/CAT.php:144
+msgid "Luxembourg"
+msgstr "Luksemburg"
+
+#: core/CAT.php:145
+msgid "Latvia"
+msgstr "Latvija"
+
+#: core/CAT.php:146
+msgid "Lithuania"
+msgstr "Litva"
+
+#: core/CAT.php:147
+msgid "Macedonia"
+msgstr "Makedonija"
+
+#: core/CAT.php:148
+msgid "Serbia"
+msgstr "Srbija"
+
+#: core/CAT.php:149
+msgid "Netherlands"
+msgstr "Nizozemska"
+
+#: core/CAT.php:150
+msgid "Norway"
+msgstr "Norveška"
+
+#: core/CAT.php:151
+msgid "Poland"
+msgstr "Poljska"
+
+#: core/CAT.php:152
+msgid "Portugal"
+msgstr "Portugalska"
+
+#: core/CAT.php:153
+msgid "Romania"
+msgstr "Romunija"
+
+#: core/CAT.php:154
+msgid "Slovenia"
+msgstr "Slovenija"
+
+#: core/CAT.php:155
+msgid "Spain"
+msgstr "Španija"
+
+#: core/CAT.php:156
+msgid "Sweden"
+msgstr "Švedska"
+
+#: core/CAT.php:157
+msgid "Slovakia"
+msgstr "Slovaška"
+
+#: core/CAT.php:158
+msgid "Switzerland"
+msgstr "Švica"
+
+#: core/CAT.php:159
+msgid "Turkey"
+msgstr "Turčija"
+
+#: core/CAT.php:160
+msgid "United Kingdom"
+msgstr "Združeno kraljestvo"
+
+#: core/CAT.php:162
+msgid "Australia"
+msgstr "Avstralija"
+
+#: core/CAT.php:163
+msgid "Canada"
+msgstr "Kanada"
+
+#: core/CAT.php:164
+msgid "Israel"
+msgstr "Izrael"
+
+#: core/CAT.php:165
+msgid "Japan"
+msgstr "Japonska"
+
+#: core/CAT.php:166
+msgid "New Zealand"
+msgstr "Nova Zelandija"
+
+#: core/CAT.php:167
+msgid "U.S.A."
+msgstr "ZDA"
+
+#: core/CAT.php:168
+msgid "Brazil"
+msgstr "Brazilija"
+
+#: core/CAT.php:169
+msgid "Chile"
+msgstr "Čile"
+
+#: core/CAT.php:170
+msgid "Peru"
+msgstr "Peru"
+
+#: core/CAT.php:171
+msgid "Venezuela"
+msgstr "Venezuela"
+
+#: core/CAT.php:172
+msgid "Default"
+msgstr "Privzeti"
+
+#: core/CAT.php:173
+msgid "Armenia"
+msgstr "Armenija"
+
+#: core/CAT.php:174
+msgid "Azerbaijan"
+msgstr "Azerbajdžan"
+
+#: core/CAT.php:175
+msgid "Belarus"
+msgstr "Belorusija"
+
+#: core/CAT.php:176
+msgid "Ecuador"
+msgstr "Ekvador"
+
+#: core/CAT.php:177
+msgid "Hong Kong"
+msgstr "Hong Kong"
+
+#: core/CAT.php:178
+msgid "Kenya"
+msgstr "Kenija"
+
+#: core/CAT.php:179
+msgid "Kyrgyzstan"
+msgstr "Kirgizistan"
+
+#: core/CAT.php:180
+msgid "Korea"
+msgstr "Koreja"
+
+#: core/CAT.php:181
+msgid "Kazakhstan"
+msgstr "Kazahstan"
+
+#: core/CAT.php:182
+msgid "Morocco"
+msgstr "Maroko"
+
+#: core/CAT.php:183
+msgid "Moldova"
+msgstr "Moldavija"
+
+#: core/CAT.php:184
+msgid "Montenegro"
+msgstr "Črna gora"
+
+#: core/CAT.php:185
+msgid "Macau"
+msgstr "Macao"
+
+#: core/CAT.php:186
+msgid "Malta"
+msgstr "Malta"
+
+#: core/CAT.php:187
+msgid "Russia"
+msgstr "Rusija"
+
+#: core/CAT.php:188
+msgid "Singapore"
+msgstr "Singapur"
+
+#: core/CAT.php:189
+msgid "Thailand"
+msgstr "Tajska"
+
+#: core/CAT.php:190
+msgid "Taiwan"
+msgstr "Tajvan"
+
+#: core/CAT.php:191
+msgid "South Africa"
+msgstr "Južna Afrika"
+
+#: core/CAT.php:466 core/IdPlist.php:111
+msgid "Unnamed Entity"
+msgstr "Neimenovana entiteta"
+
+#: core/DeviceConfig.php:186
 #, php-format
 msgid "your local %s support"
 msgstr "vaša lokalna podpora %s"
 
-#: core/DeviceConfig.php:130
+#: core/DeviceConfig.php:187
 #, php-format
 msgid "your local %s support page"
 msgstr "stran vaše lokalne podpore %s"
 
-#: core/DeviceConfig.php:162
+#: core/DeviceConfig.php:223
 msgid "Sorry, this should not happen - no additional information is available"
 msgstr ""
 "Oprostite, to se ne bi smelo zgoditi - dodatne informacije niso na voljo"
 
-#: core/Federation.php:128
-msgid "Andorra"
-msgstr "Andora"
-
-#: core/Federation.php:129
-msgid "Austria"
-msgstr "Avstrija"
-
-#: core/Federation.php:130
-msgid "Belgium"
-msgstr "Belgija"
-
-#: core/Federation.php:131
-msgid "Bulgaria"
-msgstr "Bolgarija"
-
-#: core/Federation.php:132
-msgid "Cyprus"
-msgstr "Ciper"
-
-#: core/Federation.php:133
-msgid "Czech Republic"
-msgstr "Češka"
-
-#: core/Federation.php:134
-msgid "Denmark"
-msgstr "Danska"
-
-#: core/Federation.php:135
-msgid "Estonia"
-msgstr "Estonija"
-
-#: core/Federation.php:136
-msgid "Finland"
-msgstr "Finska"
-
-#: core/Federation.php:137
-msgid "France"
-msgstr "Francija"
-
-#: core/Federation.php:138
-msgid "Germany"
-msgstr "Nemčija"
-
-#: core/Federation.php:139
-msgid "Greece"
-msgstr "Grčija"
-
-#: core/Federation.php:140
-msgid "Croatia"
-msgstr "Hrvaška"
-
-#: core/Federation.php:141
-msgid "Ireland"
-msgstr "Irska"
-
-#: core/Federation.php:142
-msgid "Iceland"
-msgstr "Islandija"
-
-#: core/Federation.php:143
-msgid "Italy"
-msgstr "Italija"
-
-#: core/Federation.php:144
-msgid "Hungary"
-msgstr "Madžarska"
-
-#: core/Federation.php:145
-msgid "Luxembourg"
-msgstr "Luksemburg"
-
-#: core/Federation.php:146
-msgid "Latvia"
-msgstr "Latvija"
-
-#: core/Federation.php:147
-msgid "Lithuania"
-msgstr "Litva"
-
-#: core/Federation.php:148
-msgid "Macedonia"
-msgstr "Makedonija"
-
-#: core/Federation.php:149
-msgid "Serbia"
-msgstr "Srbija"
-
-#: core/Federation.php:150
-msgid "Netherlands"
-msgstr "Nizozemska"
-
-#: core/Federation.php:151
-msgid "Norway"
-msgstr "Norveška"
-
-#: core/Federation.php:152
-msgid "Poland"
-msgstr "Poljska"
-
-#: core/Federation.php:153
-msgid "Portugal"
-msgstr "Portugalska"
-
-#: core/Federation.php:154
-msgid "Romania"
-msgstr "Romunija"
-
-#: core/Federation.php:155
-msgid "Slovenia"
-msgstr "Slovenija"
-
-#: core/Federation.php:156
-msgid "Spain"
-msgstr "Španija"
-
-#: core/Federation.php:157
-msgid "Sweden"
-msgstr "Švedska"
-
-#: core/Federation.php:158
-msgid "Slovakia"
-msgstr "Slovaška"
-
-#: core/Federation.php:159
-msgid "Switzerland"
-msgstr "Švica"
-
-#: core/Federation.php:160
-msgid "Turkey"
-msgstr "Turčija"
-
-#: core/Federation.php:161
-msgid "United Kingdom"
-msgstr "Združeno kraljestvo"
-
-#: core/Federation.php:163
-msgid "Australia"
-msgstr "Avstralija"
-
-#: core/Federation.php:164
-msgid "Canada"
-msgstr "Kanada"
-
-#: core/Federation.php:165
-msgid "Israel"
-msgstr "Izrael"
-
-#: core/Federation.php:166
-msgid "Japan"
-msgstr "Japonska"
-
-#: core/Federation.php:167
-msgid "New Zealand"
-msgstr "Nova Zelandija"
-
-#: core/Federation.php:168
-msgid "U.S.A."
-msgstr "ZDA"
-
-#: core/Federation.php:169
-msgid "Brazil"
-msgstr "Brazilija"
-
-#: core/Federation.php:170
-msgid "Chile"
-msgstr "Čile"
-
-#: core/Federation.php:171
-msgid "Peru"
-msgstr "Peru"
-
-#: core/Federation.php:172
-msgid "Venezuela"
-msgstr "Venezuela"
-
-#: core/Federation.php:173
-msgid "Default"
-msgstr "Privzeti"
-
-#: core/Federation.php:174
-msgid "Armenia"
-msgstr "Armenija"
-
-#: core/Federation.php:175
-msgid "Azerbaijan"
-msgstr "Azerbajdžan"
-
-#: core/Federation.php:176
-msgid "Belarus"
-msgstr "Belorusija"
-
-#: core/Federation.php:177
-msgid "Ecuador"
-msgstr "Ekvador"
-
-#: core/Federation.php:178
-msgid "Hong Kong"
-msgstr "Hong Kong"
-
-#: core/Federation.php:179
-msgid "Kenya"
-msgstr "Kenija"
-
-#: core/Federation.php:180
-msgid "Kyrgyzstan"
-msgstr "Kirgizistan"
-
-#: core/Federation.php:181
-msgid "Korea"
-msgstr "Koreja"
-
-#: core/Federation.php:182
-msgid "Kazakhstan"
-msgstr "Kazahstan"
-
-#: core/Federation.php:183
-msgid "Morocco"
-msgstr "Maroko"
-
-#: core/Federation.php:184
-msgid "Moldova"
-msgstr "Moldavija"
-
-#: core/Federation.php:185
-msgid "Montenegro"
-msgstr "Črna gora"
-
-#: core/Federation.php:186
-msgid "Macau"
-msgstr "Macao"
-
-#: core/Federation.php:187
-msgid "Malta"
-msgstr "Malta"
-
-#: core/Federation.php:188
-msgid "Russia"
-msgstr "Rusija"
-
-#: core/Federation.php:189
-msgid "Singapore"
-msgstr "Singapur"
-
-#: core/Federation.php:190
-msgid "Thailand"
-msgstr "Tajska"
-
-#: core/Federation.php:191
-msgid "Taiwan"
-msgstr "Tajvan"
-
-#: core/Federation.php:192
-msgid "South Africa"
-msgstr "Južna Afrika"
-
-#: core/Federation.php:432
-msgid "Could not create a new Institution!"
-msgstr "Napaka pri dodajanju nove organizacije!"
-
-#: core/IdP.php:355
+#. this device has stats, but doesn't exist in current config. We don't even know its display name, so display its raw representation
+#: core/Federation.php:90
+#, php-format
+msgid "(discontinued) %s"
+msgstr ""
+
+#. / arguments are: 1. nomenclature for "institution"
+#. 2. IdP name;
+#. /                3. consortium name (e.g. eduroam);
+#. /                4. federation shortname, e.g. "LU";
+#. /                5. product name (e.g. eduroam CAT);
+#. /                6. product long name (e.g. eduroam Configuration Assistant Tool)
+#: core/Federation.php:253
 #, php-format
 msgid ""
 "Hi,\n"
 "\n"
-"the Identity Provider %s in your %s federation %s has been deleted from %s.\n"
+"the invitation for the new %s %s in your %s federation %s has been used and "
+"the IdP was created in %s.\n"
 "\n"
 "We thought you might want to know.\n"
 "\n"
@@ -322,32 +340,18 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
-"Živjo,\n"
-"\n"
-"ponudnik identitete %s v vaši %s federaciji %s je bil odstranjen iz/z %s.\n"
-"\n"
-"Zdelo se nam je, da bi vas to znalo zanimati.\n"
-"\n"
-"Z lepimi pozdravi,\n"
-"\n"
-"%s"
 
-#: core/IdP.php:364
-msgid "IdP in your federation was deleted"
-msgstr "IdP v vaši federaciji je bil odstranjen"
+#: core/Federation.php:262
+#, php-format
+msgid "%s in your federation was created"
+msgstr ""
 
-#. / arguments are: 1. IdP name;
-#. /                2. consortium name (e.g. eduroam);
-#. /                3. federation shortname, e.g. "LU";
-#. /                4. product name (e.g. eduroam CAT);
-#. /                5. product long name (e.g. eduroam Configuration Assistant Tool)
-#: core/UserManagement.php:150
+#: core/IdP.php:351
 #, php-format
 msgid ""
 "Hi,\n"
 "\n"
-"the invitation for the new Identity Provider %s in your %s federation %s has "
-"been used and the IdP was created in %s.\n"
+"the %s %s in your %s federation %s has been deleted from %s.\n"
 "\n"
 "We thought you might want to know.\n"
 "\n"
@@ -355,294 +359,278 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
-"Živjo,\n"
-"\n"
-"povabilo za novega ponudnika identitete %s v vaši %s federaciji %s je bilo "
-"uporabljeno in IdP je bil ustvarjen v %s.\n"
-"\n"
-"Z lepimi pozdravi,\n"
-"\n"
-"%s"
 
-#: core/UserManagement.php:159
-msgid "IdP in your federation was created"
-msgstr "IdP v vaši federaciji je bil ustvarjen"
+#: core/IdP.php:360
+#, php-format
+msgid "%s in your federation was deleted"
+msgstr ""
 
-#: core/User.php:256
+#: core/SilverbulletInvitation.php:230
+#, php-format
+msgid "Your %s access is ready"
+msgstr "Vaš %s dostop je pripravljen"
+
+#: core/SilverbulletInvitation.php:242
+msgid "Hello!"
+msgstr "Pozdravljeni!"
+
+#: core/SilverbulletInvitation.php:244
+#, php-format
+msgid ""
+"A new %s access credential has been created for you by your network "
+"administrator."
+msgstr ""
+"Nova %s poverilnica za dostop je bila ustvarjena s strani skrbnika vašega "
+"omrežja."
+
+#: core/SilverbulletInvitation.php:246
+#, php-format
+msgid ""
+"Please follow the following link with the device you want to enable for %s "
+"to get a custom %s installation program just for you. You can click on the "
+"link, copy and paste it into a browser or scan the attached QR code."
+msgstr ""
+"Prosimo, sledite naslednji povezavi na napravi, na kateri želite omogočiti "
+"%s, da pridobite ustrezen %s program za namestitev, ki je prilagojen za vas. "
+"Odprite povezavo s kopiranjem v brskalnik ali skenirajte pripeto QR kodo."
+
+#. gets replaced with the token value by getBody()
+#: core/SilverbulletInvitation.php:248
+#, php-format
+msgid ""
+"Please keep this email or bookmark this link for future use. After picking "
+"up your %s installation program, you can use the same link to get status "
+"information about your %s account."
+msgstr ""
+"Prosimo, shranite to sporočilo ali povezavo za prihodnjo uporabo. Po izbiri "
+"\"%s\" programa za namestitev, lahko to povezavo uporabite za pridobivanje "
+"podatkov o statusu vašega %s računa."
+
+#: core/SilverbulletInvitation.php:250
+msgid "Regards,"
+msgstr "Pozdrav,"
+
+#: core/SilverbulletInvitation.php:299
+#, php-format
+msgid ""
+"Your %s access is ready! Click here: %s (on Android, first install the app "
+"'%s'!)"
+msgstr ""
+"Vaš %s dostop je pripravljen! Kliknite tukaj: %s (na operacijskem sistemu "
+"Android je potrebno predhodno naložiti aplikacijo '%s'!)"
+
+#: core/SilverbulletInvitation.php:321
+#, php-format
+msgid "%s Invitation System"
+msgstr "%s Sistem povabil"
+
+#: core/User.php:158
 msgid "Feedback"
 msgstr "Povratna informacija"
 
-#~ msgid "eduPKI"
-#~ msgstr "eduPKI"
+#: core/common/EAP.php:380
+msgid "PEAP-MSCHAPv2"
+msgstr "PEAP-MSCHAPv2"
 
-#~ msgid "Nicolaus Copernicus University"
-#~ msgstr "Univerza Nicolaus Copernicus"
+#: core/common/EAP.php:381
+msgid "TLS"
+msgstr "TLS"
 
-#~ msgid "accredited"
-#~ msgstr "akreditiran"
+#: core/common/EAP.php:382
+msgid "TTLS-PAP"
+msgstr "TTLS-PAP"
 
-#~ msgid "non-accredited"
-#~ msgstr "neakreditiran"
+#: core/common/EAP.php:383
+msgid "TTLS-MSCHAPv2"
+msgstr "TTLS-MSCHAPv2"
 
-#~ msgid "correct certificate"
-#~ msgstr "pravilni certifikat"
+#: core/common/EAP.php:384
+msgid "TTLS-GTC"
+msgstr "TTLS-GTC"
 
-#~ msgid "certificate with wrong policy OID"
-#~ msgstr "certifikata vsebuje napačno OID politiko"
+#: core/common/EAP.php:385
+msgid "FAST-GTC"
+msgstr "FAST-GTC"
 
-#~ msgid "expired certificate"
-#~ msgstr "pretečeni certifikat"
+#: core/common/EAP.php:386
+msgid "EAP-pwd"
+msgstr "EAP-pwd"
 
-#~ msgid "revoked certificate"
-#~ msgstr "preklican certifikat"
+#. some config elements are displayable. We need some dummies to
+#. translate the common values for them. If a deployment chooses a
+#. different wording, no translation, sorry
+#: core/common/Entity.php:116
+msgid "National Roaming Operator"
+msgstr "Nacionalni ponudnik gostovanja"
 
-#~ msgid "pass"
-#~ msgstr "potrjeno"
+#: core/common/Entity.php:117
+msgid "identity provider"
+msgstr "ponudnik identitete"
 
-#~ msgid "fail"
-#~ msgstr "ni potrjeno"
+#: core/common/Entity.php:118 core/common/Entity.php:124
+msgid "organisation"
+msgstr "organizacija"
 
-#~ msgid "eduroam-accredited CA (now only for tests)"
-#~ msgstr "akreditiran CA za eduroam (trenutno samo za test)"
+#: core/common/Entity.php:119
+msgid "Identity Provider"
+msgstr "ponudnik identitete"
 
-#~ msgid "Completed"
-#~ msgstr "Dokončano"
+#: core/common/Entity.php:120
+msgid "Wi-Fi Hotspot"
+msgstr ""
 
-#~ msgid "This check was skipped."
-#~ msgstr "Test ni bil izveden."
+#: core/common/Entity.php:121
+msgid "Hotspot"
+msgstr ""
 
-#~ msgid "There were errors during the test."
-#~ msgstr "Med testom je prišlo do napak."
+#: core/common/Entity.php:122
+#, fuzzy
+msgid "Service Provider"
+msgstr "ponudnik identitete"
 
-#~ msgid "This realm has no NAPTR records."
-#~ msgstr "Domena nima zapisa NAPTR."
+#: core/common/Entity.php:123
+msgid "participant"
+msgstr ""
 
-#~ msgid ""
-#~ "NAPTR records were found, but all of them refer to unrelated services."
-#~ msgstr "Zapisi NAPTR so bili najdeni a se nanašajo na druge storitve."
+#: core/common/Entity.php:125
+#, fuzzy
+msgid "organization"
+msgstr "organizacija"
 
-#~ msgid "There was no reply at all from the RADIUS server."
-#~ msgstr "Strežnik RADIUS ni niti odgovoril."
+#: core/common/Entity.php:126
+#, fuzzy
+msgid "entity"
+msgstr "Neimenovana entiteta"
 
-#~ msgid ""
-#~ "There was a bidirectional communication with the RADIUS server, but it "
-#~ "ended halfway through."
-#~ msgstr ""
-#~ "Kmunikacija med strežnikoma RADIUS je bila vzpostavljena v obeh smereh, a "
-#~ "se je prekinila na sredini."
+#: core/common/OutsideComm.php:267
+#, php-format
+msgid "%s and %s"
+msgstr ""
 
-#~ msgid ""
-#~ "The RADIUS server immediately rejected the authentication request in its "
-#~ "first reply."
-#~ msgstr ""
-#~ "Strežnik RADIUS je takoj zavrnil avtentikacijski zahtevek s svojim prvim "
-#~ "odgovorom."
+#: core/common/OutsideComm.php:277
+#, php-format
+msgid ""
+"a %s of the %s %s \"%s\" has invited you to manage the %s together with him."
+msgstr "%s %s%s \"%s\" vas je povabil k upravljanju %s skupaj z njim."
 
-#~ msgid ""
-#~ "The RADIUS server rejected the authentication request after an EAP "
-#~ "conversation."
-#~ msgstr ""
-#~ "Strežnik RADIUS je zavrnil avtentikacijski zahtevek po izmenjavi EAP."
+#: core/common/OutsideComm.php:278
+#, fuzzy, php-format
+msgid ""
+"a %s %s has invited you to manage the future %s  \"%s\" (%s). The "
+"organisation will be a %s."
+msgstr "%s%s vas je povabil k upravljanju prihodnje/ga %s \"%s\" (%s)."
 
-#~ msgid "Connection refused"
-#~ msgstr "Povezava zavrnjena"
+#: core/common/OutsideComm.php:279
+#, fuzzy, php-format
+msgid "a %s %s has invited you to manage the %s  \"%s\". This is a %s."
+msgstr "%s%s vas je povabil k upravljanju %s \"%s\"."
 
-#~ msgid "Not enough data provided to perform an authentication"
-#~ msgstr "Premalo podatkov za avtentikacijo"
+#: core/common/OutsideComm.php:281
+#, php-format
+msgid "This invitation is valid for 24 hours from now, i.e. until %s."
+msgstr "Povabilo je veljavno 24 ur. Velja od zdaj do %s."
 
-#~ msgid ""
-#~ "The certificate password you provided does not match the certificate file."
-#~ msgstr "Vnešeno geslo certifikata se ne ujema s certifikatom v datoteki."
+#. then, send out the mail
+#: core/common/OutsideComm.php:289
+msgid "Hello,"
+msgstr "Pozdravljeni,"
 
-#~ msgid ""
-#~ "The certificate chain includes the root CA certificate. This does not "
-#~ "serve any useful purpose but inflates the packet exchange, possibly "
-#~ "leading to more round-trips and thus slower authentication."
-#~ msgstr ""
-#~ "Certifikatna veriga vključuje korenski certitikat CA. To ničesar ne "
-#~ "doprinese, napihne pa izmenjavo paketov, zahteva več izmenjav paketov in "
-#~ "s tem počasnejše prijavljanje."
+#. default means we don't have a Reply-To.
+#: core/common/OutsideComm.php:291
+msgid ""
+"manually. Please do not reply to this mail; this is a send-only address."
+msgstr ""
+"ročno. Ne odgovarjajte na to sporočilo; naslov pošiljatelja je namenjen "
+"zgolj za obveščanje."
 
-#~ msgid "There is more than one server certificate in the chain."
-#~ msgstr "V verigi je več kot en strežniški certifikat."
+#: core/common/OutsideComm.php:297
+#, php-format
+msgid "Additional message from your %s administrator:"
+msgstr "Dodatno sporočilo vašega %s skrbnika:"
 
-#~ msgid "There is no server certificate in the chain."
-#~ msgstr "V verigi ni strežniškega certifikata."
+#: core/common/OutsideComm.php:305
+#, php-format
+msgid "%s administrator"
+msgstr "%s skrbnik"
 
-#~ msgid ""
-#~ "At least one certificate in the chain is signed with the MD5 signature "
-#~ "algorithm. Many Operating Systems, including Apple iOS, will fail to "
-#~ "validate this certificate."
-#~ msgstr ""
-#~ "Vsaj en certifikat v vreigi je podpisan z algoritmom MD5. Veliko "
-#~ "operacijskih sistemov, vključno z Applovim iOS ne bodo sprejeli ta "
-#~ "certifikat."
+#: core/common/OutsideComm.php:308
+#, php-format
+msgid ""
+"manually. If you reply to this mail, you will reach your %s administrators."
+msgstr ""
+"ročno. Z odgovorom na to sporočilo boste kontaktirali svoje %s skrbnike."
 
-#~ msgid ""
-#~ "At least one certificate in the chain had a public key of less than 1024 "
-#~ "bits. Many recent operating systems consider this unacceptable and will "
-#~ "fail to validate the server certificate."
-#~ msgstr ""
-#~ "Vsaj en certifikat v verigi ima javni ključ manjši od 1024 bitov. Za "
-#~ "veliko sodobnih operacijskih sistemov je to nesprejemljivo in ne bodo "
-#~ "sprejeli certifikata."
+#: core/common/OutsideComm.php:313
+#, php-format
+msgid ""
+"To enlist as an administrator for that %s, please click on the following "
+"link:"
+msgstr "Za vlogo skrbnika tega %s, kliknite na sledečo povezavo:"
 
-#~ msgid ""
-#~ "The server certificate does not have the extension 'extendedKeyUsage: TLS "
-#~ "Web Server Authentication'. Most Microsoft Operating Systems will fail to "
-#~ "validate this certificate."
-#~ msgstr ""
-#~ "Strežniški certifikat nima razširitve 'extendedKeyUsage: TLS Web Server "
-#~ "Authentication'. Večina Microsoftovih operacijskih sistemov ne bo "
-#~ "sprejela ta certifikat."
+#: core/common/OutsideComm.php:315
+#, php-format
+msgid ""
+"If clicking the link doesn't work, you can also go to the %s Administrator "
+"Interface at"
+msgstr "Če povezava ne deluje, lahko obiščete skrbniški vmesnik %s na"
 
-#~ msgid ""
-#~ "The server certificate did not include a CRL Distribution Point, creating "
-#~ "compatibility problems with Windows Phone 8."
-#~ msgstr ""
-#~ "Certifikat strežnika ne vključuje lokacije CRL in ni zdužljiv s "
-#~ "telefonskim operacijskih sistemom Windows Phone 8."
+#: core/common/OutsideComm.php:317
+msgid "and enter the invitation token"
+msgstr "in prepišite žeton iz povabila"
 
-#~ msgid ""
-#~ "The server certificate's 'CRL Distribution Point' extension does not "
-#~ "point to an HTTP/HTTPS URL. Some Operating Systems may fail to validate "
-#~ "this certificate. Checking server certificate validity against a CRL will "
-#~ "not be possible."
-#~ msgstr ""
-#~ "Razširitev 'CRL Distribution Point' certifikata strežnika ne kaže na URL "
-#~ "HTTP/HTTPS. Nekateri operacijski sistemi ne bodo sprejeli certifikata. "
-#~ "Preverjanje veljavnosti certifikata v skladu s CRL ni možno."
+#: core/common/OutsideComm.php:319
+msgid ""
+"Do NOT forward the mail before the token has expired - or the recipients may "
+"be able to consume the token on your behalf!"
+msgstr ""
+"Tega sporočila NE posredujte, dokler žeton ne poteče- v nasprotnem primeru "
+"prejemniki žeton lahko koristijo v vašem imenu!"
 
-#~ msgid ""
-#~ "The extension 'CRL Distribution Point' in the server certificate points "
-#~ "to a non-existing location. Some Operating Systems check certificate "
-#~ "validity by consulting the CRL and will fail to validate the certificate. "
-#~ "Checking server certificate validity against a CRL will not be possible."
-#~ msgstr ""
-#~ "Razširitev 'CRL Distribution Point' v certifikatu strežnika kaže na "
-#~ "neobstoječo lokacijo. Nekateri operacijski sistemi preverjajo veljavnost "
-#~ "certifikata z uporabo CRL in ga ne bodo mogli preveriti. Preverjanje "
-#~ "veljavnosti certifikata napram CRL ni možno."
+#: core/common/OutsideComm.php:320
+#, php-format
+msgid "We wish you a lot of fun with the %s."
+msgstr "Želimo vam obilo zabavnih trenutkov z %s."
 
-#~ msgid "The server certificate was revoked by the CA!"
-#~ msgstr "CA je preklical certifikat strežnika!"
+#: core/common/OutsideComm.php:321
+#, php-format
+msgid ""
+"Sincerely,\n"
+"\n"
+"Your friendly folks from %s Operations"
+msgstr ""
+"Z lepimi pozdravi,\n"
+"\n"
+"Ekipa operativnega centra %s"
 
-#~ msgid ""
-#~ "The certificate contained a CN or subjectAltName:DNS which does not parse "
-#~ "as a hostname. This can be problematic on some supplicants. If the "
-#~ "certificate also contains names which are a proper hostname, and you only "
-#~ "use those for your supplicant configuration, then you can safely ignore "
-#~ "this notice."
-#~ msgstr ""
-#~ "Certifikat vsebuje CN ali ubjectAltName:DNS, ki se ne preveri kot ime "
-#~ "strežnika. To lahko povzroči težave na nekterih odjemalcih. Če certifikat "
-#~ "vsebuje tudi pravilna imena strežnikov in samo ta uporabljate za "
-#~ "nastavitve odjemalca, lahko to opozorilo varno zanemarite."
+#: core/common/OutsideComm.php:357
+#, php-format
+msgid "%s: you have been invited to manage an %s"
+msgstr "%spovabljeni ste bili k upravljanju%s"
 
-#~ msgid ""
-#~ "The certificate contained a CN or subjectAltName:DNS which contains a "
-#~ "wildcard ('*'). This can be problematic on some supplicants. If the "
-#~ "certificate also contains names which are wildcardless, and you only use "
-#~ "those for your supplicant configuration, then you can safely ignore this "
-#~ "notice."
-#~ msgstr ""
-#~ "Certifikat vsebuje CN ali subjectAltName:DNS, ki vsebuje ('*'). S tem "
-#~ "imajo lahko nekateri odjemalci težave. Če certifikat vsebuje tudi imena "
-#~ "brez ('*') in uporabljate te v nastavitvah odjemalca, lahko to opozorilo "
-#~ "varno zanemarite."
+#: web/lib/common/InputValidation.php:40
+msgid "Input validation error: "
+msgstr "Napaka pri preverjanju vnosa:"
 
-#~ msgid ""
-#~ "At least one certificate is outside its validity period (not yet valid, "
-#~ "or already expired)!"
-#~ msgstr ""
-#~ "Vsaj en certifikat je zunaj veljavnega obdobja (ni še veljaven ali že "
-#~ "pretečen)!"
+#: web/lib/common/InputValidation.php:252
+msgid "Realm is empty!"
+msgstr "Kraljestvo je prazno!"
 
-#~ msgid ""
-#~ "At least one intermediate certificate in your CAT profile is outside its "
-#~ "validity period (not yet valid, or already expired), but this certificate "
-#~ "was not used for server validation. Consider removing it from your %s "
-#~ "configuration."
-#~ msgstr ""
-#~ "Vsaj en vmesni certifikat v vašem profilu CAT je zunaj veljavnega obdobja "
-#~ "(ni še veljaven ali že pretečen), vendar ta certifikat ni bil uporabljen "
-#~ "za preverjanje strežnika. Razmisilte ali bi ga odstranili iz vaše "
-#~ "nastavitve %s."
+#: web/lib/common/InputValidation.php:261
+msgid "Realm contains an @ sign!"
+msgstr "Domena vsebuje znak @!"
 
-#~ msgid ""
-#~ "The server certificate could not be verified to the root CA you "
-#~ "configured in your profile!"
-#~ msgstr ""
-#~ "Certifikat strežnika ne ustreza korenskemu certifikatu CA, ki je "
-#~ "nastavljan v vašem profilu!"
+#: web/lib/common/InputValidation.php:262
+msgid "Realm begins with a . (dot)!"
+msgstr "Domena se začne z znakom . (pika)!"
 
-#~ msgid ""
-#~ "The certificate chain as received in EAP was not sufficient to verify the "
-#~ "certificate to the root CA in your profile. It was verified using the "
-#~ "intermediate CAs in your profile though. You should consider sending the "
-#~ "required intermediate CAs inside the EAP conversation."
-#~ msgstr ""
-#~ "Certifikatna veriga prejeta iz EAP ni bila zadostna za preverjanje s "
-#~ "korenskim CA v vašem profilu. Veriga je bila preverjena z vmesnim CAjem "
-#~ "iz vašega profila. Premislite ali ne bi vmesnih CA poslali znotraj "
-#~ "izmenjave EAP."
+#: web/lib/common/InputValidation.php:263
+msgid "Realm ends with a . (dot)!"
+msgstr "Domena se konča z znakom . (pika)!"
 
-#~ msgid ""
-#~ "The EAP server name does not match any of the configured names in your "
-#~ "profile!"
-#~ msgstr ""
-#~ "Ime strežnika EAP se ne ujema z nobenim od nastavljenih imen v vašem "
-#~ "profilu!"
+#: web/lib/common/InputValidation.php:264
+msgid "Realm contains spaces!"
+msgstr "Domena vsebuje presledke!"
 
-#~ msgid ""
-#~ "The configured EAP server name matches either the CN or a subjectAltName:"
-#~ "DNS of the incoming certificate; best current practice is that the "
-#~ "certificate should contain the name in BOTH places."
-#~ msgstr ""
-#~ "Nastavljeno ime strežnika EAP se ujema ali z CN ali s subjectAltName:DNS "
-#~ "prejetega certifikata; trenutno se svetuje, da se nastavi ime na OBEH "
-#~ "koncih."
-
-#~ msgid ""
-#~ "At least one certificate did not contain any BasicConstraints extension; "
-#~ "which makes it unclear if it's a CA certificate or end-entity "
-#~ "certificate. At least Mac OS X 10.8 (Mountain Lion) will not validate "
-#~ "this certificate for EAP purposes!"
-#~ msgstr ""
-#~ "Vsaj eden izmed certifikatov ni vseboval kakršnihkoli razširitev "
-#~ "BasicConstraints; nejasno je ali gre za CA ali končni certifikat. Vsaj "
-#~ "Mac OS X 10.8 (Mountain Lion) ne bo sprejel tega certifikata za EAP!"
-
-#~ msgid "The server presented a certificate from an unknown authority."
-#~ msgstr "Strežnik se je predstavil s certifikatom neznane avtoritete."
-
-#~ msgid "The server accepted the INVALID client certificate."
-#~ msgstr "Strežnik je sprejel NEVELJAVEN certifikat uporabnika."
-
-#~ msgid ""
-#~ "The server rejected the client certificate, even though it was valid."
-#~ msgstr "Strežnik je zavrnil certifikat odjamelca, čeprav je veljaven."
-
-#~ msgid "The server rejected the client certificate as expected."
-#~ msgstr "Strežnik je, po pričakovanju, zavrnil certifikat odjemalca."
-
-#~ msgid "The CRL of a certificate could not be found."
-#~ msgstr "CRL certifikata ni bil najden."
-
-#~ msgid "EAP method negotiation failed!"
-#~ msgstr "Pogajanje o metodi EAP ni uspelo!"
-
-#~ msgid "certificate expired"
-#~ msgstr "certifikat je potekel"
-
-#~ msgid "certificate was revoked"
-#~ msgstr "certifikat je bil preklican"
-
-#~ msgid "bad policy"
-#~ msgstr "slaba politika"
-
-#~ msgid "unknown authority"
-#~ msgstr "nepoznana avtoriteta"
-
-#~ msgid "unknown authority or no certificate policy or another problem"
-#~ msgstr "nepoznana avtoriteta ali ni politike certifikata ali druga težava"
+#: web/lib/common/InputValidation.php:277
+msgid "Realm does not contain at least one . (dot)!"
+msgstr "Domena ne vsebuje vsaj ene . (pike)!"

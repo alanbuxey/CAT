@@ -1,0 +1,1074 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+# Anne M <anne@eenet.ee>, 2018
+# Anne M <anne@eenet.ee>, 2018-2019
+# Indrek Rokk <indrek.rokk@eenet.ee>, 2018
+# eduroam_devel <stefan.winter@restena.lu>, 2019
+msgid ""
+msgstr ""
+"Project-Id-Version: eduroam CAT\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-04-05 11:11+0200\n"
+"PO-Revision-Date: 2019-04-04 14:20+0000\n"
+"Last-Translator: Anne M <anne@eenet.ee>\n"
+"Language-Team: Estonian (Estonia) (http://www.transifex.com/eduroam_devel/"
+"cat/language/et_EE/)\n"
+"Language: et_EE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: devices/Devices-template.php:130
+msgid "MS Windows 10"
+msgstr "MS Windows 10"
+
+#: devices/Devices-template.php:144
+msgid "MS Windows 8, 8.1"
+msgstr "MS Windows 8, 8.1"
+
+#: devices/Devices-template.php:157
+msgid "MS Windows 7"
+msgstr "MS Windows 7"
+
+#: devices/Devices-template.php:170
+msgid "MS Windows Vista"
+msgstr "MS Windows Vista"
+
+#: devices/Devices-template.php:183
+msgid "Windows RT"
+msgstr "Windows RT"
+
+#: devices/Devices-template.php:193
+msgid "Apple macOS High Sierra"
+msgstr "Apple macOS High Sierra"
+
+#: devices/Devices-template.php:203 devices/Devices-template.php:217
+#: devices/Devices-template.php:231 devices/Devices-template.php:245
+#: devices/Devices-template.php:259 devices/Devices-template.php:273
+#: devices/Devices-template.php:287
+msgid ""
+"During the installation you will be first asked to enter settings for "
+"certificate and there you need to enter the import PIN shown on this page. "
+"Later you will be prompted to enter your password to allow making changes to "
+"the profile, this time it is your computer password."
+msgstr ""
+"Paigaldamise ajal palutakse Sul esmalt sisestada sertifikaadiseaded ja seal "
+"pead sisestama sel lehel näidatud impordi-PIN'i. Hiljem palutakse Sul "
+"sisestada profiili muutmise võimaldamiseks parool - siis on tegemist Su "
+"arvuti parooliga."
+
+#: devices/Devices-template.php:208
+msgid "Apple macOS Sierra"
+msgstr "Apple macOS Sierra"
+
+#: devices/Devices-template.php:222
+msgid "Apple OS X El Capitan"
+msgstr "Apple OS X El Capitan"
+
+#: devices/Devices-template.php:236
+msgid "Apple OS X Yosemite"
+msgstr "Apple OS X Yosemite"
+
+#: devices/Devices-template.php:250
+msgid "Apple OS X Mavericks"
+msgstr "Apple OS X Mavericks"
+
+#: devices/Devices-template.php:264
+msgid "Apple OS X Mountain Lion"
+msgstr "Apple OS X Mountain Lion"
+
+#: devices/Devices-template.php:278
+msgid "Apple OS X Lion"
+msgstr "Apple OS X Lion"
+
+#: devices/Devices-template.php:292
+msgid "Apple iOS mobile devices"
+msgstr "Apple iOS mobiilseadmed"
+
+#: devices/Devices-template.php:301 devices/Devices-template.php:315
+msgid ""
+"During the installation you will be first asked to enter your passcode - "
+"this is your device security code! Later on you will be prompted for the "
+"password to the certificate and there you need to enter the import PIN shown "
+"on this page."
+msgstr ""
+"Paigaldamise ajal palutakse Sul esmalt sisestada parool - selleks on Su "
+"seadme turvakood! Hiljem küsitakse sertifikaadiparooli ja seal pead "
+"sisestama sel lehel näidatud impordi-PIN'i."
+
+#: devices/Devices-template.php:306
+msgid "Apple iOS mobile devices (iOS 7-11)"
+msgstr "Aplle iOS mobiilseadmed (iOS 7-11)"
+
+#: devices/Devices-template.php:320
+msgid "Apple iOS mobile devices (iOS 5 and 6)"
+msgstr "Apple iOS mobiilseadmed (iOS 5 ja 6)"
+
+#: devices/Devices-template.php:333
+msgid "Linux"
+msgstr "Linux"
+
+#: devices/Devices-template.php:343
+msgid "Chrome OS"
+msgstr "Chrome OS"
+
+#: devices/Devices-template.php:349
+#, php-format
+msgid ""
+"After downloading the file, open the Chrome browser and browse to this URL: "
+"<a href='chrome://net-internals/#chromeos'>chrome://net-internals/#chromeos</"
+"a>. Then, use the 'Import ONC file' button. The import is silent; the new "
+"network definitions will be added to the preferred networks."
+msgstr ""
+"Peale faili allalaadimist ava Chrome veebilehitseja ja mine järgmisele "
+"URLile: <a href='chrome://net-internals/#chromeos'>chrome://net-internals/"
+"#chromeos</a>. Klõpsa 'Import ONC file' nuppu. Import tehakse taustal ja uue "
+"võrgu definitsioon lisatakse eelistatud võrkudele."
+
+#: devices/Devices-template.php:354
+msgid "Android 9.0 Pie"
+msgstr "Android 9.0 Pie"
+
+#: devices/Devices-template.php:360 devices/Devices-template.php:375
+#: devices/Devices-template.php:390 devices/Devices-template.php:405
+#: devices/Devices-template.php:420 devices/Devices-template.php:435
+#: devices/Devices-template.php:450
+#, php-format
+msgid ""
+"Before you proceed with installation on Android systems, please make sure "
+"that you have installed the %s application. This application is available "
+"from %s, %s and %s, and will use the configuration file downloaded from CAT "
+"to create all necessary settings."
+msgstr ""
+"Enne Androidi süsteemis paigalduse alustamist veendu, et oleks paigaldatud "
+"rakendus %s. Rakenduse leiad järgmistest kohtadest: %s, %s, %s. See rakendus "
+"kasutab CAT lehelt alla laaditud faili vajalike seadistuste tegemiseks."
+
+#: devices/Devices-template.php:364 devices/Devices-template.php:379
+#: devices/Devices-template.php:394 devices/Devices-template.php:409
+#: devices/Devices-template.php:424 devices/Devices-template.php:439
+#: devices/Devices-template.php:454
+msgid "as local download"
+msgstr "kui kohalik allalaadimine"
+
+#: devices/Devices-template.php:369
+msgid "Android 8.0 Oreo"
+msgstr "Android 8.0 Oreo"
+
+#: devices/Devices-template.php:384
+msgid "Android 7.0 Nougat"
+msgstr "Android 7.0 Nougat"
+
+#: devices/Devices-template.php:399
+msgid "Android 6.0 Marshmallow"
+msgstr "Android 6.0 Marshmallow"
+
+#: devices/Devices-template.php:414
+msgid "Android 5.0 Lollipop"
+msgstr "Android 5.0 Lollipop"
+
+#: devices/Devices-template.php:429
+msgid "Android 4.4 KitKat"
+msgstr "Android 4.4 KitKat"
+
+#: devices/Devices-template.php:444
+msgid "Android 4.3"
+msgstr "Android 4.3"
+
+#: devices/Devices-template.php:459
+msgid "Android"
+msgstr "Android"
+
+#: devices/Devices-template.php:469
+msgid "EAP config"
+msgstr "EAP seadistus"
+
+#: devices/Devices-template.php:474
+#, php-format
+msgid ""
+"This option provides a generic EAP config XML file, which can be consumed by "
+"dedicated applications like eduroamCAT for Android and Linux platforms. This "
+"is still an experimental feature."
+msgstr ""
+"See suvand annab üldise EAP XML seadistusfaili, mida on võimalik kasutada "
+"Android ja Linux platvormide erirakendustes, näiteks eduroamCAT. See "
+"võimalus on veel katsetamisfaasis."
+
+#: devices/Devices-template.php:479
+msgid "Test"
+msgstr "Test"
+
+#: devices/apple_mobileconfig/DeviceMobileconfigIos5plus.php:52
+msgid "This device does not support forcing setting an HTTPS proxy."
+msgstr "Antud seade ei toeta HTTPS proxy sundseadistamist."
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:64
+msgid ""
+"It is not possible to actively verify the user input for suffix match; but "
+"if there is no 'Terms of Use' configured, the installer will display a "
+"corresponding hint to the user instead."
+msgstr ""
+"Ei ole võimalik aktiivselt tuvastada kasutaja sisestust järelliite "
+"võrdlemiseks. Kui kasutustingimusi ei ole seadistatud, näitab "
+"paigaldusprogramm selle asemel kasutajale vastavat vihjet."
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:84
+#, php-format
+msgid "Network configuration profile '%s' of '%s' - provided by %s"
+msgstr "Võrguseadistuse profiil '%s' '%s' - tehtud %s poolt"
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:89
+#, php-format
+msgid "%s configuration for IdP '%s' - provided by %s"
+msgstr "%s identiteedipakkuja '%s' seadistus - tehtud %s poolt"
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:139
+#, php-format
+msgid "Important Notice: your username must end with @%s!"
+msgstr "NB! Sinu kasutajanime lõpus peab olema @%s!"
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:143
+msgid ""
+"Important Notice: your username MUST be in the form of xxx@yyy where the yyy "
+"is a common suffix identifying your Identity Provider. Please find out what "
+"to use there and enter the username in the correct format."
+msgstr ""
+"Viga: kasutajanimi peab olema kujul xxx@yyy, kus yyy määrab ära Sinu "
+"identiteedipakkuja/asutuse. Palun selgita välja ja sisesta kasutajanimi "
+"korrektsel kujul."
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:170
+msgid "Unnamed Organisation"
+msgstr "Tundmatu asutus"
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:171
+msgid "Unnamed Profile"
+msgstr "Tundmatu profiil"
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:238
+msgid ""
+"For best results, please use the built-in browser (Safari) to open the "
+"configuration file."
+msgstr "Palun kasuta seadistusfaili avamiseks vaikelehitsejat (Safari)."
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:240
+msgid ""
+"The profile will install itself after you click (or tap) the button. You "
+"will be asked for confirmation/input at several points:"
+msgstr ""
+"Profiil paigaldatakse peale seda, kui klõpsad nuppu. Sinult küsitakse "
+"protsessi käigus sisestamisi või kinnitamisi:"
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:242
+msgid "to install the profile"
+msgstr "profiili paigaldamine"
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:243
+msgid "to accept the server certificate authority"
+msgid_plural "to accept the server certificate authorities"
+msgstr[0] "sertifitseerimiskeskuse tunnustamine"
+msgstr[1] "sertifitseerimiskeskuste tunnustamine"
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:245
+#, php-format
+msgid "(%d times)"
+msgstr "(%d korda)"
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:248
+msgid ""
+"to enter the username and password you have been given by your organisation"
+msgstr "asutuse poolt antud kasutajanime ja parooli sisestamine"
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:250
+#, php-format
+msgid "(%d times each, because %s is installed for %d SSIDs)"
+msgstr "(%d korda korrata, sest %s paigaldatakse %d SSID jaoks)"
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:430
+#, php-format
+msgid "SSID %s"
+msgstr "SSID %s"
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:431
+#, php-format
+msgid "%s configuration for network name %s"
+msgstr "%s seadistus võrgule %s"
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:442
+msgid "Wired Network"
+msgstr "Traadiga võrk"
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:443
+#, php-format
+msgid "%s configuration for wired network"
+msgstr "%s seadistus traadiga võrgule"
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:457
+msgid "Hotspot 2.0 Settings"
+msgstr "Hotspot 2.0 seaded"
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:458
+#, php-format
+msgid "%s Hotspot 2.0 configuration"
+msgstr "%s Hotspot 2.0 seadistus"
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:522
+#, php-format
+msgid "This SSID should not be used after bootstrapping %s"
+msgstr "Seda SSIDd ei peaks kasutama peale %si paigaldamist"
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:524
+msgid "Disabled WiFi network"
+msgstr "WiFi võrk on keelatud"
+
+#. we don't include the import password. It's displayed on screen, and should be input by the user.
+#. <key>Password</key>
+#. <string>" . $this->clientCert['password'] . "</string>
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:617
+msgid "eduroam user certificate"
+msgstr "eduroami kasutaja sertifikaat"
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:673
+#, php-format
+msgid "The %s Certification Authority"
+msgstr "%s, sertifitseerimiskeskus"
+
+#: devices/apple_mobileconfig/MobileconfigSuperclass.php:675
+#, php-format
+msgid "%s CA"
+msgstr "%s CA"
+
+#: devices/chromebook/DeviceChromebook.php:330
+msgid ""
+"The installer is a file with the extension '.onc'. Please download it, open "
+"Chrome, and navigate to the URL <a href='chrome://net-internals/"
+"#chromeos'>chrome://net-internals/#chromeos</a>. Then, use the 'Import ONC "
+"file' button. The import is silent; the new network definitions will be "
+"added to the preferred networks."
+msgstr ""
+"Paigaldusprogramm on fail laiendiga '.onc'. Palun lae see alla, ava Chrome,  "
+"liigu aadressile <a href='chrome://net-internals/#chromeos'>chrome://net-"
+"internals/#chromeos</a>. Seejärel kasuta nuppu 'Import ONC file' (Impordi "
+"ONC fail). Import tehakse taustal ja uue võrgu definitsioon lisatakse "
+"eelistatud võrkudele."
+
+#: devices/linux/DeviceLinux.php:82
+#, php-format
+msgid ""
+"The installer is in the form of a Python script. It will try to configure %s "
+"under NetworkManager and if this is either not appropriate for your system "
+"or your version of NetworkManager is too old, a wpa_supplicant config file "
+"will be created instead."
+msgstr ""
+"Paigaldusprogramm on Pythoni skript. See proovib NetworkManageri tekitada "
+"%si võrgu. Kui see ei ole Su süsteemi jaoks sobilik või on NetworkManager "
+"liiga vana, luuakse hoopis wpa_supplicant seadistusfail."
+
+#: devices/linux/DeviceLinux.php:86
+#, php-format
+msgid ""
+"In addition to <strong>%s</strong> the installer will also configure access "
+"to the following networks:"
+msgstr ""
+"Lisaks <strong>%sile</strong> seadistab paigaldusprogramm pääsu järgmistesse "
+"võrkudesse:"
+
+#: devices/linux/DeviceLinux.php:88 devices/ms/WindowsCommon.php:158
+#, php-format
+msgid ""
+"In addition to <strong>%s</strong> the installer will also configure access "
+"to:"
+msgid_plural ""
+"In addition to <strong>%s</strong> the installer will also configure access "
+"to the following networks:"
+msgstr[0] ""
+"Lisaks <strong>%sile</strong> seadistab paigaldusprogramm pääsu järgmisse "
+"võrku: "
+msgstr[1] ""
+"Lisaks <strong>%sile</strong> seadistab paigaldusprogramm pääsu järgmistesse "
+"võrkudesse:"
+
+#: devices/linux/DeviceLinux.php:102
+msgid ""
+"The installer will create .cat_installer sub-directory in your home "
+"directory and will copy your server certificates there."
+msgstr ""
+"Paigaldaja loob Su kodukataloogis alamkataloogi .cat_installer ning kopeerib "
+"sinna sertifikaadid. "
+
+#: devices/linux/DeviceLinux.php:104
+msgid ""
+"In order to connect to the network you will need a personal certificate in "
+"the form of a p12 file. You should obtain this certificate from your "
+"organisation. Consult the support page to find out how this certificate can "
+"be obtained. Such certificate files are password protected. You should have "
+"both the file and the password available during the installation process. "
+"Your p12 file will also be copied to the .cat_installer directory."
+msgstr ""
+"Võrkupääsemiseks on vaja p12 formaadis isikusertifikaadifaili, mille "
+"väljastab Su asutus. Uuri kasutajatoe lehelt, kuidas sertifikaadifaili saad. "
+"Sertifikaat on parooliga kaitstud. Nii sertifikaat kui ka parool peavad "
+"paigalduse ajal Sul käepärast olema. Su p12 fail kopeeritakse .cat_installer "
+"kataloogi."
+
+#. not EAP-TLS
+#: devices/linux/DeviceLinux.php:106 devices/ms/WindowsCommon.php:168
+msgid ""
+"In order to connect to the network you will need an account from your "
+"organisation. You should consult the support page to find out how this "
+"account can be obtained. It is very likely that your account is already "
+"activated."
+msgstr ""
+"Võrkupääsemiseks on vaja Sinu asutuse kontot. Uuri kasutajatoe lehelt, "
+"kuidas seda kontot saada. Suure tõenäosusega on konto juba aktiveeritud."
+
+#: devices/linux/DeviceLinux.php:108
+msgid ""
+"You will be requested to enter your account credentials during the "
+"installation. This information will be saved so that you will reconnect to "
+"the network automatically each time you are in the range."
+msgstr ""
+"Paigaldamise ajal palutakse Sul sisestada kasutajakonto andmed. See teave "
+"salvestatakse ja edaspidi ühendatakse Sind selle võrgu levialas automaatselt."
+
+#: devices/linux/DeviceLinux.php:139
+msgid "Really quit?"
+msgstr "Oled kindel, et soovid lõpetada?"
+
+#: devices/linux/DeviceLinux.php:140
+msgid "enter your userid"
+msgstr "sisesta oma kasutaja-ID"
+
+#: devices/linux/DeviceLinux.php:141
+msgid "enter password"
+msgstr "sisesta parool"
+
+#: devices/linux/DeviceLinux.php:142
+msgid "enter your import password"
+msgstr "sisesta oma impordi parool"
+
+#: devices/linux/DeviceLinux.php:143
+msgid "incorrect password"
+msgstr "vale parool"
+
+#: devices/linux/DeviceLinux.php:144
+msgid "repeat your password"
+msgstr "korda parooli"
+
+#: devices/linux/DeviceLinux.php:145
+msgid "passwords do not match"
+msgstr "paroolid ei klapi"
+
+#: devices/linux/DeviceLinux.php:146
+msgid "Installation successful"
+msgstr "Paigaldamine õnnestus"
+
+#: devices/linux/DeviceLinux.php:147
+msgid "Directory {} exists; some of its files may be overwritten."
+msgstr ""
+"Kataloog {} on juba olemas ja mõned seal olevatest failidest võidakse üle "
+"kirjutada"
+
+#: devices/linux/DeviceLinux.php:148
+msgid "Continue?"
+msgstr "Jätka?"
+
+#: devices/linux/DeviceLinux.php:149
+msgid "This NetworkManager version is not supported"
+msgstr "See NetworkManageri versioon ei ole toetatud"
+
+#: devices/linux/DeviceLinux.php:150
+msgid "Certificate file not found, looks like a CAT error"
+msgstr "Ei leidnud sertifikaadi faili, paistab olevat CAT viga"
+
+#: devices/linux/DeviceLinux.php:151
+msgid "Unknown version"
+msgstr "Tundmatu versioon"
+
+#: devices/linux/DeviceLinux.php:152
+msgid "DBus connection problem, a sudo might help"
+msgstr "DBus'i ühendamise probleem, sudo võiks aidata"
+
+#: devices/linux/DeviceLinux.php:153
+msgid "Y"
+msgstr "Jah"
+
+#: devices/linux/DeviceLinux.php:154
+msgid "N"
+msgstr "Ei"
+
+#: devices/linux/DeviceLinux.php:155 devices/linux/DeviceLinux.php:157
+msgid "personal certificate file (p12 or pfx)"
+msgstr "isikusertifikaadi fail (p12 või pfx)"
+
+#: devices/linux/DeviceLinux.php:156 devices/ms/Files/common.inc:1110
+msgid "All files"
+msgstr "Kõik failid"
+
+#: devices/linux/DeviceLinux.php:158
+msgid ""
+"NetworkManager configuration failed, but we may generate a wpa_supplicant "
+"configuration file if you wish. Be warned that your connection password will "
+"be saved in this file as clear text."
+msgstr ""
+"NetworkManageri seadistamine ebaõnnestus, kuid kui soovid, võime luua "
+"wpa_supplicant seadistusfaili. Hoiatus: Su ühenduse parool salvestatakse "
+"selles failis avatekstina."
+
+#: devices/linux/DeviceLinux.php:159
+msgid "Write the file"
+msgstr "Kirjuta faili"
+
+#: devices/linux/DeviceLinux.php:160 devices/ms/Files/common.inc:1256
+#: devices/ms/Files/common.inc:1276 devices/ms/Files/common.inc:1327
+msgid ""
+"Error: Your username must be of the form 'xxx@institutionID' e.g. "
+"'john@example.net'!"
+msgstr ""
+"Viga: kasutajanimi peab olema kujul 'xxx@asutuseID', näiteks 'john@example."
+"net'!"
+
+#: devices/linux/DeviceLinux.php:161
+msgid ""
+"Error: your username must be in the form of 'xxx@{}'. Please enter the "
+"username in the correct format."
+msgstr ""
+"Viga: kasutajanimi peab olema kujul 'xxx@{}. Palun sisesta kasutajanimi "
+"korrektsel kujul."
+
+#: devices/linux/DeviceLinux.php:162
+msgid ""
+"Error: your username must be in the form of 'xxx@institutionID' and end with "
+"'{}'. Please enter the username in the correct format."
+msgstr ""
+"Viga: kasutajanimi peab olema kujul 'xxx@asutuseID' ja peab lõppema '{}'. "
+"Palun sisesta kasutajanimi korrektsel kujul."
+
+#: devices/linux/DeviceLinux.php:163
+msgid "personal certificate file not found"
+msgstr "isikusertifikaadi faili ei leitud"
+
+#: devices/linux/DeviceLinux.php:348
+msgid "This installer has been prepared for {0}"
+msgstr "See paigaldamisprogramm on tehtud {0} jaoks"
+
+#: devices/linux/DeviceLinux.php:348 devices/ms/Files/common.inc:476
+#: devices/ms/Files/common.inc:483
+msgid "More information and comments:"
+msgstr "Lisateave ja kommentaarid:"
+
+#: devices/linux/DeviceLinux.php:349 devices/ms/Files/common.inc:509
+msgid "Installer created with software from the GEANT project."
+msgstr "Paigaldamisprogrammis on kasutatud GEANT projekti tarkvara"
+
+#: devices/linux/DeviceLinux.php:377
+msgid ""
+"This installer will only work properly if you are a member of {0} and the "
+"user group: {1}."
+msgstr ""
+"See paigaldamisprogramm töötab korralikult vaid siis, kui kuulud {0} asutuse "
+"{1} kasutajagruppi."
+
+#: devices/linux/DeviceLinux.php:379
+msgid "This installer will only work properly if you are a member of {0}."
+msgstr "See paigaldusprogramm töötab korralikult, kui sa oled {0} asutusest."
+
+#: devices/ms/DeviceVista7.php:47 devices/ms/DeviceW8W10.php:50
+msgid ""
+"Anonymous identities do not use the realm as specified in the profile - it "
+"is derived from the suffix of the user's username input instead."
+msgstr ""
+"Ära kasuta anonüümse identiteedi jaoks profiilis kirjeldatud domeeni - see "
+"identiteet tuletatakse kasutajanime sisestamisel kasutajanime järelliitest."
+
+#: devices/ms/WindowsCommon.php:155
+#, php-format
+msgid ""
+"%s installer will be in the form of an EXE file. It will configure %s on "
+"your device, by creating wireless network profiles.<p>When you click the "
+"download button, the installer will be saved by your browser. Copy it to the "
+"machine you want to configure and execute."
+msgstr ""
+"%si paigaldaja on EXE fail, mis seadistab %si, luues Su seadmesse traadita "
+"võrgu profiilid. <p> Kui  klõpsad allalaadimise nupul, salvestab "
+"veebilehitseja paigaldamisprogrammi ära. Kopeeri see programm seadmesse, "
+"mida soovid seadistada, ja seejärel käivita."
+
+#: devices/ms/WindowsCommon.php:164
+msgid ""
+"In order to connect to the network you will need an a personal certificate "
+"in the form of a p12 file. You should obtain this certificate from your "
+"organisation. Consult the support page to find out how this certificate can "
+"be obtained. Such certificate files are password protected. You should have "
+"both the file and the password available during the installation process."
+msgstr ""
+"Võrkupääsemiseks on vaja p12 formaadis isikusertifikaadifaili, mille "
+"väljastab Su asutus. Uuri kasutajatoe lehelt, kuidas sertifikaadifaili saad. "
+"Sertifikaadifailid on parooliga kaitstud. Nii sertifikaat kui ka parool "
+"peavad Sul paigalduse ajal käepärast olema."
+
+#: devices/ms/WindowsCommon.php:172
+msgid ""
+"When you are connecting to the network for the first time, Windows will pop "
+"up a login box, where you should enter your user name and password. This "
+"information will be saved so that you will reconnect to the network "
+"automatically each time you are in the range."
+msgstr ""
+"Kui ühendud võrguga esmakordselt, avaneb Windowsis sisselogimiskast, kuhu "
+"tuleb sisestada kasutajanimi ja parool. See teave salvestatakse ja edaspidi "
+"ühendatakse Sind selle võrgu levialas automaatselt."
+
+#: devices/ms/WindowsCommon.php:175
+msgid ""
+"You will be required to enter the same credentials for each of the "
+"configured networks:"
+msgstr ""
+"Sul tuleb iga seadistatud võrgu puhul sisestada samad kasutajakonto andmed:"
+
+#: devices/ms/WindowsCommon.php:335 devices/ms/WindowsCommon.php:336
+#, php-format
+msgid "%s installer for %s"
+msgstr "%s on paigaldusprogramm %s jaoks"
+
+#. the actual cert has to go... where?
+#: devices/PP_OSU_XML/DevicePPOSUXML.php:141
+#, php-format
+msgid "%s via Passpoint"
+msgstr ""
+
+#: devices/PP_OSU_XML/DevicePPOSUXML.php:227
+#, fuzzy
+msgid ""
+"This installer is an example only. It produces a zip file containig the IdP "
+"certificates, info and logo files (if such have been defined by the IdP "
+"administrator) and a dump of all available attributes."
+msgstr ""
+"See on vaid näidispaigaldusprogramm, mis loob loob zip-faili IdP "
+"sertifikaatide, teabe ja logo failidest (kui need on IdP administraatori "
+"poolt määratud) ja tõmmise kõigist saadaolevatest atribuutidest. "
+"Paigaldusprogrammi saab kasutada SSID-ga %d."
+
+#: devices/redirect_dev/DeviceRedirectDev.php:44
+msgid ""
+"This device is not yet supported by CAT, but your local administrator "
+"created a redirect to local installation instructions."
+msgstr ""
+"CAT ei toeta veel seda seadet, aga Su asutuse administraator on teinud "
+"suunamise asutusepoolsele paigaldusjuhendile."
+
+#: devices/test_module/DeviceTestModule.php:129
+#, php-format
+msgid ""
+"This installer is an example only. It produces a zip file containig the IdP "
+"certificates, info and logo files (if such have been defined by the IdP "
+"administrator) and a dump of all available attributes. The installer is "
+"called with %d SSIDs to configure."
+msgstr ""
+"See on vaid näidispaigaldusprogramm, mis loob loob zip-faili IdP "
+"sertifikaatide, teabe ja logo failidest (kui need on IdP administraatori "
+"poolt määratud) ja tõmmise kõigist saadaolevatest atribuutidest. "
+"Paigaldusprogrammi saab kasutada SSID-ga %d."
+
+#: devices/xml/DeviceXML.php:70
+#, php-format
+msgid ""
+"This is a generic configuration file in the IETF <a href='%s'>EAP Metadata "
+"-00</a> XML format."
+msgstr ""
+"See on üldine seadistusfail IETF <a href='%s'>EAP Metadata -00</a> XML "
+"formaadis."
+
+#: devices/ms/Files/common.inc:138
+#, php-format
+msgid "Welcome to the %s installer"
+msgstr "Tere tulemast %si paigaldama"
+
+#: devices/ms/Files/common.inc:139
+msgid "Installation complete"
+msgstr "Paigaldamine on lõppenud"
+
+#: devices/ms/Files/common.inc:140
+msgid "Network profiles have been installed."
+msgstr "Võrguprofiilid on paigaldatud."
+
+#: devices/ms/Files/common.inc:140
+msgid "Your system is ready."
+msgstr "Süsteem on valmis."
+
+#: devices/ms/Files/common.inc:141
+msgid "Network installation had errors."
+msgstr "Võrgu seadistamisel tekkisid vead."
+
+#: devices/ms/Files/common.inc:141 devices/ms/Files/common.inc:928
+msgid "Please contact ${SUPPORT}."
+msgstr "Palun kontakteeru: ${SUPPORT}."
+
+#: devices/ms/Files/common.inc:149
+msgid "Accept"
+msgstr "Kinnita"
+
+#: devices/ms/Files/common.inc:150
+msgid ""
+"If you accept the conditions then select Accept and then click Install to "
+"continue."
+msgstr ""
+"Kui nõustud tingimustega, siis vali Aktsepteeri ja peale seda klõpsa "
+"jätkamiseks Paigalda."
+
+#: devices/ms/Files/common.inc:156
+msgid "Finish"
+msgstr "Lõpeta"
+
+#: devices/ms/Files/common.inc:189
+msgid "searching for certificate"
+msgstr "otsin sertifikaati"
+
+#: devices/ms/Files/common.inc:251
+msgid "installing certificate"
+msgstr "paigaldan sertifikaati"
+
+#: devices/ms/Files/common.inc:257
+msgid "could not install certificate"
+msgstr "ei saanud sertifikaati paigaldada"
+
+#: devices/ms/Files/common.inc:464
+msgid ""
+"The non TKIP profiles are preferred. Always use them if you have a choice."
+msgstr "Võimaluse korral kasuta mitte-TKIP profiile."
+
+#: devices/ms/Files/common.inc:466
+msgid "The non TKIP profile is preferred. Always use it if you have a choice."
+msgstr "Võimaluse korral kasuta mitte-TKIP profiili."
+
+#: devices/ms/Files/common.inc:472 devices/ms/Files/common.inc:480
+msgid "This installer has been prepared for ${ORGANISATION}"
+msgstr "${ORGANISATION} - paigaldamisprogramm on ette valmistatud"
+
+#: devices/ms/Files/common.inc:473
+msgid "The installer will create the following wireless profiles:"
+msgstr "Paigaldusprogramm loob järgmised traadita profiilid:"
+
+#: devices/ms/Files/common.inc:481
+msgid "The installer will create the wireless profile:"
+msgstr "Paigaldusprogramm loob traadita profiili:"
+
+#: devices/ms/Files/common.inc:562
+msgid ""
+"You are running Windows $WindowsName but this installer is only for Windows "
+"10 and newer. Please download the correct installer and try again."
+msgstr ""
+"Kasutad $WindowsName Windowsi versiooni, aga see paigaldusprogramm on "
+"mõeldud Windows 10 ja uuema jaoks. Palun lae alla õige paigaldusprogramm ja "
+"proovi uuesti."
+
+#: devices/ms/Files/common.inc:570 devices/ms/Files/common.inc:577
+msgid ""
+"You are running Windows $WindowsName but this installer is only for Windows "
+"8 and 8.1. Please download the correct installer and try again."
+msgstr ""
+"Kasutad $WindowsName Windowsi versiooni, aga see paigaldusprogramm on "
+"mõeldud ainult Windows 8 või Windows 8.1 jaoks. Palun lae alla õige "
+"paigaldusprogramm ja proovi uuesti."
+
+#: devices/ms/Files/common.inc:586
+msgid ""
+"You are running Windows $WindowsName but this installer is only for Windows "
+"Vista and Windows 7. Please download the correct installer and try again."
+msgstr ""
+"Kasutad $WindowsName Windowsi versiooni, aga see paigaldusprogramm on "
+"mõeldud ainult Windows Vista või Windows 7 jaoks. Palun lae alla õige "
+"paigaldusprogramm ja proovi uuesti."
+
+#: devices/ms/Files/common.inc:622
+msgid ""
+"Windows wireless configuration service is not enabled. The installer cannot "
+"continue."
+msgstr ""
+"Windowsi \"wireless configuration\" teenus ei ole lubatud. Paigaldaja ei saa "
+"jätkata."
+
+#: devices/ms/Files/common.inc:627
+msgid "No wireless interfaces found. The installer cannot continue."
+msgstr "Traadita võrgu liideseid ei leitud. Paigaldaja ei saa jätkata."
+
+#: devices/ms/Files/common.inc:633
+msgid ""
+"No wireless interfaces found. Wireless access will not be configured. Would "
+"you like to continue and configure access on the wired interface?"
+msgstr ""
+"WiFi liideseid ei leitud. WiFi ühendust ei ole võimalik seadistada. Kas "
+"soovid jätkata ning seadistada ühenduse traadiga liidesele?"
+
+#: devices/ms/Files/common.inc:649
+msgid "Do you want to enable access on wired interfaces?"
+msgstr "Kas soovid lubada ligipääsu traadiga liidesele?"
+
+#: devices/ms/Files/common.inc:690
+msgid "Profiles installation"
+msgstr "Profiilide paigaldamine"
+
+#: devices/ms/Files/common.inc:709
+msgid "Checking for profile $R8"
+msgstr "Kontrollin $R8 jaoks profiili"
+
+#: devices/ms/Files/common.inc:717
+msgid "found profile $R8"
+msgstr "leitud profiil $R8"
+
+#: devices/ms/Files/common.inc:746
+msgid ""
+"This installer will only work properly if you are a member of "
+"${ORGANISATION} and the user group: ${USER_GROUP}."
+msgstr ""
+"See paigaldamisprogramm töötab korralikult ainult juhul, kui Sa kuulud  "
+"asutuse ${ORGANISATION} kasutajagruppi ${USER_GROUP}."
+
+#: devices/ms/Files/common.inc:746 devices/ms/Files/common.inc:749
+msgid "Click OK to continue with installation."
+msgstr "Paigaldamise jätkamiseks klõpsa OK."
+
+#: devices/ms/Files/common.inc:749
+msgid ""
+"This installer will only work properly if you are a member of "
+"${ORGANISATION}."
+msgstr ""
+"See paigaldamisprogramm töötab korralikult ainult juhul, kui Sa oled "
+"asutusest ${ORGANISATION}."
+
+#: devices/ms/Files/common.inc:757
+msgid ""
+"Please read the additional information from ${ORGANISATION} which will be "
+"displayed in a moment."
+msgstr ""
+"Järgmiseks palun loe asutuse ${ORGANISATION} kohta kohe kuvatavat lisateavet."
+
+#: devices/ms/Files/common.inc:812
+#, php-format
+msgid ""
+"Please READ this message it is IMPORTANT.$\\r$\\nInstallation problems may "
+"be due to the fact that Symantec Endpoint Protection is installed on your "
+"machine.$\\r$\\nWhile this is a well-known bug of the Symantec product, "
+"about which the installer can not do anything, there is a workaround.$\\r$"
+"\\nWhen you close this window the installer will exit and an explorer window "
+"will be started (it could appear underneath already opened windows). In this "
+"window you should see a script named inst_cat. Start it by double-clicking, "
+"It will install the profiles. You will need to login to %s with your "
+"username and password."
+msgstr ""
+"TÄHELEPANU! Palun loe, see on oluline teade!$\\r$\\nPaigaldamise probleemid "
+"võivad tekkida sellest, et Su seadmesse on paigaldatud Symantec Endpoint "
+"Protection.$\\r$\\nSellel programmil on paigaldamist takistav viga, millest "
+"on aga võimalik mööda hiilida.$\\r$\\nKui Sa sulged selle akna, siis "
+"paigaldusprogramm lõpetab ja avaneb uus aken (võimalik, et avatud akende "
+"taga). Selles aknas peaksid nägema inst_cat nimelist skripti. Topeltklõpsu "
+"peale paigaldab see profiilid. Pead logima %s oma kasutajanime ja parooliga."
+
+#: devices/ms/Files/common.inc:822
+msgid "Please restart your system after installation finishes."
+msgstr "Palun taaskäivita süsteem, kui paigaldamine on lõpetatud."
+
+#: devices/ms/Files/common.inc:846
+msgid "installing wired profile"
+msgstr "paigaldame traadiga profiili"
+
+#: devices/ms/Files/common.inc:887 devices/ms/Files/common.inc:906
+msgid "deleting profile $R1"
+msgstr "kustutame $R1 profiili"
+
+#: devices/ms/Files/common.inc:915
+msgid "installing profile $R1"
+msgstr "paigaldame $R1 profiili"
+
+#: devices/ms/Files/common.inc:928
+msgid "Profile installation error for $R1 (Error code: $1)."
+msgstr "Probleem $R1 jaoks profiili paigaldamisega (Error code: $1)."
+
+#: devices/ms/Files/common.inc:953
+msgid "installing credentials for wired"
+msgstr "kasutajakonto paigaldamine traadiga profiilile"
+
+#: devices/ms/Files/common.inc:959
+msgid "installing credentials TLS"
+msgstr "TLS kasutajakonto andmete paigaldamine"
+
+#: devices/ms/Files/common.inc:1075
+msgid "installing credentials for profile $R1"
+msgstr "kasutajakonto paigaldamine profiilile $R1"
+
+#: devices/ms/Files/common.inc:1092 devices/ms/Files/geant_link.inc:125
+msgid "Credentials installation problem"
+msgstr "Viga kasutajakonto paigaldamisel"
+
+#: devices/ms/Files/common.inc:1101
+#, php-format
+msgid "%s installer for"
+msgstr "%si paigaldusprogramm"
+
+#: devices/ms/Files/common.inc:1101
+msgid "Install personal certificate"
+msgstr "Paigalda isikusertifikaat"
+
+#: devices/ms/Files/common.inc:1104
+msgid "Preparing to install personal certificate."
+msgstr "Valmistume paigaldama isikusertifikaati"
+
+#: devices/ms/Files/common.inc:1104
+msgid "Click OK to continue"
+msgstr "Jätkamiseks klõpsa OK"
+
+#: devices/ms/Files/common.inc:1110
+msgid "Certificate files (*.p12)"
+msgstr "Sertifikaadi failid (*.p12)"
+
+#: devices/ms/Files/common.inc:1110
+msgid "Certificate files (*pfx)"
+msgstr "Sertifikaadi failid (*.pfx)"
+
+#: devices/ms/Files/common.inc:1113
+msgid "certificate password:"
+msgstr "sertifikaadi parool:"
+
+#: devices/ms/Files/common.inc:1115 devices/ms/Files/common.inc:1378
+msgid "Username:"
+msgstr "Kasutajanimi:"
+
+#: devices/ms/Files/common.inc:1119
+msgid "Selected file: $Cert_file"
+msgstr "Valitud fail: $Cert_file"
+
+#: devices/ms/Files/common.inc:1121
+msgid "import password:"
+msgstr "importimise parool:"
+
+#: devices/ms/Files/common.inc:1156
+msgid "No certificate file selected"
+msgstr "Sertifikaadi faili ei ole valitud"
+
+#: devices/ms/Files/common.inc:1160
+msgid "Incorrect import password$\\r$\\nenter again"
+msgstr "Importimise parool on vale$\\r$\\nsisesta uuesti"
+
+#: devices/ms/Files/common.inc:1162
+msgid "Incorrect certificate password$\\r$\\nenter again"
+msgstr "Sertifikaadi parool on vale$\\r$\\nsisesta uuesti"
+
+#: devices/ms/Files/common.inc:1236
+msgid "Username contained some trailing spaces which were removed."
+msgstr "Kasutajanimi sisaldas mõningaid tühikuid, mis eemaldati."
+
+#: devices/ms/Files/common.inc:1271
+msgid ""
+"Error: your username must be in the form of 'xxx@${REALM}'. Please enter the "
+"username in the correct format."
+msgstr ""
+"Viga: kasutajanimi peab olema kujul 'xxx@${REALM}'. Palun sisesta "
+"kasutajanimi korrektsel kujul."
+
+#: devices/ms/Files/common.inc:1273
+msgid ""
+"Error: your username must be in the form of 'xxx@institutionID' and end with "
+"'${REALM}'. Please enter the username in the correct format."
+msgstr ""
+"Viga: kasutajanimi peab olema kujul 'xxx@asutuseID' ja peab lõppema "
+"'${REALM}' domeeniga. Palun sisesta kasutajanimi korrektsel kujul."
+
+#: devices/ms/Files/common.inc:1374
+msgid "User credentials"
+msgstr "Kasutajakonto andmed"
+
+#: devices/ms/Files/common.inc:1381
+msgid "Password:"
+msgstr "Parool:"
+
+#: devices/ms/Files/common.inc:1384
+msgid "Repeat password:"
+msgstr "Korda parooli:"
+
+#: devices/ms/Files/common.inc:1399
+msgid "Missing username"
+msgstr "Puudub kasutajanimi"
+
+#: devices/ms/Files/common.inc:1411
+msgid "Missing password"
+msgstr "Puudub parool"
+
+#: devices/ms/Files/common.inc:1417
+msgid "Password mismatch"
+msgstr "Paroolid ei kattu"
+
+#: devices/ms/Files/common.inc:1508 devices/ms/Files/eap_w8.inc:31
+#: devices/ms/Files/geant_link.inc:33 devices/ms/Files/geant_link.inc:43
+#: devices/ms/Files/peap_tls.inc:31 devices/ms/Files/pwd.inc:30
+#: devices/ms/Files/pwd.inc:60
+msgid "Installation"
+msgstr "Paigaldamine"
+
+#: devices/ms/Files/common.inc:1508
+msgid "Checking for existing wireless profiles"
+msgstr "Kontrollime traadita profiilide olemasolu"
+
+#: devices/ms/Files/eap_w8.inc:24 devices/ms/Files/peap_tls.inc:24
+msgid "Installation of the personal certificate"
+msgstr "Isikusertifikaadi paigaldamine"
+
+#: devices/ms/Files/eap_w8.inc:25 devices/ms/Files/peap_tls.inc:25
+msgid "Components installation"
+msgstr "Komponentide paigaldamine"
+
+#: devices/ms/Files/eap_w8.inc:25 devices/ms/Files/peap_tls.inc:25
+msgid "Personal certificate"
+msgstr "Isikusertifikaat"
+
+#: devices/ms/Files/eap_w8.inc:29 devices/ms/Files/geant_link.inc:41
+#: devices/ms/Files/peap_tls.inc:29 devices/ms/Files/pwd.inc:58
+msgid "Installation of network profiles"
+msgstr "Võrguprofiilide paigaldamine"
+
+#: devices/ms/Files/eap_w8.inc:29 devices/ms/Files/geant_link.inc:41
+#: devices/ms/Files/peap_tls.inc:29 devices/ms/Files/pwd.inc:58
+msgid "profiles"
+msgstr "profiilid"
+
+#: devices/ms/Files/eap_w8.inc:31 devices/ms/Files/geant_link.inc:43
+#: devices/ms/Files/peap_tls.inc:31 devices/ms/Files/pwd.inc:60
+msgid "Network profiles update"
+msgstr "Võrguprofiilide uuendamine"
+
+#: devices/ms/Files/geant_link.inc:27 devices/ms/Files/pwd.inc:24
+msgid "user profile"
+msgstr "kasutajaprofiil"
+
+#: devices/ms/Files/geant_link.inc:31 devices/ms/Files/pwd.inc:28
+msgid "install program"
+msgstr "Paigalda programm"
+
+#: devices/ms/Files/geant_link.inc:95
+msgid ""
+"An additional piece of software 'GEANTlink' needs to be installed. This "
+"installation requires Administrator rights; you will be prompted to give "
+"permission for that action."
+msgstr ""
+"Lisaks on vaja paigaldada 'GEANTlink' programm. Selle paigaldamiseks "
+"vajalikke administraatoriõigusi küsitakse protsessi käigus."
+
+#: devices/ms/Files/geant_link.inc:107
+msgid ""
+"Error installing GEANTLink.$\\nEmbedded installer didn't complete "
+"succesfully."
+msgstr ""
+"Probleem GEANTLink paigaldamisega.$\\nSisemine paigaldaja ei lõpetanud "
+"tulemuslikult."
+
+#: devices/ms/Files/geant_link.inc:117
+msgid "installing credentials for ${PROVIDERID}"
+msgstr "Paigaldan ${PROVIDERID} pakkuja kasutajakonto"
+
+#: devices/ms/Files/pwd.inc:48
+msgid "EAP-pwd installation error. Please try again or contact Support."
+msgstr ""
+"EAP-pwd paigaldamise viga. Palun proovi uuesti või võta ühendust "
+"kasutajatoega."

@@ -1,11 +1,24 @@
 <?php
 
-/* * ********************************************************************************
- * (c) 2011-15 GÉANT on behalf of the GN3, GN3plus and GN4 consortia
- * License: see the LICENSE file in the root directory
- * ********************************************************************************* */
-?>
-<?php
+/*
+ * *****************************************************************************
+ * Contributions to this work were made on behalf of the GÉANT project, a 
+ * project that has received funding from the European Union’s Framework 
+ * Programme 7 under Grant Agreements No. 238875 (GN3) and No. 605243 (GN3plus),
+ * Horizon 2020 research and innovation programme under Grant Agreements No. 
+ * 691567 (GN4-1) and No. 731122 (GN4-2).
+ * On behalf of the aforementioned projects, GEANT Association is the sole owner
+ * of the copyright in all material which was developed by a member of the GÉANT
+ * project. GÉANT Vereniging (Association) is registered with the Chamber of 
+ * Commerce in Amsterdam with registration number 40535155 and operates in the 
+ * UK as a branch of GÉANT Vereniging.
+ * 
+ * Registered office: Hoekenrode 3, 1102BR Amsterdam, The Netherlands. 
+ * UK branch address: City House, 126-130 Hills Road, Cambridge CB2 1PQ, UK
+ *
+ * License: see the web/copyright.inc.php file in the file structure or
+ *          <base_url>/copyright.php after deploying the software
+ */
 
 /**
  * This file contains the DBConnection singleton.
@@ -15,9 +28,10 @@
  * 
  * @package Developer
  */
-require_once('Helper.php');
-require_once('Profile.php');
-require_once('IdP.php');
+
+namespace core;
+
+use \Exception;
 
 /**
  * This class is a singleton for establishing a connection to the database
@@ -33,186 +47,222 @@ class DBConnection {
 
     /**
      * This is the actual constructor for the singleton. It creates a database connection if it is not up yet, and returns a handle to the database connection on every call.
+     * 
+     * @param string $database the database type to open
      * @return DBConnection the (only) instance of this class
+     * @throws Exception
      */
-    private static function handle($database) {
-        switch (strtoupper($database)) {
+    public static function handle($database) {
+        $theDb = strtoupper($database);
+        switch ($theDb) {
             case "INST":
-                if (!isset(self::$instanceInst)) {
-                    $class = __CLASS__;
-                    self::$instanceInst = new $class($database);
-                }
-                return self::$instanceInst;
             case "USER":
-                if (!isset(self::$instanceUser)) {
-                    $class = __CLASS__;
-                    self::$instanceUser = new $class($database);
-                }
-                return self::$instanceUser;
             case "EXTERNAL":
-                if (!isset(self::$instanceExternal)) {
+            case "FRONTEND":
+            case "DIAGNOSTICS":
+                if (!isset(self::${"instance" . $theDb})) {
                     $class = __CLASS__;
-                    self::$instanceExternal = new $class($database);
+                    self::${"instance" . $theDb} = new $class($database);
+                    DBConnection::${"instance" . $theDb}->databaseInstance = $theDb;
                 }
-                return self::$instanceExternal;
+                return self::${"instance" . $theDb};
             default:
-                return FALSE;
+                throw new Exception("This type of database (" . strtoupper($database) . ") is not known!");
         }
     }
 
     /**
      * Implemented for safety reasons only. Cloning is forbidden and will tell the user so.
+     *
+     * @return void
      */
     public function __clone() {
         trigger_error('Clone is not allowed.', E_USER_ERROR);
     }
 
     /**
-     * 
-     * @param string $database The database to do escapting for
-     * @param string $value The value to escape
-     * @return string
+     * tells the caller if the database is to be accessed read-only
+     * @return bool
      */
-    public static function escapeValue($database, $value) {
-        $handle = DBConnection::handle($database);
-        debug(5, "Escaping $value for DB $database to get a safe query value.\n");
-        $escaped = mysqli_real_escape_string($handle->connection, $value);
-        debug(5, "This is the result: $escaped .\n");
-        return $escaped;
+    public function isReadOnly() {
+        return $this->readOnly;
     }
 
     /**
      * executes a query and triggers logging to the SQL audit log if it's not a SELECT
-     * @param string $querystring the query to be executed
+     * @param string $querystring  the query to be executed
+     * @param string $types        for prepared statements, the type list of parameters
+     * @param mixed  ...$arguments for prepared statements, the parameters
      * @return mixed the query result as mysqli_result object; or TRUE on non-return-value statements
+     * @throws Exception
      */
-    public static function exec($database, $querystring) {
-        // log exact query to debug log, if log level is at 5
-        debug(5, "DB ATTEMPT: " . $querystring . "\n");
-
-        $instance = DBConnection::handle($database);
-        if ($instance->connection == FALSE) {
-            debug(1, "ERROR: Cannot send query to $database database (no connection)!");
-            return FALSE;
-        }
-
-        $result = mysqli_query($instance->connection, $querystring);
-        if ($result == FALSE) {
-            debug(1, "ERROR: Cannot execute query in $database database - (hopefully escaped) query was '$querystring'!");
-            return FALSE;
-        }
-
+    public function exec($querystring, $types = NULL, &...$arguments) {
         // log exact query to audit log, if it's not a SELECT
-        if (preg_match("/^SELECT/i", $querystring) == 0) {
-            CAT::writeSQLAudit("[DB: " . strtoupper($database) . "] " . $querystring);
+        $isMoreThanSelect = FALSE;
+        if (preg_match("/^(SELECT\ |SET\ )/i", $querystring) == 0 && preg_match("/^DESC/i", $querystring) == 0) {
+            $isMoreThanSelect = TRUE;
+            if ($this->readOnly) { // let's not do this.
+                throw new Exception("This is a read-only DB connection, but this is statement is not a SELECT!");
+            }
+        }
+        // log exact query to debug log, if log level is at 5
+        $this->loggerInstance->debug(5, "DB ATTEMPT: " . $querystring . "\n");
+        if ($types !== NULL) {
+            $this->loggerInstance->debug(5, "Argument type sequence: $types, parameters are: " . print_r($arguments, true));
+        }
+
+        if ($this->connection->connect_error) {
+            throw new Exception("ERROR: Cannot send query to $this->databaseInstance database (no connection, error number" . $this->connection->connect_error . ")!");
+        }
+        if ($types === NULL) {
+            $result = $this->connection->query($querystring);
+            if ($result === FALSE) {
+                throw new Exception("DB: Unable to execute simple statement! Error was --> " . $this->connection->error . " <--");
+            }
+        } else {
+            // fancy! prepared statement with dedicated argument list
+            if (strlen($types) != count($arguments)) {
+                throw new Exception("DB: Prepared Statement: Number of arguments and the type list length differ!");
+            }
+            if (isset($this->preparedStatements[$querystring])) {
+                $statementObject = $this->preparedStatements[$querystring];
+            } else {
+                $statementObject = $this->connection->stmt_init();
+                if ($statementObject === FALSE) {
+                    throw new Exception("DB: Unable to initialise prepared Statement!");
+                }
+                $prepResult = $statementObject->prepare($querystring);
+                if ($prepResult === FALSE) {
+                    throw new Exception("DB: Unable to prepare statement! Statement was --> $querystring <--, error was --> " . $statementObject->error . " <--.");
+                }
+                $this->preparedStatements[$querystring] = $statementObject;
+            }
+            // we have a variable number of arguments packed into the ... array
+            // but the function needs to be called exactly once, with a series of
+            // individual arguments, not an array. The voodoo solution is to call
+            // it via call_user_func_array()
+
+            $localArray = $arguments;
+            array_unshift($localArray, $types);
+            $retval = call_user_func_array([$statementObject, "bind_param"], $localArray);
+            if ($retval === FALSE) {
+                throw new Exception("DB: Unable to bind parameters to prepared statement! Argument array was --> " . var_export($localArray, TRUE) . " <--. Error was --> " . $statementObject->error . " <--");
+            }
+            $result = $statementObject->execute();
+            if ($result === FALSE) {
+                throw new Exception("DB: Unable to execute prepared statement! Error was --> " . $statementObject->error . " <--");
+            }
+            $selectResult = $statementObject->get_result();
+            if ($selectResult !== FALSE) {
+                $result = $selectResult;
+            }
+        }
+
+        // all cases where $result could be FALSE have been caught earlier
+        if ($this->connection->errno) {
+            throw new Exception("ERROR: Cannot execute query in $this->databaseInstance database - (hopefully escaped) query was '$querystring', errno was " . $this->connection->errno . "!");
+        }
+
+
+        if ($isMoreThanSelect) {
+            $this->loggerInstance->writeSQLAudit("[DB: " . strtoupper($this->databaseInstance) . "] " . $querystring);
+            if ($types !== NULL) {
+                $this->loggerInstance->writeSQLAudit("Argument type sequence: $types, parameters are: " . print_r($arguments, true));
+            }
         }
         return $result;
-    }
-
-    /**
-     * Retrieves data from the underlying tables, for situations where instantiating the IdP or Profile object is inappropriate
-     * 
-     * @param type $table institution_option or profile_option
-     * @param type $row rowindex
-     * @return boolean
-     */
-    public static function fetchRawDataByIndex($table, $row) {
-        // only for select tables!
-        if ($table != "institution_option" && $table != "profile_option" && $table != "federation_option") {
-            return FALSE;
-        }
-        $blobQuery = DBConnection::exec("INST", "SELECT option_value from $table WHERE row = $row");
-        while ($returnedData = mysqli_fetch_object($blobQuery)) {
-            $blob = $returnedData->option_value;
-        }
-        if (!isset($blob)) {
-            return FALSE;
-        }
-        return $blob;
-    }
-
-    /**
-     * Checks if a raw data pointer is public data (return value FALSE) or if 
-     * yes who the authorised admins to view it are (return array of user IDs)
-     */
-    public static function isDataRestricted($table, $row) {
-        if ($table != "institution_option" && $table != "profile_option" && $table != "federation_option") {
-            return []; // better safe than sorry: that's an error, so assume nobody is authorised to act on that data
-        }
-        switch ($table) {
-            case "profile_option":
-                $blobQuery = DBConnection::exec("INST", "SELECT profile_id from $table WHERE row = $row");
-                while ($profileIdQuery = mysqli_fetch_object($blobQuery)) { // only one row
-                    $blobprofile = $profileIdQuery->profile_id;
-                }
-                // is the profile in question public?
-                $profile = new Profile($blobprofile);
-                if ($profile->isShowtime() == TRUE) { // public data
-                    return FALSE;
-                } else {
-                    $inst = new IdP($profile->institution);
-                    return $inst->owner();
-                }
-                break;
-            case "institution_option":
-                $blobQuery = DBConnection::exec("INST", "SELECT institution_id from $table WHERE row = $row");
-                while ($instIdQuery = mysqli_fetch_object($blobQuery)) { // only one row
-                    $blobinst = $instIdQuery->institution_id;
-                }
-                $inst = new IdP($blobinst);
-                // if at least one of the profiles belonging to the inst is public, the data is public
-                if ($inst->isOneProfileShowtime()) { // public data
-                    return FALSE;
-                } else {
-                    return $inst->owner();
-                }
-                break;
-            case "federation_option":
-                // federation metadata is always public
-                return FALSE;
-            default:
-                return []; // better safe than sorry: that's an error, so assume nobody is authorised to act on that data
-        }
     }
 
     /**
      * Retrieves the last auto-id of an INSERT. Needs to be called immediately after the corresponding exec() call
      * @return int the last autoincrement-ID
      */
-    public static function lastID($database) {
-        $instance = DBConnection::handle($database);
-        return mysqli_insert_id($instance->connection);
+    public function lastID() {
+        return $this->connection->insert_id;
     }
 
     /**
-     * Holds the singleton instance reference
+     * Holds the singleton instance reference to USER database
      * 
      * @var DBConnection 
      */
-    private static $instanceUser;
-    private static $instanceInst;
-    private static $instanceExternal;
+    private static $instanceUSER;
+
+    /**
+     * Holds the singleton instance reference to INST database
+     * 
+     * @var DBConnection 
+     */
+    private static $instanceINST;
+
+    /**
+     * Holds the singleton instance reference to EXTERNAL database
+     * 
+     * @var DBConnection 
+     */
+    private static $instanceEXTERNAL;
+
+    /**
+     * Holds the singleton instance reference to FRONTEND database
+     * 
+     * @var DBConnection 
+     */
+    private static $instanceFRONTEND;
+
+    /**
+     * Holds the singleton instance reference to DIAGNOSTICS database
+     * 
+     * @var DBConnection 
+     */
+    private static $instanceDIAGNOSTICS;
+
+    /**
+     * after instantiation, keep state of which DB *this one* talks to
+     * 
+     * @var string which database does this instance talk to
+     */
+    private $databaseInstance;
 
     /**
      * The connection to the DB server
      * 
-     * @var mysqli
+     * @var \mysqli
      */
     private $connection;
 
     /**
+     * @var \core\common\Logging
+     */
+    private $loggerInstance;
+
+    /**
+     * Keeps state whether we are a readonly DB instance
+     * @var boolean
+     */
+    private $readOnly;
+
+    /**
      * Class constructor. Cannot be called directly; use handle()
+     * 
+     * @param string $database the database to open
+     * @throws Exception
      */
     private function __construct($database) {
+        $this->loggerInstance = new \core\common\Logging();
         $databaseCapitalised = strtoupper($database);
-        $this->connection = mysqli_connect(Config::$DB[$databaseCapitalised]['host'], Config::$DB[$databaseCapitalised]['user'], Config::$DB[$databaseCapitalised]['pass'], Config::$DB[$databaseCapitalised]['db']);
-        if ($this->connection == FALSE) {
-            throw new Exception("ERROR: Unable to connect to $database database! This is a fatal error, giving up.");
+        $this->connection = new \mysqli(\config\Master::DB[$databaseCapitalised]['host'], \config\Master::DB[$databaseCapitalised]['user'], \config\Master::DB[$databaseCapitalised]['pass'], \config\Master::DB[$databaseCapitalised]['db']);
+        if ($this->connection->connect_error) {
+            throw new Exception("ERROR: Unable to connect to $database database! This is a fatal error, giving up (error number " . $this->connection->connect_errno . ").");
         }
-
-        if ($databaseCapitalised == "EXTERNAL" && Config::$CONSORTIUM['name'] == "eduroam" && isset(Config::$CONSORTIUM['deployment-voodoo']) && Config::$CONSORTIUM['deployment-voodoo'] == "Operations Team") {
-            mysqli_query($this->connection, "SET NAMES 'latin1'");
-        }
+        $this->readOnly = \config\Master::DB[$databaseCapitalised]['readonly'];
     }
+
+    /**
+     * keeps all previously prepared statements in memory so we can reuse them
+     * later
+     * 
+     * @var array
+     */
+    private $preparedStatements = [];
 
 }

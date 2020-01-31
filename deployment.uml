@@ -1,0 +1,89 @@
+@startuml
+frame "Web Frontend"  {
+node web [ Web User Interface
+hosted.eduroam.org
+===
+CentOS 7
+Apache 2
+PHP7
+MariaDB
+GeoIP
+haveged ]
+
+database mysql [ MariaDB
+]
+
+component ca [ Embedded Intermediate CA
+===
+PHP builtin functions
+OpenSSL command-line
+]
+
+storage cache [ Installer Cache
+]
+}
+
+frame "OCSP Responder" {
+node Webserver [ Webserver
+ocsp.hosted.eduroam.org
+===
+CentOS 7
+Apache 2
+PHP7
+]
+
+storage ocspstore [ OCSP statement storage
+===
+directory on filesystem
+]
+}
+
+frame "Client Root CA" {
+node rootca [ Raspberry Pi
+===
+Raspian Stretch
+RSA/4096
+ECDSA NIST P-521
+]
+}
+
+frame RADIUS {
+node authX [ auth-X.hosted.eduroam.org
+===
+CentOS 7
+FreeRADIUS 3.0.x
+]
+
+}
+cloud sp [ 
+
+eduroam Service Providers
+
+]
+
+frame "External Resources" {
+node signer [ Code Signing Cluster
+===
+use instance of eduroam CAT 
+@SURFnet data centers
+]
+node sms [ SMS Gateway
+===
+Nexmo - www.nexmo.com
+]
+node ol [ OpenLayers / OpenStreetMap
+]
+}
+web -- mysql : statistics
+web -- mysql : user and certificate data
+web -> ca : new/revoke cert
+web -- cache : store/retrieve
+web -> ocspstore : generate/push OCSP statements
+web -- signer : sign installers
+web -- sms : send end-user signup SMS
+web -- ol : draw location data
+ocspstore -> Webserver
+rootca ~~ ca : prime system with intermediate CA
+authX -> Webserver : check revocation state
+sp -- authX : check user authorisation
+@enduml

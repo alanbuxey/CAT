@@ -1,210 +1,243 @@
 <?php
-/* * *********************************************************************************
- * (c) 2011-15 GÉANT on behalf of the GN3, GN3plus and GN4 consortia
- * License: see the LICENSE file in the root directory
- * ********************************************************************************* */
-?>
-<?php
-require_once(dirname(dirname(dirname(__FILE__))) . "/config/_config.php");
+/*
+ * *****************************************************************************
+ * Contributions to this work were made on behalf of the GÉANT project, a 
+ * project that has received funding from the European Union’s Framework 
+ * Programme 7 under Grant Agreements No. 238875 (GN3) and No. 605243 (GN3plus),
+ * Horizon 2020 research and innovation programme under Grant Agreements No. 
+ * 691567 (GN4-1) and No. 731122 (GN4-2).
+ * On behalf of the aforementioned projects, GEANT Association is the sole owner
+ * of the copyright in all material which was developed by a member of the GÉANT
+ * project. GÉANT Vereniging (Association) is registered with the Chamber of 
+ * Commerce in Amsterdam with registration number 40535155 and operates in the 
+ * UK as a branch of GÉANT Vereniging.
+ * 
+ * Registered office: Hoekenrode 3, 1102BR Amsterdam, The Netherlands. 
+ * UK branch address: City House, 126-130 Hills Road, Cambridge CB2 1PQ, UK
+ *
+ * License: see the web/copyright.inc.php file in the file structure or
+ *          <base_url>/copyright.php after deploying the software
+ */
 
-require_once("CAT.php");
-require_once("IdP.php");
-require_once("Profile.php");
+require_once dirname(dirname(dirname(__FILE__))) . "/config/_config.php";
 
-require_once("inc/common.inc.php");
-require_once("inc/input_validation.inc.php");
-require_once("../resources/inc/header.php");
-require_once("../resources/inc/footer.php");
-require_once("inc/option_parse.inc.php");
-
-require_once('inc/auth.inc.php');
+$auth = new \web\lib\admin\Authentication();
+$deco = new \web\lib\admin\PageDecoration();
+$validator = new \web\lib\common\InputValidation();
+$optionParser = new \web\lib\admin\OptionParser();
 
 // deletion sets its own header-location  - treat with priority before calling default auth
 
-if (isset($_POST['submitbutton']) && $_POST['submitbutton'] == BUTTON_DELETE && isset($_GET['inst_id']) && isset($_GET['profile_id'])) {
-    authenticate();
-    $my_inst = valid_IdP($_GET['inst_id'], $_SESSION['user']);
-    $my_profile = valid_Profile($_GET['profile_id'], $my_inst->identifier);
+$loggerInstance = new \core\common\Logging();
+if (isset($_POST['submitbutton']) && $_POST['submitbutton'] == web\lib\common\FormElements::BUTTON_DELETE && isset($_GET['inst_id']) && isset($_GET['profile_id'])) {
+    $auth->authenticate();
+    $my_inst = $validator->existingIdP($_GET['inst_id'], $_SESSION['user']);
+    $my_profile = $validator->existingProfile($_GET['profile_id'], $my_inst->identifier);
     $profile_id = $my_profile->identifier;
     $my_profile->destroy();
-    CAT::writeAudit($_SESSION['user'], "DEL", "Profile $profile_id");
+    $loggerInstance->writeAudit($_SESSION['user'], "DEL", "Profile $profile_id");
     header("Location: overview_idp.php?inst_id=$my_inst->identifier");
+    exit;
 }
 
-pageheader(sprintf(_("%s: Profile wizard (step 3 completed)"), Config::$APPEARANCE['productname']), "ADMIN-IDP");
+echo $deco->pageheader(sprintf(_("%s: Profile wizard (step 3 completed)"), \config\Master::APPEARANCE['productname']), "ADMIN-IDP");
 
 // check if profile exists and belongs to IdP
 
-$my_inst = valid_IdP($_GET['inst_id'], $_SESSION['user']);
+$my_inst = $validator->existingIdP($_GET['inst_id'], $_SESSION['user']);
 
-$edit_mode = FALSE;
-$my_profile = FALSE;
+$my_profile = NULL;
 
 if (isset($_GET['profile_id'])) {
-    $my_profile = valid_Profile($_GET['profile_id'], $my_inst->identifier);
-    $edit_mode = TRUE;
+    $my_profile = $validator->existingProfile($_GET['profile_id'], $my_inst->identifier);
+    if (!$my_profile instanceof \core\ProfileRADIUS) {
+        throw new Exception("This page should only be called to submit RADIUS Profile information!");
+    }
 }
+
 
 // extended input checks
 
 $realm = FALSE;
-if (isset($_POST['realm']) && $_POST['realm'] != "")
-    $realm = valid_Realm($_POST['realm']);
+if (isset($_POST['realm']) && $_POST['realm'] != "") {
+    $realm = $validator->realm(filter_input(INPUT_POST, 'realm', FILTER_SANITIZE_STRING));
+}
 
 $anon = FALSE;
-if (isset($_POST['anon_support']))
-    $anon = valid_boolean($_POST['anon_support']);
+if (isset($_POST['anon_support'])) {
+    $anon = $validator->boolean($_POST['anon_support']);
+}
 
-$anon_local = "anonymous";
+$anonLocal = "anonymous";
 if (isset($_POST['anon_local'])) {
-    $anon_local = valid_string_db($_POST['anon_local']);
-} else if ($my_profile !== FALSE) { // get the old anon outer id from DB. People don't appreciate "forgetting" it when unchecking anon id
+    $anonLocal = $validator->string(filter_input(INPUT_POST, 'anon_local', FILTER_SANITIZE_STRING));
+} elseif ($my_profile !== NULL) { // get the old anon outer id from DB. People don't appreciate "forgetting" it when unchecking anon id
     $local = $my_profile->getAttributes("internal:anon_local_value");
-    if (isset($local[0]))
-        $anon_local = $local[0]['value'];
+    if (isset($local[0])) {
+        $anonLocal = $local[0]['value'];
+    }
 }
 
 $checkuser = FALSE;
-if (isset($_POST['checkuser_support']))
-    $checkuser = valid_boolean($_POST['checkuser_support']);
-
-$checkuser_name = "anonymous";
-if (isset($_POST['checkuser_local'])) {
-    $checkuser_name = valid_string_db($_POST['checkuser_local']);
-} else if ($my_profile !== FALSE) { // get the old value from profile settings. People don't appreciate "forgetting" it when unchecking
-    $checkuser_name = $my_profile->getAttributes("internal:checkuser_value")[0]['value'];
+if (isset($_POST['checkuser_support'])) {
+    $checkuser = $validator->boolean($_POST['checkuser_support']);
 }
+
+$checkuser_name1 = "anonymous";
+if (isset($_POST['checkuser_local'])) {
+    $checkuser_name1 = $validator->string($_POST['checkuser_local']);
+} elseif ($my_profile !== NULL) { // get the old value from profile settings. People don't appreciate "forgetting" it when unchecking
+    $checkuser_name1 = $my_profile->getAttributes("internal:checkuser_value")[0]['value'];
+}
+// it's a RADIUS username; and it's displayed later on. Be sure it contains no
+// "interesting" HTML characters before further processing
+$checkuser_name = htmlentities($checkuser_name1);
 
 $verify = FALSE;
 $hint = FALSE;
 $redirect = FALSE;
 if (isset($_POST['verify_support'])) {
-    $verify = valid_boolean($_POST['checkuser_support']);
+    $verify = $validator->boolean($_POST['verify_support']);
 }
 if (isset($_POST['hint_support'])) {
-    $hint = valid_boolean($_POST['hint_support']);
+    $hint = $validator->boolean($_POST['hint_support']);
 }
 if (isset($_POST['redirect'])) {
-    $redirect = valid_boolean($_POST['redirect']);
+    $redirect = $validator->boolean($_POST['redirect']);
 }
 
 // did the user submit info? If so, submit to DB and go on to the 'dashboard' or 'next profile' page.
 // if not, what is he doing on this page anyway!
 
-if (isset($_POST['submitbutton']) && $_POST['submitbutton'] == BUTTON_SAVE) {
-    $idpoptions = $my_inst->getAttributes();
+if (isset($_POST['submitbutton']) && $_POST['submitbutton'] == web\lib\common\FormElements::BUTTON_SAVE) {
     // maybe we were asked to edit an existing profile? check for that...
-    if ($edit_mode) {
+    if ($my_profile instanceof \core\AbstractProfile) {
         $profile = $my_profile;
     } else {
-        $profile = $my_inst->newProfile();
-        CAT::writeAudit($_SESSION['user'], "NEW", "IdP " . $my_inst->identifier . " - Profile created");
+        $profile = $my_inst->newProfile(core\AbstractProfile::PROFILETYPE_RADIUS);
+        $loggerInstance->writeAudit($_SESSION['user'], "NEW", "IdP " . $my_inst->identifier . " - Profile created");
     }
 }
 
-if (!$profile instanceof Profile) {
+if (!$profile instanceof \core\ProfileRADIUS) {
     echo _("Darn! Could not get a proper profile handle!");
     exit(1);
 }
-
-$profile->flushSupportedEapMethods();
 ?>
 <h1><?php echo _("Submitted attributes for this profile"); ?></h1>
 <table>
     <?php
+    $uiElements = new web\lib\admin\UIElements();
     // set realm info, if submitted
-    if ($realm != FALSE) {
-        $profile->setRealm($anon_local . "@" . $realm);
-        echo UI_okay(sprintf(_("Realm: <strong>%s</strong>"), $realm));
+    if ($realm !== FALSE) {
+        $profile->setRealm($anonLocal . "@" . $realm);
+        echo $uiElements->boxOkay(sprintf(_("Realm: <strong>%s</strong>"), $realm));
     } else {
         $profile->setRealm("");
     }
     // set anon ID, if submitted
-    if ($anon != FALSE) {
-        if ($realm == FALSE) {
-            echo UI_error(_("Anonymous Outer Identities cannot be turned on: realm is missing!"));
+    if ($anon !== FALSE) {
+        if ($realm === FALSE) {
+            echo $uiElements->boxError(_("Anonymous Outer Identities cannot be turned on: realm is missing!"));
         } else {
             $profile->setAnonymousIDSupport(true);
-            echo UI_okay(sprintf(_("Anonymous Identity support is <strong>%s</strong>, the anonymous outer identity is <strong>%s</strong>"), _("ON"), $profile->realm));
+            echo $uiElements->boxOkay(sprintf(_("Anonymous Identity support is <strong>%s</strong>, the anonymous outer identity is <strong>%s</strong>"), _("ON"), $profile->realm));
         }
     } else {
         $profile->setAnonymousIDSupport(false);
-        echo UI_okay(sprintf(_("Anonymous Identity support is <strong>%s</strong>"), _("OFF")));
+        echo $uiElements->boxOkay(sprintf(_("Anonymous Identity support is <strong>%s</strong>"), _("OFF")));
     }
 
-    if ($checkuser != FALSE) {
-        if ($realm == FALSE) {
-            echo UI_error(_("Realm check username cannot be configured: realm is missing!"));
+    if ($checkuser !== FALSE) {
+        if ($realm === FALSE) {
+            echo $uiElements->boxError(_("Realm check username cannot be configured: realm is missing!"));
         } else {
-            $profile->setRealmcheckUser(true,$checkuser_name);
-            echo UI_okay(sprintf(_("Special username for realm check is <strong>%s</strong>, the value is <strong>%s</strong>"), _("ON"), $checkuser_name."@".$realm));
+            $profile->setRealmcheckUser(true, $checkuser_name);
+            echo $uiElements->boxOkay(sprintf(_("Special username for realm check is <strong>%s</strong>, the value is <strong>%s</strong>"), _("ON"), $checkuser_name . "@" . $realm));
         }
     } else {
         $profile->setRealmCheckUser(false);
-        echo UI_okay(_("No special username for realm checks is configured."));
+        echo $uiElements->boxOkay(_("No special username for realm checks is configured."));
     }
-    
-    if ($verify != FALSE) {
-        if ($realm == FALSE) {
-            echo UI_error(_("Realm check username cannot be configured: realm is missing!"));
+
+    if ($verify !== FALSE) {
+        if ($realm === FALSE) {
+            echo $uiElements->boxError(_("Realm check username cannot be configured: realm is missing!"));
         } else {
-            $profile->setInputVerificationPreference($verify,$hint);
-            if ($hint) {
-                $extratext = " ".sprintf(_("and the input field will be prefilled with '<strong>@%s</strong>'."),$realm);
+            $profile->setInputVerificationPreference($verify, $hint);
+            if ($hint !== FALSE) {
+                $extratext = " " . sprintf(_("and the input field will be prefilled with '<strong>@%s</strong>'."), $realm);
             } else {
                 $extratext = ".";
             }
-            echo UI_okay(sprintf(_("Where possible, username inputs will be <strong>verified to contain an @ and end with %s</strong>%s"), $realm, $extratext));
-            
+            echo $uiElements->boxOkay(sprintf(_("Where possible, username inputs will be <strong>verified to end with @%s</strong>%s"), $realm, $extratext));
         }
     } else {
-        $profile->setInputVerificationPreference(false,false);
+        $profile->setInputVerificationPreference(false, false);
     }
 
+    echo $optionParser->processSubmittedFields($profile, $_POST, $_FILES);
 
-    $remaining_attribs = $profile->beginflushAttributes(0);
-    $killlist = processSubmittedFields($profile, $remaining_attribs);
-    $profile->commitFlushAttributes($killlist);
-
-    if ($redirect != FALSE) {
+    if ($redirect !== FALSE) {
         if (!isset($_POST['redirect_target']) || $_POST['redirect_target'] == "") {
-            echo UI_error(_("Redirection can't be activated - you did not specify a target location!"));
+            echo $uiElements->boxError(_("Redirection can't be activated - you did not specify a target location!"));
+        } elseif (!preg_match("/^(http|https):\/\//", $_POST['redirect_target'])) {
+            echo $uiElements->boxError(_("Redirection can't be activated - the target needs to be a complete URL starting with http:// or https:// !"));
         } else {
-            $profile->addAttribute("device-specific:redirect", serialize(['lang' => 'C', 'content' => $_POST['redirect_target']]));
-            echo UI_okay(sprintf("Redirection set to <strong>%s</strong>", $_POST['redirect_target']));
+            $profile->addAttribute("device-specific:redirect", 'C', $_POST['redirect_target']);
+            // check if there is a device-level redirect which effectively disables profile-level redirect, and warn if so
+            $redirects = $profile->getAttributes("device-specific:redirect");
+            $deviceSpecificFound = FALSE;
+            foreach ($redirects as $oneRedirect) {
+                if ($oneRedirect["level"] == "Method") {
+                    $deviceSpecificFound = TRUE;
+                }
+            }
+            if ($deviceSpecificFound) {
+                echo $uiElements->boxWarning(sprintf(_("Redirection set to <strong>%s</strong>, but will be ignored due to existing device-level redirect."), htmlspecialchars($_POST['redirect_target'])));
+            } else {
+                echo $uiElements->boxOkay(sprintf(_("Redirection set to <strong>%s</strong>"), htmlspecialchars($_POST['redirect_target'])));
+            }
         }
     } else {
-        echo UI_okay(_("Redirection is <strong>OFF</strong>"));
+        echo $uiElements->boxOkay(_("Redirection is <strong>OFF</strong>"));
     }
 
-    CAT::writeAudit($_SESSION['user'], "MOD", "Profile " . $profile->identifier . " - attributes changed");
+    $loggerInstance->writeAudit($_SESSION['user'], "MOD", "Profile " . $profile->identifier . " - attributes changed");
 
     // re-instantiate $profile, we need to do completion checks and need fresh data for isEapTypeDefinitionComplete()
 
-    $profile = new Profile($profile->identifier);
+    $profile = \core\ProfileFactory::instantiate($profile->identifier);
+    if (!$profile instanceof \core\ProfileRADIUS) {
+        throw new Exception("This page handles RADIUS Profiles only. For some reason, a different type of Profile was requested.");
+    }
 
-    foreach (EAP::listKnownEAPTypes() as $a) {
-        if (isset($_POST[display_name($a)]) && isset($_POST[display_name($a) . "-priority"]) && $_POST[display_name($a) . "-priority"] != "") {
+    foreach (\core\common\EAP::listKnownEAPTypes() as $a) {
+        if ($a->getIntegerRep() == \core\common\EAP::INTEGER_SILVERBULLET) { // do not allow adding silverbullet via the backdoor
+            continue;
+        }
+        if (isset($_POST[$a->getPrintableRep()]) && isset($_POST[$a->getPrintableRep() . "-priority"]) && is_numeric($_POST[$a->getPrintableRep() . "-priority"])) {
+            $priority = (int) $_POST[$a->getPrintableRep() . "-priority"];
             // add EAP type to profile as requested, but ...
-            $profile->addSupportedEapMethod($a, $_POST[display_name($a) . "-priority"]);
-            CAT::writeAudit($_SESSION['user'], "MOD", "Profile " . $profile->identifier . " - supported EAP types changed");
+            $profile->addSupportedEapMethod($a, $priority);
+            $loggerInstance->writeAudit($_SESSION['user'], "MOD", "Profile " . $profile->identifier . " - supported EAP types changed");
             // see if we can enable the EAP type, or if info is missing
             $eapcompleteness = $profile->isEapTypeDefinitionComplete($a);
             if ($eapcompleteness === true) {
-                echo UI_okay(_("Supported EAP Type: ") . "<strong>" . display_name($a) . "</strong>");
+                echo $uiElements->boxOkay(_("Supported EAP Type: ") . "<strong>" . $a->getPrintableRep() . "</strong>");
             } else {
                 $warntext = "";
                 if (is_array($eapcompleteness)) {
                     foreach ($eapcompleteness as $item) {
-                        $warntext .= "<strong>" . display_name($item) . "</strong> ";
+                        $warntext .= "<strong>" . $uiElements->displayName($item) . "</strong> ";
                     }
                 }
-                echo UI_warning(sprintf(_("Supported EAP Type: <strong>%s</strong> is missing required information %s !"), display_name($a), $warntext) . "<br/>" . _("The EAP type was added to the profile, but you need to complete the missing information before we can produce installers for you."));
+                echo $uiElements->boxWarning(sprintf(_("Supported EAP Type: <strong>%s</strong> is missing required information %s !"), $a->getPrintableRep(), $warntext) . "<br/>" . _("The EAP type was added to the profile, but you need to complete the missing information before we can produce installers for you."));
             }
         }
     }
     // re-instantiate $profile, we need to do completion checks and need fresh data for isEapTypeDefinitionComplete()
-    $reloadedProfile = new Profile($profile->identifier);
+    $reloadedProfile = \core\ProfileFactory::instantiate($profile->identifier);
     $reloadedProfile->prepShowtime();
     ?>
 </table>
@@ -218,4 +251,4 @@ if (count($reloadedProfile->getEapMethodsinOrderOfPreference(1)) > 0) {
         <button type='submit'>" . _("Continue to Installer Fine-Tuning and Download") . "</button>
     </form>";
 }
-footer();
+echo $deco->footer();

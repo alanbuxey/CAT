@@ -1,42 +1,50 @@
 <?php
-/* * *********************************************************************************
- * (c) 2011-15 GÉANT on behalf of the GN3, GN3plus and GN4 consortia
- * License: see the LICENSE file in the root directory
- * ********************************************************************************* */
+/*
+ * *****************************************************************************
+ * Contributions to this work were made on behalf of the GÉANT project, a 
+ * project that has received funding from the European Union’s Framework 
+ * Programme 7 under Grant Agreements No. 238875 (GN3) and No. 605243 (GN3plus),
+ * Horizon 2020 research and innovation programme under Grant Agreements No. 
+ * 691567 (GN4-1) and No. 731122 (GN4-2).
+ * On behalf of the aforementioned projects, GEANT Association is the sole owner
+ * of the copyright in all material which was developed by a member of the GÉANT
+ * project. GÉANT Vereniging (Association) is registered with the Chamber of 
+ * Commerce in Amsterdam with registration number 40535155 and operates in the 
+ * UK as a branch of GÉANT Vereniging.
+ * 
+ * Registered office: Hoekenrode 3, 1102BR Amsterdam, The Netherlands. 
+ * UK branch address: City House, 126-130 Hills Road, Cambridge CB2 1PQ, UK
+ *
+ * License: see the web/copyright.inc.php file in the file structure or
+ *          <base_url>/copyright.php after deploying the software
+ */
+
+require_once dirname(dirname(dirname(__FILE__))) . "/config/_config.php";
+
+$deco = new \web\lib\admin\PageDecoration();
+$uiElements = new web\lib\admin\UIElements();
+$validator = new \web\lib\common\InputValidation();
+
+echo $deco->defaultPagePrelude(sprintf(_("%s: %s Management"), \config\Master::APPEARANCE['productname'], $uiElements->nomenclatureFed));
+$user = new \core\User($_SESSION['user']);
+require_once "inc/click_button_js.php";
 ?>
-<?php
-require_once(dirname(dirname(dirname(__FILE__))) . "/config/_config.php");
-
-require_once("Helper.php");
-require_once("CAT.php");
-require_once("UserManagement.php");
-require_once("Federation.php");
-require_once("RADIUSTests.php");
-require_once("IdP.php");
-require_once("User.php");
-
-require_once("../resources/inc/header.php");
-require_once("../resources/inc/footer.php");
-require_once("inc/input_validation.inc.php");
-require_once("inc/common.inc.php");
-
-$cat = defaultPagePrelude(sprintf(_("%s: Federation Management"), Config::$APPEARANCE['productname']));
-$user = new User($_SESSION['user']);
-?>
+<script src="js/XHR.js" type="text/javascript"></script>
 <script src="js/popup_redirect.js" type="text/javascript"></script>
 </head>
 <body>
     <?php
-    productheader("FEDERATION", CAT::get_lang());
+    echo $deco->productheader("FEDERATION");
+    $readonly = \config\Master::DB['INST']['readonly'];
     ?>
     <h1>
-        <?php echo _("Federation Overview"); ?>
+        <?php echo sprintf(_("%s Overview"), $uiElements->nomenclatureFed); ?>
     </h1>
 
     <div class="infobox">
         <h2><?php echo _("Your Personal Information"); ?></h2>
         <table>
-            <?php echo infoblock($user->getAttributes(), "user", "User"); ?>
+            <?php echo $uiElements->infoblock($user->getAttributes(), "user", "User"); ?>
             <tr>
                 <td>
                     <?php echo "" . _("Unique Identifier") ?>
@@ -44,28 +52,28 @@ $user = new User($_SESSION['user']);
                 <td>
                 </td>
                 <td>
-                    <span class='tooltip' style='cursor: pointer;' onclick='alert("<?php echo $_SESSION["user"]; ?>")'><?php echo _("click to display"); ?></span>
+                    <span class='tooltip' style='cursor: pointer;' onclick='alert("<?php echo str_replace('\'', '\x27', str_replace('"', '\x22', $_SESSION["user"])); ?>")'><?php echo _("click to display"); ?></span>
                 </td>
             </tr>
         </table>
     </div>
 
     <?php
-    $mgmt = new UserManagement();
+    $mgmt = new \core\UserManagement();
 
     if (!$user->isFederationAdmin()) {
-        echo "<p>" . _("You are not a federation manager.") . "</p>";
-        footer();
+        echo "<p>" . sprintf(_("You are not a %s manager."), $uiElements->nomenclatureFed) . "</p>";
+        echo $deco->footer();
         exit(0);
     }
 
     $feds = $user->getAttributes("user:fedadmin");
     foreach ($feds as $onefed) {
-        $thefed = new Federation(strtoupper($onefed['value']));
+        $thefed = new \core\Federation(strtoupper($onefed['value']));
         ?>
 
         <div class='infobox'><h2>
-                <?php echo sprintf(_("Federation Properties: %s"), strtoupper($thefed->name)); ?>
+                <?php echo sprintf(_("%s Properties: %s"), $uiElements->nomenclatureFed, $thefed->name); ?>
             </h2>
             <table>
                 <!-- fed properties -->
@@ -77,100 +85,151 @@ $user = new User($_SESSION['user']);
                     </td>
                     <td>
                         <strong><?php
-                            echo Federation::$federationList[strtoupper($thefed->name)];
+                            echo $thefed->name;
                             ?></strong>
                     </td>
                 </tr>
                 <?php
-                echo infoblock($thefed->getAttributes(), "fed", "FED");
+                echo $uiElements->infoblock($thefed->getAttributes(), "fed", "FED");
+                if ($readonly === FALSE) {
+                    ?>
+                    <tr>
+                        <td colspan='3' style='text-align:right;'><form action='edit_federation.php' method='POST'><input type="hidden" name='fed_id' value='<?php echo strtoupper($thefed->tld); ?>'/><button type="submit">Edit</button></form></td>
+                    </tr>
+                    <?php
+                }
                 ?>
-                <tr>
-                    <td colspan='3' style='text-align:right;'><form action='edit_federation.php' method='POST'><input type="hidden" name='fed_id' value='<?php echo strtoupper($thefed->name); ?>'/><button type="submit">Edit</button></form></td>
-                </tr>
             </table>
         </div>
         <div class='infobox'>
             <h2>
-                <?php echo sprintf(_("Federation Statistics: %s"), strtoupper($thefed->name)); ?>
+                <?php echo sprintf(_("%s Statistics: %s"), $uiElements->nomenclatureFed, $thefed->name); ?>
             </h2>
             <table>
                 <!-- idp stats -->
                 <tr>
                     <th style='text-align:left;'> <?php echo _("IdPs Total"); ?></th>
-                    <th colspan='2'> <?php echo _("Public Download") ?></th>
+                    <th colspan='3'> <?php echo _("Public Download") ?></th>
                 </tr>
                 <tr>
                     <td> <?php echo count($thefed->listIdentityProviders(0)); ?></td>
-                    <td colspan='2'> <?php echo count($thefed->listIdentityProviders(1)); ?>
+                    <td colspan='3'> <?php echo count($thefed->listIdentityProviders(1)); ?>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan='3'><hr></td>
+                    <td colspan='4'><hr></td>
                 </tr>    
                 <!-- download stats -->
                 <tr>
                     <th style='text-align:left;'> <?php echo _("Downloads"); ?></th>
                     <th style='text-align:left;'> <?php echo _("Admin"); ?></th>
+                    <th style='text-align:left;'> <?php echo \core\ProfileSilverbullet::PRODUCTNAME ?></th>
                     <th style='text-align:left;'> <?php echo _("User"); ?></th>
                 </tr>
-                <?php echo Federation::downloadStats("table", $thefed->name); ?>
+                <?php echo $thefed->downloadStats("table"); ?>
             </table>
         </div>
         <?php
     }
 
     if (isset($_POST['submitbutton']) &&
-            $_POST['submitbutton'] == BUTTON_DELETE &&
+            $_POST['submitbutton'] == web\lib\common\FormElements::BUTTON_DELETE &&
             isset($_POST['invitation_id'])) {
-        $mgmt->invalidateToken($_POST['invitation_id']);
+        $mgmt->invalidateToken(filter_input(INPUT_POST, 'invitation_id', FILTER_SANITIZE_STRING));
     }
 
     if (isset($_GET['invitation'])) {
         echo "<div class='ca-summary' style='position:relative;'><table>";
-
-        if ($_GET['invitation'] == "SUCCESS")
-            echo UI_remark(_("The invitation email was sent successfully."), _("The invitation email was sent."));
-        else if ($_GET['invitation'] == "FAILURE")
-            echo UI_error(_("The invitation email could not be sent!"), _("The invitation email could not be sent!"));
-        else
-            echo UI_error(_("Error: unknown result code of invitation!?!"), _("Unknown result!"));
-
+        $counter = $validator->integer($_GET['successcount']);
+        if ($counter === FALSE) {
+            $counter = 1;
+        }
+        switch ($_GET['invitation']) {
+            case "SUCCESS":
+                $cryptText = "";
+                switch ($_GET['transportsecurity']) {
+                    case "ENCRYPTED":
+                        $cryptText = ngettext("It was sent with transport security (encryption).", "They were sent with transport security (encryption).", $counter);
+                        break;
+                    case "CLEAR":
+                        $cryptText = ngettext("It was sent in clear text (no encryption).", "They were sent in clear text (no encryption).", $counter);
+                        break;
+                    case "PARTIAL":
+                        $cryptText = _("A subset of the mails were sent with transport encryption, the rest in clear text.");
+                        break;
+                    default:
+                        throw new Exception("Error: unknown encryption status of invitation!?!");
+                }
+                echo $uiElements->boxRemark(ngettext("The invitation email was sent successfully.", "All invitation emails were sent successfully.", $counter) . " " . $cryptText, _("Sent successfully."));
+                break;
+            case "FAILURE":
+                echo $uiElements->boxError(_("No invitation email could be sent!"), _("Sending failure!"));
+                break;
+            case "PARTIAL":
+                $cryptText = "";
+                switch ($_GET['transportsecurity']) {
+                    case "ENCRYPTED":
+                        $cryptText = ngettext("The successful one was sent with transport security (encryption).", "The successful ones were sent with transport security (encryption).", $counter);
+                        break;
+                    case "CLEAR":
+                        $cryptText = ngettext("The successful one was sent in clear text (no encryption).", "The successful ones were sent in clear text (no encryption).", $counter);
+                        break;
+                    case "PARTIAL":
+                        $cryptText = _("A subset of the successfully sent mails were sent with transport encryption, the rest in clear text.");
+                        break;
+                    default:
+                        throw new Exception("Error: unknown encryption status of invitation!?!");
+                }
+                echo $uiElements->boxWarning(sprintf(_("Some invitation emails were sent successfully (%s in total), the others failed."), $counter) . " " . $cryptText, _("Partial success."));
+                break;
+            case "INVALIDSYNTAX":
+                echo $uiElements->boxError(_("The invitation email address was malformed, no invitation was sent!"), _("The invitation email address was malformed, no invitation was sent!"));
+                break;
+            default:
+                echo $uiElements->boxError(_("Error: unknown result code of invitation!?!"), _("Unknown result!"));
+        }
         echo "</table></div>";
     }
-    if (Config::$CONSORTIUM['name'] == 'eduroam')
-        $helptext = "<h3>" . sprintf(_("Need help? Refer to the <a href='%s'>Federation Operator manual</a>"),"https://wiki.geant.org/x/KQB_AQ")."</h3>";
-    else
+    if (\config\ConfAssistant::CONSORTIUM['name'] == 'eduroam') {
+        $helptext = "<h3>" . sprintf(_("Need help? Refer to the <a href='%s'>%s manual</a>"), "https://wiki.geant.org/x/fgBwBg", $uiElements->nomenclatureFed) . "</h3>";
+    } else {
         $helptext = "";
-    echo $helptext;
-
+    }
     ?>
     <table class='user_overview' style='border:0px;'>
         <tr>
-            <th colspan="2"><?php echo _("Deployment Status"); ?></th>
-            <th><?php echo _("Institution Name"); ?></th>
+            <th><?php echo _("Deployment Status"); ?></th>
+            <th><?php echo sprintf(_("%s Name"), $uiElements->nomenclatureInst); ?></th>
 
             <?php
-            $feds = $user->getAttributes("user:fedadmin");
             $pending_invites = $mgmt->listPendingInvitations();
 
-            if (Config::$DB['enforce-external-sync'])
-                echo "<th>" . sprintf(_("%s Database Sync Status"), Config::$CONSORTIUM['name']) . "</th>";
+            if (\config\Master::DB['enforce-external-sync']) {
+                echo "<th>" . sprintf(_("%s Database Sync Status"), \config\ConfAssistant::CONSORTIUM['display_name']) . "</th>";
+            }
             ?>
-            <th><?php echo _("Administrator Management"); ?></th>
+            <th>
+                <?php
+                if ($readonly === FALSE) {
+                    echo _("Administrator Management");
+                }
+                ?>
+            </th>
         </tr>
         <?php
         foreach ($feds as $onefed) {
-            $thefed = new Federation(strtoupper($onefed['value']));
-            echo "<tr><td colspan='8'><strong>" . sprintf(_("Your federation %s contains the following institutions: (<a href='%s'>Check their authentication server status</a>)"), '<span style="color:green">' . $thefed::$FederationList[$onefed['value']] . '</span>', "action_fedcheck.php?fed=" . $thefed->name) . "</strong></td></tr>";
+            $thefed = new \core\Federation(strtoupper($onefed['value']));
+            /// nomenclature for 'federation', federation name, nomenclature for 'inst'
+            echo "<tr><td colspan='8'><strong>" . sprintf(_("The following %s are in your %s %s:"), $uiElements->nomenclatureInst, $uiElements->nomenclatureFed, '<span style="color:green">' . $thefed->name . '</span>') . "</strong></td></tr>";
 
             // extract only pending invitations for *this* fed
             $display_pendings = FALSE;
-            foreach ($pending_invites as $oneinvite)
-                if (strtoupper($oneinvite['country']) == strtoupper($thefed->name)) {
+            foreach ($pending_invites as $oneinvite) {
+                if (strtoupper($oneinvite['country']) == strtoupper($thefed->tld)) {
                     // echo "PENDINGS!";
                     $display_pendings = TRUE;
                 }
-
+            }
             $idps = $thefed->listIdentityProviders();
 
             $my_idps = [];
@@ -186,62 +245,47 @@ $user = new User($_SESSION['user']);
                 // deployment status; need to dive into profiles for this
                 // show happy eyeballs if at least one profile is configured/showtime                    
                 echo "<td>";
-                echo ($idp_instance->isOneProfileConfigured() ? "C" : "" ) . " " . ($idp_instance->isOneProfileShowtime() ? "V" : "" );
-                echo "</td>";
-                // get the coarse status overview
-                $status = $idp_instance->getAllProfileStatusOverview();
-                echo "<td>";
-                if ($status['dns'] == RETVAL_INVALID) {
-                    echo UI_error(0, "DNS Error", true);
-                } else {
-                    echo UI_okay(0, "DNS OK", true);
-                }
-                if ($status['cert'] != L_OK && $status['cert'] != RETVAL_SKIPPED) {
-                    echo UI_message($status['cert'], 0, "Cert Error", true);
-                } else {
-                    echo UI_okay(0, "Cert OK", true);
-                }
-                if ($status['reachability'] == RETVAL_INVALID) {
-                    echo UI_error(0, "Reachability Error", true);
-                } else {
-                    echo UI_okay(0, "Reachability OK", true);
-                }
-                if ($status['TLS'] == RETVAL_INVALID) {
-                    echo UI_error(0, "RADIUS/TLS Error", true);
-                } else {
-                    echo UI_okay(0, "RADIUS/TLS OK", true);
-                }
+                echo ($idp_instance->maxProfileStatus() >= \core\IdP::PROFILES_CONFIGURED ? "C" : "" ) . " " . ($idp_instance->maxProfileStatus() >= \core\IdP::PROFILES_SHOWTIME ? "V" : "" );
                 echo "</td>";
                 // name
                 echo "<td>
                          <input type='hidden' name='inst' value='" . $index . "'>" . $idp_instance->name . "
                       </td>";
                 // external DB sync, if configured as being necessary
-                if (Config::$DB['enforce-external-sync']) {
-                    if ($idp_instance->getExternalDBSyncState() != EXTERNAL_DB_SYNCSTATE_NOTSUBJECTTOSYNCING) {
-                        echo "<td>";
-                        echo "<form method='post' action='inc/manageDBLink.inc.php?inst_id=" . $idp_instance->name . "' onsubmit='popupRedirectWindow(this); return false;' accept-charset='UTF-8'>
-                                    <button type='submit'>" . _("Manage DB Link") . "</button> ";
-
-                        if ($idp_instance->getExternalDBSyncState() != EXTERNAL_DB_SYNCSTATE_SYNCED) {
-                            echo "<div class='notacceptable'>" . _("NOT linked") . "</div>";
-                        } else {
-                            echo "<div class='acceptable'>" . _("Linked") . "</div>";
-                        }
-                        echo "</form>";
-                        echo "</td>";
+                if (\config\Master::DB['enforce-external-sync']) {
+                    echo "<td style='display: ruby;'>";
+                    if ($readonly === FALSE) {
+                        echo "<form method='post' action='inc/manageDBLink.inc.php?inst_id=" . $idp_instance->identifier . "' onsubmit='popupRedirectWindow(this); return false;' accept-charset='UTF-8'>
+                                    <button type='submit'>" . _("Manage DB Link") . "</button></form>&nbsp;&nbsp;";
                     }
+                    switch ($idp_instance->getExternalDBSyncState()) {
+                        case \core\IdP::EXTERNAL_DB_SYNCSTATE_NOTSUBJECTTOSYNCING:
+                            break;
+                        case \core\IdP::EXTERNAL_DB_SYNCSTATE_SYNCED:
+                            echo "<div class='acceptable'>" . _("Linked") . "</div>";
+                            break;
+                        case \core\IdP::EXTERNAL_DB_SYNCSTATE_NOT_SYNCED:
+                            echo "<div class='notacceptable'>" . _("NOT linked") . "</div>";
+
+
+                            break;
+                    }
+
+                    echo "</td>";
                 }
+
                 // admin management
-                echo "<td>
-                               <div style='white-space: nowrap;'>
+                echo "<td>";
+                if ($readonly === FALSE) {
+                    echo "<div style='white-space: nowrap;'>
                                   <form method='post' action='inc/manageAdmins.inc.php?inst_id=" . $index . "' onsubmit='popupRedirectWindow(this); return false;' accept-charset='UTF-8'>
                                       <button type='submit'>" .
-                _("Add/Remove Administrators") . "
+                    _("Add/Remove Administrators") . "
                                       </button>
                                   </form>
-                                </div>
-                             </td>";
+                                </div>";
+                }
+                echo "</td>";
                 // end of entry
                 echo "</tr>";
             }
@@ -249,12 +293,12 @@ $user = new User($_SESSION['user']);
                 echo "<tr>
                             <td colspan='2'>
                                <strong>" .
-                _("Pending invitations in your federation:") . "
+                sprintf(_("Pending invitations in the %s:"), $uiElements->nomenclatureFed) . "
                                </strong>
                             </td>
                          </tr>";
-                foreach ($pending_invites as $oneinvite)
-                    if (strtoupper($oneinvite['country']) == strtoupper($thefed->name)) {
+                foreach ($pending_invites as $oneinvite) {
+                    if (strtoupper($oneinvite['country']) == strtoupper($thefed->tld)) {
                         echo "<tr>
                                     <td>" .
                         $oneinvite['name'] . "
@@ -263,25 +307,35 @@ $user = new User($_SESSION['user']);
                         $oneinvite['mail'] . "
                                     </td>
                                     <td colspan=2>";
-                        echo "<form method='post' action='overview_federation.php' accept-charset='UTF-8'>
+                        if ($readonly === FALSE) {
+                            echo "<form method='post' action='overview_federation.php' accept-charset='UTF-8'>
                                 <input type='hidden' name='invitation_id' value='" . $oneinvite['token'] . "'/>
-                                <button class='delete' type='submit' name='submitbutton' value='" . BUTTON_DELETE . "'>" . _("Revoke Invitation") . "</button>
-                              </form>";
+                                <button class='delete' type='submit' name='submitbutton' value='" . web\lib\common\FormElements::BUTTON_DELETE . "'>" . _("Revoke Invitation") . "</button> "
+                              . sprintf(_("(expires %s)"),$oneinvite['expiry'])
+                              .     "</form>";
+                        }
                         echo "      </td>
                                  </tr>";
                     }
+                }
             }
-        };
+        }
         ?>
     </table>
-    <hr/>
-    <br/>
-    <form method='post' action='inc/manageNewInst.inc.php' onsubmit='popupRedirectWindow(this);
-            return false;' accept-charset='UTF-8'>
-        <button type='submit' class='download'>
-            <?php echo _("Register New Institution!"); ?>
-        </button>
-    </form>
-    <br/>
     <?php
-    footer();
+    if ($readonly === FALSE) {
+        ?>
+        <hr/>
+        <br/>
+        <form method='post' action='inc/manageNewInst.inc.php' onsubmit='popupRedirectWindow(this);
+                return false;' accept-charset='UTF-8'>
+            <button type='submit' class='download'>
+                <?php echo sprintf(_("Register a new %s!"), $uiElements->nomenclatureParticipant); ?>
+            </button>
+        </form>
+        <br/>
+        <?php
+    }
+    echo "<hr/>$helptext";
+    echo $deco->footer();
+    

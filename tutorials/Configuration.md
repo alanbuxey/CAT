@@ -7,13 +7,13 @@ The CAT generates installers for numerous operating systems. Consequently, many 
 
 * Apache2 Web Server
 * MySQL/MariaDB Server
-* PHP 7.0.0 or higher; on Ubuntu also the "php7.0-intl" package
+* PHP 7.2.0 or higher; on Ubuntu also the "php7.2-intl" package
 * Required PHP extensions: "gettext", "openssl", "PECL:IMagick", "GD" and "MySQL"
 * Optional PHP extensions: "GeoIP" (deprecated v1 GeoIP API)
-* simpleSAMLphp
-* NSIS 2.46 or higher - either as a native Linux binary or on Wine
+* simpleSAMLphp version 1.17.0 or higher
+* NSIS 3.00 or higher - either as a native Linux binary or on Wine
 * zip
-* wpa_supplicant (eapol_test utility)
+* wpa_supplicant (eapol_test utility, with support for all contemporary EAP methods compiled in - esp. EAP-FAST)
 * OpenSSL
 
 Configuring the required prerequisite packages
@@ -23,6 +23,13 @@ Here are some extra configuration hints for these packages:
 * Operating System
 
 	language display needs the corresponding locales to be installed (check config/config-template.php for the exact list of locales that CAT can support right now)
+	
+	for better entropy for cryptographic operations (important particularly for Managed IdP deployments), be sure to have "haveged" service installed and running
+	
+* MySQL / MariaDB
+
+	the timezone should be set to UTC in my.cnf
+	
 * Apache
 
 	the Directory for installer downloads (configurable, defaults to web/downloads/ ) needs to have "AllowOverrides FileInfo" set
@@ -31,7 +38,15 @@ Here are some extra configuration hints for these packages:
 	
 	the CAT log dir (configurable, defaults to /var/log/CAT/ ) needs to be accessible for writing
 	
-	for general server hardening, the following vhost configuration tokens should be set: "ServerSignature Off" and "ServerTokens ProductOnly"
+	for general server hardening, the following configuration tokens should be set: 
+           - ServerSignature Off
+           - ServerTokens ProductOnly
+           - TraceEnable Off
+
+        the following header directives should be configured:
+           - Header always set x-xss-protection "1; mode=block"
+           - Header always set x-frame-options "SAMEORIGIN"
+           - Header always set x-content-type-options "nosniff"
 	
 	if you want to use client certificates for administrative user authentication, be sure set a sufficiently large SSL Renegotiation Buffer size (e.g. SSLRenegBufferSize 10486000 for 10 MB max. upload size)
 	
@@ -41,16 +56,19 @@ Here are some extra configuration hints for these packages:
 	for general server hardening, the following option should be set in php.ini: "expose_php 0"
 
 	for cookie security, the following options should be set in php.ini: "session.cookie_httponly 1" and "session.cookie_secure 1"
+
+        the extension php-gmp is needed when enabling Silverbullet functionality
+
+	To send mails, PHPMailer v6 needs to be on your system. If your package manager does not provide it, you can download the tarball from GitHub and place it in the directory core/PHPMailer
+
 * simpleSAMLphp
 
 	configure it as a service provider, authenticating towards an IdP of your choice. Attribute mapping is defined in config.php
 * NSIS
 
-	Version 2: needs to have the plug-ins "NsArray", "GetVersion" available
-
-	Version 3: TBD
+	needs to have the plug-in "nsArray"
 	
-	"makensis" needs to be in your $PATH and executable
+	"makensis" needs to be configured in the config/config.php file and executable
 * GeoIP
 
 	API Version 1:
@@ -70,24 +88,38 @@ Here are some extra configuration hints for these packages:
 Installing CAT
 --------------
 1.  unpack the distribution
-2.  create the config/config.php file from the supplied template config-template.php
-3.  create the devices/devices.php file from the supplied template
-4.  on a MySQL/MariaDB server, create the databases as per the schema definition in schema/schema.sql
-5.  make sure that you can connect to that database
-6.  make sure that the web/downloads directory exists and is writeable to the Apache web server user
-7.  make sure that simplesamlphp is installed
-8.  make sure that simplesamlphp openid module is enabled and google (or any IdP of your choice) is uncommented in authsources
-9.  using your browser, check if the main interface is running (web subdirectory)
-10. if so, go to the master management page to have your system prerequisites checked (web/admin/112365365321.php)
+1A. if you use a clone of the Git repo instead, remember to "git submodule --init --recursive" at least for the GEANTlink repo in devices/ms/Files/ (there are more submodules referenced in core/ which you may already have on your system, you should double-check)
+2.  create the config/config-master.php file from the supplied template config-master-template.php
+3.  create the config/config-diagnostics.php and/or config/config-confassistant.php files as needed in the same manner
+4.  create the devices/Devices.php file from the supplied template
+5.  on a MySQL/MariaDB server, create the databases as per the schema definition in schema/schema.sql
+6.  make sure that you can connect to that database
+7.  make sure that the var/installer_cache, var/silverbullet and var/tmp directories exists and are writeable to the Apache web server user
+8.  make sure that simpleSAMLphp is installed
+9.  make sure that simpleSAMLphp openid module is enabled and google (or any IdP of your choice) is uncommented in authsources
+10. using your browser, check if the main interface is running (web subdirectory)
+11. if so, go to the master management page to have your system prerequisites checked (web/admin/112365365321.php)
 
 Configuring CAT
 ---------------
-After creating config.php as above, adapt it to your needs and the realities on your server. A full description of the config options in this file can be read by clicking on "Classes: Config" on the left-hand side. In particular, pay attention to the following:
+After creating config-*.php as above, adapt it to your needs and the realities on your server. In particular, pay attention to the following:
 
-* reference the autoloader of your simpleSAMLphp installation correctly in config.php
+* reference the autoloader of your simpleSAMLphp installation correctly in config-master.php
 * enter the connection details to the database(s)
 
-The device configuration file is in devices/devices.php. There is a template file devices-template.php - you can simply copy it to have a devices.php. Unless you want to disable specific device modules, or have custom ways to digitally sign installers, it is not necessary to change this file.
+The device configuration file is in devices/Devices.php. There is a template file devices-template.php - you can simply copy it to have a Devices.php. Unless you want to disable specific device modules, or have custom ways to digitally sign installers, it is not necessary to change this file.
+
+After logging in with simpleSAMLphp, you should enable protection of the superadmin page. This can be done by editing the config-master "SUPERADMINS" array - remove everything and instead add only the unique identifiers that are supposed to have access to that page.
+
+Similarly, you may want to make yourself the federation administrator for at least one federation. You can do so by adding that privilege to your unique identifier with the following SQL statement in the USER database (in this example, for "LU" -> Luxembourg):
+
+```INSERT INTO user_options (user_id, option_name, option_value) VALUES("<your unique ID>","user:fedadmin","LU");```
+
+Additional configuration for Managed IdP
+----------------------------------------
+* edit the shell script utils/ocsp_update-template.sh to make it point to the location of the OCSP responder.
+* make sure SSH access to the OCSP responder works without user interaction using the configured access details.
+* set up cron job to run the shell script utils/ocsp_update-template.sh regularly (e.g. once per hour)
 
 Customisation / Look and Feel
 -----------------------------

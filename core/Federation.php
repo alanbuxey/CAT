@@ -1,11 +1,24 @@
 <?php
 
-/* * *********************************************************************************
- * (c) 2011-15 GÉANT on behalf of the GN3, GN3plus and GN4 consortia
- * License: see the LICENSE file in the root directory
- * ********************************************************************************* */
-?>
-<?php
+/*
+ * *****************************************************************************
+ * Contributions to this work were made on behalf of the GÉANT project, a 
+ * project that has received funding from the European Union’s Framework 
+ * Programme 7 under Grant Agreements No. 238875 (GN3) and No. 605243 (GN3plus),
+ * Horizon 2020 research and innovation programme under Grant Agreements No. 
+ * 691567 (GN4-1) and No. 731122 (GN4-2).
+ * On behalf of the aforementioned projects, GEANT Association is the sole owner
+ * of the copyright in all material which was developed by a member of the GÉANT
+ * project. GÉANT Vereniging (Association) is registered with the Chamber of 
+ * Commerce in Amsterdam with registration number 40535155 and operates in the 
+ * UK as a branch of GÉANT Vereniging.
+ * 
+ * Registered office: Hoekenrode 3, 1102BR Amsterdam, The Netherlands. 
+ * UK branch address: City House, 126-130 Hills Road, Cambridge CB2 1PQ, UK
+ *
+ * License: see the web/copyright.inc.php file in the file structure or
+ *          <base_url>/copyright.php after deploying the software
+ */
 
 /**
  * This file contains the Federation class.
@@ -16,15 +29,14 @@
  * @package Developer
  * 
  */
-/**
- * necessary includes
- */
-require_once("CAT.php");
-require_once('IdP.php');
-require_once('EntityWithDBProperties.php');
+
+namespace core;
+
+use \Exception;
 
 /**
  * This class represents an consortium federation.
+ * 
  * It is semantically a country(!). Do not confuse this with a TLD; a federation
  * may span more than one TLD, and a TLD may be distributed across multiple federations.
  *
@@ -43,38 +55,71 @@ require_once('EntityWithDBProperties.php');
 class Federation extends EntityWithDBProperties {
 
     /**
-     * all known federation, in an array with ISO short name as an index, and localised version of the pretty-print name as value.
-     * The static value is only filled with meaningful content after the first object has been instantiated. That is because it is not
-     * possible to define static properties with function calls like _().
+     * the handle to the FRONTEND database (only needed for some stats access)
      * 
-     * @var array of all known federations
+     * @var DBConnection
      */
-    public static $federationList = [];
+    private $frontendHandle;
 
-    private static function downloadStatsCore($federationid = NULL) {
+    /**
+     * the top-level domain of the Federation
+     * 
+     * @var string
+     */
+    public $tld;
+
+    /**
+     * retrieve the statistics from the database in an internal array representation
+     * 
+     * @return array
+     */
+    private function downloadStatsCore() {
         $grossAdmin = 0;
         $grossUser = 0;
-
+        $grossSilverbullet = 0;
         $dataArray = [];
-
-        foreach (Devices::listDevices() as $index => $deviceArray) {
-            $query = "SELECT SUM(downloads_admin) AS admin, SUM(downloads_user) AS user FROM downloads, profile, institution WHERE device_id = '$index' AND downloads.profile_id = profile.profile_id AND profile.inst_id = institution.inst_id ";
-            if ($federationid != NULL) {
-                $query .= "AND institution.country = '" . $federationid . "'";
+        // first, find out which profiles belong to this federation
+        $cohesionQuery = "SELECT downloads.device_id as dev_id, sum(downloads.downloads_user) as dl_user, sum(downloads.downloads_silverbullet) as dl_sb, sum(downloads.downloads_admin) as dl_admin FROM profile, institution, downloads WHERE profile.inst_id = institution.inst_id AND institution.country = ? AND profile.profile_id = downloads.profile_id group by device_id";
+        $profilesList = $this->databaseHandle->exec($cohesionQuery, "s", $this->tld);
+        $deviceArray = \devices\Devices::listDevices();
+        // SELECT -> resource, no boolean
+        while ($queryResult = mysqli_fetch_object(/** @scrutinizer ignore-type */ $profilesList)) {
+            if (isset($deviceArray[$queryResult->dev_id])) {
+                $displayName = $deviceArray[$queryResult->dev_id]['display'];
+            } else { // this device has stats, but doesn't exist in current config. We don't even know its display name, so display its raw representation
+                $displayName = sprintf(_("(discontinued) %s"), $queryResult->dev_id);
             }
-            $numberQuery = DBConnection::exec("INST", $query);
-            while ($queryResult = mysqli_fetch_object($numberQuery)) {
-                $dataArray[$deviceArray['display']] = ["ADMIN" => ( $queryResult->admin === NULL ? "0" : $queryResult->admin), "USER" => ($queryResult->user === NULL ? "0" : $queryResult->user)];
-                $grossAdmin = $grossAdmin + $queryResult->admin;
-                $grossUser = $grossUser + $queryResult->user;
-            }
+            $dataArray[$displayName] = ["ADMIN" => $queryResult->dl_admin, "SILVERBULLET" => $queryResult->dl_sb, "USER" => $queryResult->dl_user];
+            $grossAdmin = $grossAdmin + $queryResult->dl_admin;
+            $grossSilverbullet = $grossSilverbullet + $queryResult->dl_sb;
+            $grossUser = $grossUser + $queryResult->dl_user;
         }
-        $dataArray["TOTAL"] = ["ADMIN" => $grossAdmin, "USER" => $grossUser];
+        $dataArray["TOTAL"] = ["ADMIN" => $grossAdmin, "SILVERBULLET" => $grossSilverbullet, "USER" => $grossUser];
         return $dataArray;
     }
 
-    public static function downloadStats($format, $federationid = NULL) {
-        $data = Federation::downloadStatsCore($federationid);
+    /**
+     * when a Federation attribute changes, invalidate caches of all IdPs 
+     * in that federation (e.g. change of fed logo changes the actual 
+     * installers)
+     * 
+     * @return void
+     */
+    public function updateFreshness() {
+        $idplist = $this->listIdentityProviders();
+        foreach ($idplist as $idpDetail) {
+            $idpDetail['instance']->updateFreshness();
+        }
+    }
+
+    /**
+     * gets the download statistics for the federation
+     * @param string $format either as an html *table* or *XML* or *JSON*
+     * @return string|array
+     * @throws Exception
+     */
+    public function downloadStats($format) {
+        $data = $this->downloadStatsCore();
         $retstring = "";
 
         switch ($format) {
@@ -83,23 +128,26 @@ class Federation extends EntityWithDBProperties {
                     if ($device == "TOTAL") {
                         continue;
                     }
-                    $retstring .= "<tr><td>$device</td><td>" . $numbers['ADMIN'] . "</td><td>" . $numbers['USER'] . "</td></tr>";
+                    $retstring .= "<tr><td>$device</td><td>" . $numbers['ADMIN'] . "</td><td>" . $numbers['SILVERBULLET'] . "</td><td>" . $numbers['USER'] . "</td></tr>";
                 }
-                $retstring .= "<tr><td><strong>TOTAL</strong></td><td><strong>" . $data['TOTAL']['ADMIN'] . "</strong></td><td><strong>" . $data['TOTAL']['USER'] . "</strong></td></tr>";
+                $retstring .= "<tr><td><strong>TOTAL</strong></td><td><strong>" . $data['TOTAL']['ADMIN'] . "</strong></td><td><strong>" . $data['TOTAL']['SILVERBULLET'] . "</strong></td><td><strong>" . $data['TOTAL']['USER'] . "</strong></td></tr>";
                 break;
             case "XML":
-                $retstring .= "<federation id='" . ( $federationid == NULL ? "ALL" : $federationid ) . "' ts='" . date("Y-m-d") . "T" . date("H:i:s") . "'>\n";
+                // the calls to date() operate on current date, so there is no chance for a FALSE to be returned. Silencing scrutinizer.
+                $retstring .= "<federation id='$this->tld' ts='" . /** @scrutinizer ignore-type */ date("Y-m-d") . "T" . /** @scrutinizer ignore-type */ date("H:i:s") . "'>\n";
                 foreach ($data as $device => $numbers) {
                     if ($device == "TOTAL") {
                         continue;
                     }
-                    $retstring .= "  <device name='" . $device . "'>\n    <downloads group='admin'>" . $numbers['ADMIN'] . "</downloads>\n    <downloads group='user'>" . $numbers['USER'] . "</downloads>\n  </device>";
+                    $retstring .= "  <device name='" . $device . "'>\n    <downloads group='admin'>" . $numbers['ADMIN'] . "</downloads>\n    <downloads group='managed_idp'>" . $numbers['SILVERBULLET'] . "</downloads>\n    <downloads group='user'>" . $numbers['USER'] . "</downloads>\n  </device>";
                 }
-                $retstring .= "<total>\n  <downloads group='admin'>" . $data['TOTAL']['ADMIN'] . "</downloads>\n  <downloads group='user'>" . $data['TOTAL']['USER'] . "</downloads>\n</total>\n";
+                $retstring .= "<total>\n  <downloads group='admin'>" . $data['TOTAL']['ADMIN'] . "</downloads>\n  <downloads group='managed_idp'>" . $data['TOTAL']['SILVERBULLET'] . "</downloads>\n  <downloads group='user'>" . $data['TOTAL']['USER'] . "</downloads>\n</total>\n";
                 $retstring .= "</federation>";
                 break;
+            case "array":
+                return $data;
             default:
-                return false;
+                throw new Exception("Statistics can be requested only in 'table' or 'XML' format!");
         }
 
         return $retstring;
@@ -109,314 +157,159 @@ class Federation extends EntityWithDBProperties {
      *
      * Constructs a Federation object.
      *
-     * @param string $fedname - textual representation of the Federation object
-     *        Example: "lu" (for Luxembourg)
+     * @param string $fedname textual representation of the Federation object
+     *                        Example: "lu" (for Luxembourg)
+     * @throws Exception
      */
-    public function __construct($fedname = "") {
+    public function __construct($fedname) {
 
         // initialise the superclass variables
 
         $this->databaseType = "INST";
         $this->entityOptionTable = "federation_option";
         $this->entityIdColumn = "federation_id";
-        $this->identifier = $fedname;
-        $this->name = $fedname;
 
-        /* Federations are created in DB with bootstrapFederation, and listed via listFederations
-         */
-        $oldlocale = CAT::set_locale('core');
+        $cat = new CAT();
+        if (!isset($cat->knownFederations[$fedname])) {
+            throw new Exception("This federation is not known to the system!");
+        }
+        $this->identifier = 0; // we do not use the numeric ID of a federation
+        $this->tld = $fedname;
+        $this->name = $cat->knownFederations[$this->tld];
 
-        Federation::$federationList = [
-            'AD' => _("Andorra"),
-            'AT' => _("Austria"),
-            'BE' => _("Belgium"),
-            'BG' => _("Bulgaria"),
-            'CY' => _("Cyprus"),
-            'CZ' => _("Czech Republic"),
-            'DK' => _("Denmark"),
-            'EE' => _("Estonia"),
-            'FI' => _("Finland"),
-            'FR' => _("France"),
-            'DE' => _("Germany"),
-            'GR' => _("Greece"),
-            'HR' => _("Croatia"),
-            'IE' => _("Ireland"),
-            'IS' => _("Iceland"),
-            'IT' => _("Italy"),
-            'HU' => _("Hungary"),
-            'LU' => _("Luxembourg"),
-            'LV' => _("Latvia"),
-            'LT' => _("Lithuania"),
-            'MK' => _("Macedonia"),
-            'RS' => _("Serbia"),
-            'NL' => _("Netherlands"),
-            'NO' => _("Norway"),
-            'PL' => _("Poland"),
-            'PT' => _("Portugal"),
-            'RO' => _("Romania"),
-            'SI' => _("Slovenia"),
-            'ES' => _("Spain"),
-            'SE' => _("Sweden"),
-            'SK' => _("Slovakia"),
-            'CH' => _("Switzerland"),
-            'TR' => _("Turkey"),
-            'UK' => _("United Kingdom"),
-            'TEST' => 'TEST Country',
-            'AU' => _("Australia"),
-            'CA' => _("Canada"),
-            'IL' => _("Israel"),
-            'JP' => _("Japan"),
-            'NZ' => _("New Zealand"),
-            'US' => _("U.S.A."),
-            'BR' => _("Brazil"),
-            'CL' => _("Chile"),
-            'PE' => _("Peru"),
-            'VE' => _("Venezuela"),
-            'DEFAULT' => _("Default"),
-            'AM' => _("Armenia"),
-            'AZ' => _("Azerbaijan"),
-            'BY' => _("Belarus"),
-            'EC' => _("Ecuador"),
-            'HK' => _("Hong Kong"),
-            'KE' => _("Kenya"),
-            'KG' => _("Kyrgyzstan"),
-            'KR' => _("Korea"),
-            'KZ' => _("Kazakhstan"),
-            'MA' => _("Morocco"),
-            'MD' => _("Moldova"),
-            'ME' => _("Montenegro"),
-            'MO' => _("Macau"),
-            'MT' => _("Malta"),
-            'RU' => _("Russia"),
-            'SG' => _("Singapore"),
-            'TH' => _("Thailand"),
-            'TW' => _("Taiwan"),
-            'ZA' => _("South Africa"),
-            'AF' => 'Afghanistan',
-            'AL' => 'Albania',
-            'DZ' => 'Algeria',
-            'AS' => 'American Samoa',
-            'AO' => 'Angola',
-            'AI' => 'Anguilla',
-            'AQ' => 'Antarctica',
-            'AG' => 'Antigua And Barbuda',
-            'AR' => 'Argentina',
-            'AW' => 'Aruba',
-            'BS' => 'Bahamas, The',
-            'BH' => 'Bahrain',
-            'BD' => 'Bangladesh',
-            'BB' => 'Barbados',
-            'BZ' => 'Belize',
-            'BJ' => 'Benin',
-            'BM' => 'Bermuda',
-            'BT' => 'Bhutan',
-            'BO' => 'Bolivia',
-            'BA' => 'Bosnia And Herzegovina',
-            'BW' => 'Botswana',
-            'BV' => 'Bouvet Island',
-            'IO' => 'British Indian Ocean Territory',
-            'BN' => 'Brunei',
-            'BF' => 'Burkina Faso',
-            'MM' => 'Burma',
-            'BI' => 'Burundi',
-            'KH' => 'Cambodia',
-            'CM' => 'Cameroon',
-            'CV' => 'Cape Verde',
-            'KY' => 'Cayman Islands',
-            'CF' => 'Central African Republic',
-            'TD' => 'Chad',
-            'CN' => 'China',
-            'CX' => 'Christmas Island',
-            'CC' => 'Cocos (keeling) Islands',
-            'CO' => 'Colombia',
-            'KM' => 'Comoros',
-            'CG' => 'Congo (brazzaville) ',
-            'CD' => 'Congo (kinshasa)',
-            'CK' => 'Cook Islands',
-            'CR' => 'Costa Rica',
-            'CI' => 'CÃ”te Dâ€™ivoire',
-            'CU' => 'Cuba',
-            'CW' => 'CuraÃ‡ao',
-            'DJ' => 'Djibouti',
-            'DM' => 'Dominica',
-            'DO' => 'Dominican Republic',
-            'EG' => 'Egypt',
-            'SV' => 'El Salvador',
-            'GQ' => 'Equatorial Guinea',
-            'ER' => 'Eritrea',
-            'ET' => 'Ethiopia',
-            'FK' => 'Falkland Islands (islas Malvinas)',
-            'FO' => 'Faroe Islands',
-            'FJ' => 'Fiji',
-            'GF' => 'French Guiana',
-            'PF' => 'French Polynesia',
-            'TF' => 'French Southern And Antarctic Lands',
-            'GA' => 'Gabon',
-            'GM' => 'Gambia, The',
-            'GE' => 'Georgia',
-            'GH' => 'Ghana',
-            'GI' => 'Gibraltar',
-            'GL' => 'Greenland',
-            'GD' => 'Grenada',
-            'GP' => 'Guadeloupe',
-            'GU' => 'Guam',
-            'GT' => 'Guatemala',
-            'GG' => 'Guernsey',
-            'GN' => 'Guinea',
-            'GW' => 'Guinea-bissau',
-            'GY' => 'Guyana',
-            'HT' => 'Haiti',
-            'HM' => 'Heard Island And Mcdonald Islands',
-            'HN' => 'Honduras',
-            'IN' => 'India',
-            'ID' => 'Indonesia',
-            'IR' => 'Iran',
-            'IQ' => 'Iraq',
-            'IM' => 'Isle Of Man',
-            'JM' => 'Jamaica',
-            'JE' => 'Jersey',
-            'JO' => 'Jordan',
-            'KI' => 'Kiribati',
-            'KP' => 'Korea, North',
-            'KW' => 'Kuwait',
-            'LA' => 'Laos',
-            'LB' => 'Lebanon',
-            'LS' => 'Lesotho',
-            'LR' => 'Liberia',
-            'LY' => 'Libya',
-            'LI' => 'Liechtenstein',
-            'MG' => 'Madagascar',
-            'MW' => 'Malawi',
-            'MY' => 'Malaysia',
-            'MV' => 'Maldives',
-            'ML' => 'Mali',
-            'MH' => 'Marshall Islands',
-            'MQ' => 'Martinique',
-            'MR' => 'Mauritania',
-            'MU' => 'Mauritius',
-            'YT' => 'Mayotte',
-            'MX' => 'Mexico',
-            'FM' => 'Micronesia, Federated States Of',
-            'MC' => 'Monaco',
-            'MN' => 'Mongolia',
-            'MS' => 'Montserrat',
-            'MZ' => 'Mozambique',
-            'NA' => 'Namibia',
-            'NR' => 'Nauru',
-            'NP' => 'Nepal',
-            'NC' => 'New Caledonia',
-            'NI' => 'Nicaragua',
-            'NE' => 'Niger',
-            'NG' => 'Nigeria',
-            'NU' => 'Niue',
-            'NF' => 'Norfolk Island',
-            'MP' => 'Northern Mariana Islands',
-            'OM' => 'Oman',
-            'PK' => 'Pakistan',
-            'PW' => 'Palau',
-            'PA' => 'Panama',
-            'PG' => 'Papua New Guinea',
-            'PY' => 'Paraguay',
-            'PH' => 'Philippines',
-            'PN' => 'Pitcairn Islands',
-            'PR' => 'Puerto Rico',
-            'QA' => 'Qatar',
-            'RE' => 'Reunion',
-            'RW' => 'Rwanda',
-            'BL' => 'Saint Barthelemy',
-            'SH' => 'Saint Helena, Ascension, And Tristan Da Cunha',
-            'KN' => 'Saint Kitts And Nevis',
-            'LC' => 'Saint Lucia',
-            'MF' => 'Saint Martin',
-            'PM' => 'Saint Pierre And Miquelon',
-            'VC' => 'Saint Vincent And The Grenadines',
-            'WS' => 'Samoa',
-            'SM' => 'San Marino',
-            'ST' => 'Sao Tome And Principe',
-            'SA' => 'Saudi Arabia',
-            'SN' => 'Senegal',
-            'SC' => 'Seychelles',
-            'SL' => 'Sierra Leone',
-            'SX' => 'Sint Maarten',
-            'SB' => 'Solomon Islands',
-            'SO' => 'Somalia',
-            'GS' => 'South Georgia And South Sandwich Islands',
-            'SS' => 'South Sudan',
-            'LK' => 'Sri Lanka',
-            'SD' => 'Sudan',
-            'SR' => 'Suriname',
-            'SZ' => 'Swaziland',
-            'SY' => 'Syria',
-            'TJ' => 'Tajikistan',
-            'TZ' => 'Tanzania',
-            'TL' => 'Timor-leste',
-            'TG' => 'Togo',
-            'TK' => 'Tokelau',
-            'TO' => 'Tonga',
-            'TT' => 'Trinidad And Tobago',
-            'TN' => 'Tunisia',
-            'TM' => 'Turkmenistan',
-            'TC' => 'Turks And Caicos Islands',
-            'TV' => 'Tuvalu',
-            'UG' => 'Uganda',
-            'UA' => 'Ukraine',
-            'AE' => 'United Arab Emirates',
-            'GB' => 'United Kingdom',
-            'UY' => 'Uruguay',
-            'UZ' => 'Uzbekistan',
-            'VU' => 'Vanuatu',
-            'VA' => 'Vatican City',
-            'VN' => 'Vietnam',
-            'VG' => 'Virgin Islands, British',
-            'VI' => 'Virgin Islands, United States ',
-            'WF' => 'Wallis And Futuna',
-            'EH' => 'Western Sahara',
-            'YE' => 'Yemen',
-            'ZM' => 'Zambia',
-            'ZW' => 'Zimbabwe',
-        ];
+        parent::__construct(); // we now have access to our database handle
 
-        CAT::set_locale($oldlocale);
+        $this->frontendHandle = DBConnection::handle("FRONTEND");
 
         // fetch attributes from DB; populates $this->attributes array
-        $this->attributes = $this->retrieveOptionsFromDatabase("SELECT DISTINCT option_name,option_value, row 
+        $this->attributes = $this->retrieveOptionsFromDatabase("SELECT DISTINCT option_name, option_lang, option_value, row 
                                             FROM $this->entityOptionTable
-                                            WHERE $this->entityIdColumn = '$this->name' 
+                                            WHERE $this->entityIdColumn = ?
                                             ORDER BY option_name", "FED");
 
 
         $this->attributes[] = array("name" => "internal:country",
-            "value" => $this->name,
+            "lang" => NULL,
+            "value" => $this->tld,
             "level" => "FED",
             "row" => 0,
             "flag" => NULL);
+
+        if (\config\Master::FUNCTIONALITY_LOCATIONS['CONFASSISTANT_RADIUS'] != 'LOCAL' && \config\Master::FUNCTIONALITY_LOCATIONS['CONFASSISTANT_SILVERBULLET'] == 'LOCAL') {
+            // this instance exclusively does SB, so it is not necessary to ask
+            // fed ops whether they want to enable it or not. So always add it
+            // to the list of fed attributes
+            $this->attributes[] = array("name" => "fed:silverbullet",
+                "lang" => NULL,
+                "value" => "on",
+                "level" => "FED",
+                "row" => 0,
+                "flag" => NULL);
+        }
+
+        $this->idpListActive = [];
+        $this->idpListAll = [];
     }
 
     /**
      * Creates a new IdP inside the federation.
      * 
-     * @param string $ownerId Persistent identifier of the user for whom this IdP is created (first administrator)
-     * @param string $level Privilege level of the first administrator (was he blessed by a federation admin or a peer?)
-     * @param string $mail e-mail address with which the user was invited to administer (useful for later user identification if the user chooses a "funny" real name)
-     * @return int identifier of the new IdP
+     * @param string $type          type of institution - IdP, SP or IdPSP
+     * @param string $ownerId       Persistent identifier of the user for whom this IdP is created (first administrator)
+     * @param string $level         Privilege level of the first administrator (was he blessed by a federation admin or a peer?)
+     * @param string $mail          e-mail address with which the user was invited to administer (useful for later user identification if the user chooses a "funny" real name)
+     * @param string $bestnameguess name of the IdP, if already known, in the best-match language
+     * @return integer identifier of the new IdP
+     * @throws Exception
      */
-    public function newIdP($ownerId, $level, $mail) {
-        DBConnection::exec($this->databaseType, "INSERT INTO institution (country) VALUES('$this->name')");
-        $identifier = DBConnection::lastID($this->databaseType);
-        if ($identifier == 0 || !CAT::writeAudit($ownerId, "NEW", "IdP $identifier")) {
-            echo "<p>" . _("Could not create a new Institution!") . "</p>";
-            throw new Exception("Could not create a new Institution!");
-        }
-        // escape all strings
-        $escapedOwnerId = DBConnection::escapeValue($this->databaseType, $ownerId);
-        $escapedLevel = DBConnection::escapeValue($this->databaseType, $level);
-        $escapedMail = DBConnection::escapeValue($this->databaseType, $mail);
+    public function newIdP($type, $ownerId, $level, $mail = NULL, $bestnameguess = NULL) {
+        $this->databaseHandle->exec("INSERT INTO institution (country, type) VALUES('$this->tld', '$type')");
+        $identifier = $this->databaseHandle->lastID();
 
-        if ($escapedOwnerId != "PENDING") {
-            DBConnection::exec($this->databaseType, "INSERT INTO ownership (user_id,institution_id, blesslevel, orig_mail) VALUES('$escapedOwnerId', $identifier, '$escapedLevel', '$escapedMail')");
+        if ($identifier == 0 || !$this->loggerInstance->writeAudit($ownerId, "NEW", "Organisation $identifier")) {
+            $text = "<p>Could not create a new " . \config\ConfAssistant::CONSORTIUM['nomenclature_inst'] . "!</p>";
+            echo $text;
+            throw new Exception($text);
         }
+
+        if ($ownerId != "PENDING") {
+            if ($mail === NULL) {
+                throw new Exception("New IdPs in a federation need a mail address UNLESS created by API without OwnerId");
+            }
+            $this->databaseHandle->exec("INSERT INTO ownership (user_id,institution_id, blesslevel, orig_mail) VALUES(?,?,?,?)", "siss", $ownerId, $identifier, $level, $mail);
+        }
+        if ($bestnameguess === NULL) {
+            $bestnameguess = "(no name yet, identifier $identifier)";
+        }
+        $admins = $this->listFederationAdmins();
+
+        switch ($type) {
+            case ExternalEduroamDBData::TYPE_IDP:
+                $prettyPrintType = common\Entity::$nomenclature_inst;
+                break;
+            case ExternalEduroamDBData::TYPE_SP:
+                $prettyPrintType = common\Entity::$nomenclature_hotspot;
+                break;
+            default:
+                /// IdP and SP
+                $prettyPrintType = sprintf(_("%s and %s"), common\Entity::$nomenclature_inst, common\Entity::$nomenclature_hotspot);
+        }
+
+        $consortium = \config\ConfAssistant::CONSORTIUM['display_name'];
+        $productShort = \config\Master::APPEARANCE['productname'];
+        $productLong = \config\Master::APPEARANCE['productname_long'];
+        // notify the fed admins...
+
+        foreach ($admins as $id) {
+            $user = new User($id);
+            /// arguments are: 1. nomenclature for the type of organisation being created (IdP/SP/both)
+            ///                2. IdP name; 
+            ///                3. consortium name (e.g. eduroam); 
+            ///                4. federation shortname, e.g. "LU"; 
+            ///                5. nomenclature for "institution"
+            ///                6. product name (e.g. eduroam CAT); 
+            ///                7. product long name (e.g. eduroam Configuration Assistant Tool)
+            $message = sprintf(_("Hi,
+
+the invitation for the new %s %s in your %s federation %s has been used and the IdP was created in %s.
+
+We thought you might want to know.
+
+Best regards,
+
+%s"), 
+                    $prettyPrintType,
+                    $bestnameguess,
+                    $consortium,
+                    strtoupper($this->tld),
+                    common\Entity::$nomenclature_participant,
+                    $productShort,
+                    $productLong);
+            /// organisation
+            $retval = $user->sendMailToUser(sprintf(_("%s in your federation was created"), common\Entity::$nomenclature_participant), $message);
+            if ($retval === FALSE) {
+                $this->loggerInstance->debug(2, "Mail to federation admin was NOT sent!\n");
+            }
+        }
+
         return $identifier;
     }
+
+    /**
+     * list of all institutions. Fetched once from the DB and then stored in
+     * this variable
+     * 
+     * @var array
+     */
+    private $idpListAll;
+    
+    /**
+     * list of all active institutions. Fetched once from the DB and then stored
+     * in this variable
+     * 
+     * @var array
+     */
+    private $idpListActive;
 
     /**
      * Lists all Identity Providers in this federation
@@ -426,21 +319,29 @@ class Federation extends EntityWithDBProperties {
      *
      */
     public function listIdentityProviders($activeOnly = 0) {
+        // maybe we did this exercise before?
+        if ($activeOnly != 0 && count($this->idpListActive) > 0) {
+            return $this->idpListActive;
+        }
+        if ($activeOnly == 0 && count($this->idpListAll) > 0) {
+            return $this->idpListAll;
+        }
         // default query is:
-        $allIDPs = DBConnection::exec($this->databaseType, "SELECT inst_id FROM institution
-               WHERE country = '$this->name' ORDER BY inst_id");
+        $allIDPs = $this->databaseHandle->exec("SELECT inst_id FROM institution
+               WHERE country = '$this->tld' ORDER BY inst_id");
         // the one for activeOnly is much more complex:
         if ($activeOnly) {
-            $allIDPs = DBConnection::exec($this->databaseType, "SELECT distinct institution.inst_id AS inst_id
+            $allIDPs = $this->databaseHandle->exec("SELECT distinct institution.inst_id AS inst_id
                FROM institution
                JOIN profile ON institution.inst_id = profile.inst_id
-               WHERE institution.country = '$this->name' 
+               WHERE institution.country = '$this->tld' 
                AND profile.showtime = 1
                ORDER BY inst_id");
         }
 
         $returnarray = [];
-        while ($idpQuery = mysqli_fetch_object($allIDPs)) {
+        // SELECT -> resource, not boolean
+        while ($idpQuery = mysqli_fetch_object(/** @scrutinizer ignore-type */ $allIDPs)) {
             $idp = new IdP($idpQuery->inst_id);
             $name = $idp->name;
             $idpInfo = ['entityID' => $idp->identifier,
@@ -449,190 +350,137 @@ class Federation extends EntityWithDBProperties {
                 'instance' => $idp];
             $returnarray[$idp->identifier] = $idpInfo;
         }
+        if ($activeOnly != 0) { // we're only doing this once.
+            $this->idpListActive = $returnarray;
+        } else {
+            $this->idpListAll = $returnarray;
+        }
         return $returnarray;
     }
 
+    /**
+     * returns an array with information about the authorised administrators of the federation
+     * 
+     * @return array list of the admins of this federation
+     */
     public function listFederationAdmins() {
         $returnarray = [];
-        $query = "SELECT user_id FROM user_options WHERE option_name = 'user:fedadmin' AND option_value = '" . strtoupper($this->name) . "'";
-        if (Config::$CONSORTIUM['name'] == "eduroam" && isset(Config::$CONSORTIUM['deployment-voodoo']) && Config::$CONSORTIUM['deployment-voodoo'] == "Operations Team") { // SW: APPROVED
-            $query = "SELECT eptid as user_id FROM view_admin WHERE role = 'fedadmin' AND realm = '" . strtolower($this->name) . "'";
+        $query = "SELECT user_id FROM user_options WHERE option_name = 'user:fedadmin' AND option_value = ?";
+        if (\config\ConfAssistant::CONSORTIUM['name'] == "eduroam" && isset(\config\ConfAssistant::CONSORTIUM['deployment-voodoo']) && \config\ConfAssistant::CONSORTIUM['deployment-voodoo'] == "Operations Team") { // SW: APPROVED
+            $query = "SELECT eptid as user_id FROM view_admin WHERE role = 'fedadmin' AND realm = ?";
         }
+        $userHandle = DBConnection::handle("USER"); // we need something from the USER database for a change
+        $upperFed = strtoupper($this->tld);
+        // SELECT -> resource, not boolean
+        $admins = $userHandle->exec($query, "s", $upperFed);
 
-        $admins = DBConnection::exec("USER", $query);
-
-        while ($fedAdminQuery = mysqli_fetch_object($admins)) {
+        while ($fedAdminQuery = mysqli_fetch_object(/** @scrutinizer ignore-type */ $admins)) {
             $returnarray[] = $fedAdminQuery->user_id;
         }
         return $returnarray;
     }
-
-    public function listExternalEntities($unmappedOnly) {
+    
+    /**
+     * cross-checks in the EXTERNAL customer DB which institutions exist there for the federations
+     * 
+     * @param bool   $unmappedOnly if set to TRUE, only returns those which do not have a known mapping to our internally known institutions
+     * @param string $type         which type of entity to search for
+     * @return array
+     */
+    public function listExternalEntities($unmappedOnly, $type = NULL) {
+        $allExternals = [];
+        $usedarray = [];
         $returnarray = [];
-        $countrysuffix = "";
-
-        if ($this->name != "") {
-            $countrysuffix = " WHERE country = '" . strtolower($this->name) . "'";
-        }
-
-        if (Config::$CONSORTIUM['name'] == "eduroam" && isset(Config::$CONSORTIUM['deployment-voodoo']) && Config::$CONSORTIUM['deployment-voodoo'] == "Operations Team") { // SW: APPROVED
-            $usedarray = [];
-            $externals = DBConnection::exec("EXTERNAL", "SELECT id_institution AS id, country, inst_realm as realmlist, name AS collapsed_name, contact AS collapsed_contact 
-                                                                                FROM view_active_idp_institution $countrysuffix");
-            $alreadyUsed = DBConnection::exec($this->databaseType, "SELECT DISTINCT external_db_id FROM institution 
+        if ($unmappedOnly) { // find out which entities are already mapped
+            $syncstate = IdP::EXTERNAL_DB_SYNCSTATE_SYNCED;
+            $alreadyUsed = $this->databaseHandle->exec("SELECT DISTINCT external_db_id FROM institution 
                                                                                                      WHERE external_db_id IS NOT NULL 
-                                                                                                     AND external_db_syncstate = " . EXTERNAL_DB_SYNCSTATE_SYNCED);
-            $pendingInvite = DBConnection::exec($this->databaseType, "SELECT DISTINCT external_db_uniquehandle FROM invitations 
+                                                                                                     AND external_db_syncstate = ?", "i", $syncstate);
+            $pendingInvite = $this->databaseHandle->exec("SELECT DISTINCT external_db_uniquehandle FROM invitations 
                                                                                                       WHERE external_db_uniquehandle IS NOT NULL 
                                                                                                       AND invite_created >= TIMESTAMPADD(DAY, -1, NOW()) 
                                                                                                       AND used = 0");
-            while ($alreadyUsedQuery = mysqli_fetch_object($alreadyUsed)) {
+            // SELECT -> resource, no boolean
+            while ($alreadyUsedQuery = mysqli_fetch_object(/** @scrutinizer ignore-type */ $alreadyUsed)) {
                 $usedarray[] = $alreadyUsedQuery->external_db_id;
             }
-            while ($pendingInviteQuery = mysqli_fetch_object($pendingInvite)) {
+            // SELECT -> resource, no boolean
+            while ($pendingInviteQuery = mysqli_fetch_object(/** @scrutinizer ignore-type */ $pendingInvite)) {
                 if (!in_array($pendingInviteQuery->external_db_uniquehandle, $usedarray)) {
                     $usedarray[] = $pendingInviteQuery->external_db_uniquehandle;
                 }
             }
-            while ($externalQuery = mysqli_fetch_object($externals)) {
-                if (($unmappedOnly === TRUE) && (in_array($externalQuery->id, $usedarray))) {
-                    continue;
-                }
-                $names = explode('#', $externalQuery->collapsed_name);
-                // trim name list to current best language match
-                $availableLanguages = [];
-                foreach ($names as $name) {
-                    $thislang = explode(': ', $name, 2);
-                    $availableLanguages[$thislang[0]] = $thislang[1];
-                }
-                if (array_key_exists(CAT::get_lang(), $availableLanguages)) {
-                    $thelangauge = $availableLanguages[CAT::get_lang()];
-                } else if (array_key_exists("en", $availableLanguages)) {
-                    $thelangauge = $availableLanguages["en"];
-                } else { // whatever. Pick one out of the list
-                    $thelangauge = array_pop($availableLanguages);
-                }
-                $contacts = explode('#', $externalQuery->collapsed_contact);
-
-
-                $mailnames = "";
-                foreach ($contacts as $contact) {
-                    $matches = [];
-                    preg_match("/^n: (.*), e: (.*), p: .*$/", $contact, $matches);
-                    if ($matches[2] != "") {
-                        if ($mailnames != "") {
-                            $mailnames .= ", ";
-                        }
-                        // extracting real names is nice, but the <> notation
-                        // really gets screwed up on POSTs and HTML safety
-                        // so better not do this; use only mail addresses
-                        // keeping the old codeline in case we revive this
-                        // $mailnames .= '"'.$matches[1].'" <'.$matches[2].'>';
-                        $mailnames .= $matches[2];
-                    }
-                }
-                $returnarray[] = ["ID" => $externalQuery->id, "name" => $thelangauge, "contactlist" => $mailnames, "country" => $externalQuery->country, "realmlist" => $externalQuery->realmlist];
-            }
         }
 
+        if (\config\ConfAssistant::CONSORTIUM['name'] == "eduroam" && isset(\config\ConfAssistant::CONSORTIUM['deployment-voodoo']) && \config\ConfAssistant::CONSORTIUM['deployment-voodoo'] == "Operations Team") { // SW: APPROVED
+            $externalDB = CAT::determineExternalConnection();
+            // need to convert our internal notion of participant types to those of eduroam DB
+            $allExternals = $externalDB->listExternalEntities($this->tld, $type);
+        }
+        foreach ($allExternals as $oneExternal) {
+            if (!in_array($oneExternal["ID"], $usedarray)) {
+                $returnarray[] = $oneExternal;
+            }
+        }
         return $returnarray;
     }
 
-    public static function getExternalDBEntityDetails($externalId, $realm = NULL) {
-        $list = [];
-        if (Config::$CONSORTIUM['name'] == "eduroam" && isset(Config::$CONSORTIUM['deployment-voodoo']) && Config::$CONSORTIUM['deployment-voodoo'] == "Operations Team") { // SW: APPROVED
-            $scanforrealm = "";
-            if ($realm !== NULL) {
-                $scanforrealm = "OR inst_realm LIKE '%$realm%'";
-            }
-            $infoList = DBConnection::exec("EXTERNAL", "SELECT name AS collapsed_name, inst_realm as realmlist, contact AS collapsed_contact, country FROM view_active_idp_institution WHERE id_institution = $externalId $scanforrealm");
-            // split names and contacts into proper pairs
-            while ($externalEntityQuery = mysqli_fetch_object($infoList)) {
-                $names = explode('#', $externalEntityQuery->collapsed_name);
-                foreach ($names as $name) {
-                    $perlang = explode(': ', $name, 2);
-                    $list['names'][$perlang[0]] = $perlang[1];
-                }
-                $contacts = explode('#', $externalEntityQuery->collapsed_contact);
-                foreach ($contacts as $contact) {
-                    $email1 = explode('e: ', $contact);
-                    $email2 = explode(',', $email1[1]);
-                    $list['admins'][] = ["email" => $email2[0]];
-                }
-                $list['country'] = $externalEntityQuery->country;
-                $list['realmlist'] = $externalEntityQuery->realmlist;
+    const UNKNOWN_IDP = -1;
+    const AMBIGUOUS_IDP = -2;
+
+    /**
+     * for a MySQL list of institutions, find an institution or find out that
+     * there is no single best match
+     * 
+     * @param \mysqli_result $dbResult the query object to work with
+     * @param string         $country  used to return the country of the inst, if can be found out
+     * @return int the identifier of the inst, or one of the special return values if unsuccessful
+     */
+    private static function findCandidates(\mysqli_result $dbResult, &$country) {
+        $retArray = [];
+        while ($row = mysqli_fetch_object($dbResult)) {
+            if (!in_array($row->id, $retArray)) {
+                $retArray[] = $row->id;
+                $country = strtoupper($row->country);
             }
         }
-        return $list;
+        if (count($retArray) <= 0) {
+            return Federation::UNKNOWN_IDP;
+        }
+        if (count($retArray) > 1) {
+            return Federation::AMBIGUOUS_IDP;
+        }
+
+        return array_pop($retArray);
     }
 
     /**
-     * Lists all identity providers in the database
-     * adding information required by DiscoJuice.
-     * @param int $activeOnly if and set to non-zero will
-     * cause listing of only those institutions which have some valid profiles defined.
-     *
+     * If we are running diagnostics, our input from the user is the realm. We
+     * need to find out which IdP this realm belongs to.
+     * @param string $realm the realm to search for
+     * @return array an array with two entries, CAT ID and DB ID, with either the respective ID of the IdP in the system, or UNKNOWN_IDP or AMBIGUOUS_IDP
      */
-    public static function listAllIdentityProviders($activeOnly = 0, $country = 0) {
-        DBConnection::exec("INST", "SET SESSION group_concat_max_len=10000");
-        $query = "SELECT distinct institution.inst_id AS inst_id, institution.country AS country,
-                     group_concat(concat_ws('===',institution_option.option_name,LEFT(institution_option.option_value,200)) separator '---') AS options
-                     FROM institution ";
-        if ($activeOnly == 1) {
-            $query .= "JOIN profile ON institution.inst_id = profile.inst_id ";
-        }
-        $query .= "JOIN institution_option ON institution.inst_id = institution_option.institution_id ";
-        $query .= "WHERE (institution_option.option_name = 'general:instname' 
-                          OR institution_option.option_name = 'general:geo_coordinates'
-                          OR institution_option.option_name = 'general:logo_file') ";
-        if ($activeOnly == 1) {
-            $query .= "AND profile.showtime = 1 ";
-        }
-        if ($country) {
-            // escape the parameter
-            $country = DBConnection::escapeValue("INST", $country);
-            $query .= "AND institution.country = '$country' ";
-        }
-        $query .= "GROUP BY institution.inst_id ORDER BY inst_id";
-        $allIDPs = DBConnection::exec("INST", $query);
-        $returnarray = [];
-        while ($queryResult = mysqli_fetch_object($allIDPs)) {
-            $institutionOptions = explode('---', $queryResult->options);
-            $oneInstitutionResult = [];
-            $geo = [];
-            $names = [];
+    public static function determineIdPIdByRealm($realm) {
+        $country = NULL;
+        $candidatesExternalDb = Federation::UNKNOWN_IDP;
+        $dbHandle = DBConnection::handle("INST");
+        $realmSearchStringCat = "%@$realm";
+        $candidateCatQuery = $dbHandle->exec("SELECT p.profile_id as id, i.country as country FROM profile p, institution i WHERE p.inst_id = i.inst_id AND p.realm LIKE ?", "s", $realmSearchStringCat);
+        // this is a SELECT returning a resource, not a boolean
+        $candidatesCat = Federation::findCandidates(/** @scrutinizer ignore-type */ $candidateCatQuery, $country);
 
-            $oneInstitutionResult['entityID'] = $queryResult->inst_id;
-            $oneInstitutionResult['country'] = strtoupper($queryResult->country);
-            foreach ($institutionOptions as $institutionOption) {
-                $opt = explode('===', $institutionOption);
-                switch ($opt[0]) {
-                    case 'general:logo_file':
-                        $oneInstitutionResult['icon'] = $queryResult->inst_id;
-                        break;
-                    case 'general:geo_coordinates':
-                        $at1 = unserialize($opt[1]);
-                        $geo[] = $at1;
-                        break;
-                    case 'general:instname':
-                        $names[] = ['value' => $opt[1]];
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            $name = _("Unnamed Entity");
-            if (count($names) != 0) {
-                $name = getLocalisedValue($names, CAT::get_lang());
-            }
-            $oneInstitutionResult['title'] = $name;
-            if (count($geo) > 0) {
-                $oneInstitutionResult['geo'] = $geo;
-            }
-            $returnarray[] = $oneInstitutionResult;
+        if (\config\ConfAssistant::CONSORTIUM['name'] == "eduroam" && isset(\config\ConfAssistant::CONSORTIUM['deployment-voodoo']) && \config\ConfAssistant::CONSORTIUM['deployment-voodoo'] == "Operations Team") { // SW: APPROVED        
+            $externalHandle = DBConnection::handle("EXTERNAL");
+            $realmSearchStringDb1 = "$realm";
+            $realmSearchStringDb2 = "%,$realm";
+            $realmSearchStringDb3 = "$realm,%";
+            $realmSearchStringDb4 = "%,$realm,%";
+            $candidateExternalQuery = $externalHandle->exec("SELECT id_institution as id, country FROM view_active_idp_institution WHERE inst_realm LIKE ? or inst_realm LIKE ? or inst_realm LIKE ? or inst_realm LIKE ?", "ssss", $realmSearchStringDb1, $realmSearchStringDb2, $realmSearchStringDb3, $realmSearchStringDb4);
+            // SELECT -> resource, not boolean
+            $candidatesExternalDb = Federation::findCandidates(/** @scrutinizer ignore-type */ $candidateExternalQuery, $country);
         }
-        return $returnarray;
+
+        return ["CAT" => $candidatesCat, "EXTERNAL" => $candidatesExternalDb, "FEDERATION" => $country];
     }
 
 }

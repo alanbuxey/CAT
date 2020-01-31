@@ -1,13 +1,29 @@
 <?php
-/***********************************************************************************
- * (c) 2011-15 GÉANT on behalf of the GN3, GN3plus and GN4 consortia
- * License: see the LICENSE file in the root directory
- ***********************************************************************************/
-?>
-<?php
+
+/*
+ * *****************************************************************************
+ * Contributions to this work were made on behalf of the GÉANT project, a 
+ * project that has received funding from the European Union’s Framework 
+ * Programme 7 under Grant Agreements No. 238875 (GN3) and No. 605243 (GN3plus),
+ * Horizon 2020 research and innovation programme under Grant Agreements No. 
+ * 691567 (GN4-1) and No. 731122 (GN4-2).
+ * On behalf of the aforementioned projects, GEANT Association is the sole owner
+ * of the copyright in all material which was developed by a member of the GÉANT
+ * project. GÉANT Vereniging (Association) is registered with the Chamber of 
+ * Commerce in Amsterdam with registration number 40535155 and operates in the 
+ * UK as a branch of GÉANT Vereniging.
+ * 
+ * Registered office: Hoekenrode 3, 1102BR Amsterdam, The Netherlands. 
+ * UK branch address: City House, 126-130 Hills Road, Cambridge CB2 1PQ, UK
+ *
+ * License: see the web/copyright.inc.php file in the file structure or
+ *          <base_url>/copyright.php after deploying the software
+ */
+
 /**
  * This is the collection of methods dedicated for the user GUI
  * @author Tomasz Wolniewicz <twoln@umk.pl>
+ * @author Stefan Winter <stefan.winter@restena.lu>
  * @package UserAPI
  *
  * Parts of this code are based on simpleSAMLPhp discojuice module.
@@ -15,18 +31,9 @@
  * http://www.maxmind.com
  */
 
-/**
- * includes required by this class
- */
-require_once("Helper.php");
-require_once("Options.php");
-require_once("CAT.php");
-require_once("User.php");
-require_once("Profile.php");
-require_once("Federation.php");
-require_once("DeviceFactory.php");
-require_once("devices/devices.php");
-use GeoIp2\Database\Reader;
+namespace core;
+
+use \Exception;
 
 /**
  * The basic methoods for the user GUI
@@ -35,646 +42,529 @@ use GeoIp2\Database\Reader;
  */
 class UserAPI extends CAT {
 
-/**
- * Prepare the device module environment and send back the link
- * This method creates a device module instance via the {@link DeviceFactory} call, 
- * then sets up the device module environment for the specific profile by calling 
- * {@link DeviceConfig::setup()} method and finally, called the devide writeInstaller meethod
- * passing the returned path name.
- * 
- * @param string $device identifier as in {@link devices.php}
- * @param int $prof_id profile identifier
- *
- * @return array 
- *  array with the following fields: 
- *  profile - the profile identifier; 
- *  device - the device identifier; 
- *  link - the path name of the resulting installer
- *  mime - the mimetype of the installer
- */
-  public function generateInstaller($device,$prof_id, $generated_for = "user") {
-    $this->set_locale("devices");
-    $Dev = Devices::listDevices();
-    $Config = $Dev[$device];
-    debug(4,"installer:$device:$prof_id\n");
-    $profile = new Profile($prof_id);
-    $attribs = $profile->getCollapsedAttributes();
-    // test if the profile is production-ready and if not if the authenticated user is an owner
-    if (!isset($attribs['profile:production']) || (isset($attribs['profile:production']) && $attribs['profile:production'][0] != "on")) {
-       debug(4,"Attempt to download a non-production ready installer fir profile: $prof_id\n");
-       require_once(Config::$AUTHENTICATION['ssp-path-to-autoloader']);
-       $as = new SimpleSAML_Auth_Simple(Config::$AUTHENTICATION['ssp-authsource']);
-       if($as->isAuthenticated()) {
-          $user_object = new User($_SESSION['user']);
-          if($user_object->isIdPOwner($profile->institution)) {
-              debug(4, "User is the owner - allowing access\n");
-          } else {
-             debug(2, "User not an owner of a non-production profile - access forbidden\n");
-       header("HTTP/1.0 403 Not Authorized");
-             return;
-          }
-       } else {
-          debug(2, "User NOT authenticated, rejecting request for a non-production installer\n");
-          header("HTTP/1.0 403 Not Authorized");
-          return;
-       }
+    /**
+     * nothing special to be done here.
+     */
+    public function __construct() {
+        parent::__construct();
     }
-    $a = [];
-    $a['profile'] = $prof_id;
-    $a['device'] = $device;
-    if( (isset(Devices::$Options['no_cache']) && Devices::$Options['no_cache'] ) || ( isset($Config['options']['no_cache']) && $Config['options']['no_cache'] ))
-      $this->i_path = FALSE;
-    else {
-      $cache = $profile->testCache($device);
-      $this->i_path = $cache['cache'];
-    }
-    if($this->i_path && is_file($this->i_path)) { 
-      debug(4,"Using cached installer for: $device\n");
-      $a['link'] = "API.php?api_version=$version&action=downloadInstaller&lang=".CAT::get_lang()."&profile=$prof_id&device=$device&generatedfor=$generated_for";
-      $a['mime'] = $cache['mime'];
-    } else {
-      $factory = new DeviceFactory($device);
-      $dev = $factory->device;
-      if(isset($dev)) {
-         $dev->setup($profile);
-         $installer = $dev->writeInstaller();
-         $i_path = $dev->FPATH.'/tmp/'.$installer;
-         if($i_path && is_file($i_path)) {
-         if(isset($dev->options['mime']))
-               $a['mime'] = $dev->options['mime'];
-         else {
-           $info = new finfo();
-           $a['mime'] = $info->file($i_path, FILEINFO_MIME_TYPE);
-         }
-         $this->i_path = $dev->FPATH.'/'.$installer;
-         rename($i_path, $this->i_path);
-         $profile->updateCache($device,$this->i_path,$a['mime']);
-//         rrmdir($dev->FPATH.'/tmp');
-         debug(4,"Generated installer: ".$this->i_path.": for: $device\n");
-         $a['link'] = "API.php?api_version=$version&action=downloadInstaller&lang=".CAT::get_lang()."&profile=$prof_id&device=$device&generatedfor=$generated_for";
-         } else {
-         debug(2,"Installer generation failed for: $prof_id:$device:".CAT::get_lang()."\n");
-         $a['link'] = 0;
-         }
-      } 
-    }
-    $this->set_locale("web_user");
-    return($a);
- }
 
- /**
-  * interface to Devices::listDevices() 
-  */
- public function listDevices($show_hidden = 0) {
-    $Dev = Devices::listDevices();
-    $R = [];
-    $ct = 0;
-    if($show_hidden !== 0 && $show_hidden != 1)
-      return;
-    foreach ($Dev as $device => $D) {
-      if(isset($D['options']['hidden']) && $D['options']['hidden'] && $show_hidden == 0)
-         continue;
-      $ct ++;
-      if($this->version == 1)
-         $D['device'] = $device;
-      else
-         $D['device'] = $device;
-      $group = isset($D['group']) ? $D['group'] : 'other';
-      if (! isset($R[$group]))
-         $R[$group] = [];
-      $R[$group][$device] = $D;
-    }
-   return $R;
- }
-
- public function deviceInfo($device,$prof_id) {
-    $this->set_locale("devices");
-    $out = 0;
-    $profile = new Profile($prof_id);
-    $factory = new DeviceFactory($device);
-    $dev = $factory->device;
-    if(isset($dev)) {
-//       $dev->setup($profile);
-       $out = $dev->writeDeviceInfo();
-   }
-    $this->set_locale("web_user");
-    echo $out;
- }
-
-/**
- * Prepare the support data for a given profile
- *
- * @param int $prof_id profile identifier
- * @return array
- * array with the following fields:
- * - local_email
- * - local_phone
- * - local_url
- * - description
- * - devices - an array of device names and their statuses (for a given profile)
- */
- public function profileAttributes($prof_id) {
-    $this->set_locale("devices");
-      $profile = new Profile($prof_id);
-      $attr = $profile->getCollapsedAttributes();
-      $a = [];
-      if(isset($attr['support:email']))
-         $a['local_email'] = $attr['support:email'][0];
-      if(isset($attr['support:phone']))
-         $a['local_phone'] = $attr['support:phone'][0];
-      if(isset($attr['support:url']))
-         $a['local_url'] = $attr['support:url'][0];
-      if(isset($attr['profile:description']))
-         $a['description'] = $attr['profile:description'][0];
-      $a['devices'] = $profile->listDevices();
-      $this->set_locale("web_user");
-      return($a);
- }
-
-/*
-   this method needs to be used with care, it could give wrong results in some
-   cicumstances
-*/
-private function GetRootURL() {
-    $backtrace =  debug_backtrace();
-    $F = array_pop($backtrace);
-    $file= $F['file'];
-    $file = substr($file,strlen(dirname(__DIR__)));
-    while(substr($file,0,1) == '/')
-       $file = substr($file,1);
-    $n = count(explode('/',$file));
-    $out = $_SERVER['SCRIPT_NAME'];
-    for ($i= 0; $i < $n; $i++)
-      $out = dirname($out);
-    if ($out == '/')
-      $out = '';
-    $s = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 'https' : 'http';
-    $s .= '://'.$_SERVER['HTTP_HOST'] . $out;
-    return $s;
-}
-
-/* JSON functions */
-
-  public function return_json($data,$status=1) {
-     $return_array = [];
-     $return_array['status'] = $status;
-     $return_array['data'] = $data;
-     $return_array['tou'] =  "Please consult Terms of Use at: ".$this->GetRootURL()."/tou.php";
-     return(json_encode($return_array));
-  }
-
-/**
-  * Return the list of supported languages.
-  *
-  * 
-  */
-  public function JSON_listLanguages() {
-     $return_array = [];
-     foreach(Config::$LANGUAGES as $id => $val){
-       if($this->version == 1)
-          $return_array[] = ['id'=>$id,'display'=>$val['display'],'locale'=>$val['locale']];
-       else
-          $return_array[] = ['lang'=>$id,'display'=>$val['display'],'locale'=>$val['locale']];
-     }
-     echo $this->return_json($return_array);
-  }
-
-/**
- * Return the list of countiers with configured IdPs
- *
- * @return string JSON encoded data
- */
-
-  public function JSON_listCountries() {
-     $FED = $this->printCountryList(1);
-     $return_array = [];
-     foreach ($FED as $id => $val) {
-       if($this->version == 1)
-          $return_array[] = ['id'=>$id,'display'=>$val];
-       else
-          $return_array[] = ['federation'=>$id,'display'=>$val];
-     }
-     echo $this->return_json($return_array);
-  }
-
-/**
- * Return the list of IdPs in a given country
- *
- * @param int $idp_id the IdP identifier
- * @return string JSON encoded data
- */
-
-  public function JSON_listIdentityProviders($country) {
-     $idps = Federation::listAllIdentityProviders(1,$country);
-     $return_array = [];
-     foreach ($idps as $idp) {
-        if($this->version == 1)
-           $return_array[] = ['id'=>$idp['entityID'],'display'=>$idp['title']];
-        else
-           $return_array[] = ['idp'=>$idp['entityID'],'display'=>$idp['title']];
-     }
-     echo $this->return_json($return_array);
-  }
-
-/**
- * return the list of all active IdPs
- *
- * The IdP list is formatted for DiscoJuice
- * @return string JSON encoded data
- */
-
-  public function JSON_listIdentityProvidersForDisco() {
-     $idps = Federation::listAllIdentityProviders(1);
-     $return_array = [];
-     foreach ($idps as $idp) {
-        if($this->version == 1)
-           $idp['id'] = $idp['entityID'];
-         else
-           $idp['idp'] = $idp['entityID'];
-        $return_array[] = $idp;
-      }
-     echo json_encode($return_array);
-  }
-
-
-
-/**
- * Return the list of IdPs in a given country ordered with respect to the user location
- *
- * @param int $idp_id the IdP identifier
- * @return string JSON encoded data
- */
-
-
-  public function JSON_orderIdentityProviders($country,$L=NULL) {
-     $idps = $this->orderIdentityProviders($country,$L);
-     $return_array = [];
-     foreach ($idps as $idp) {
-        if($this->version == 1)
-           $return_array[] = ['id'=>$idp['id'],'display'=>$idp['title']];
-        else
-           $return_array[] = ['idp'=>$idp['id'],'display'=>$idp['title']];
-     }
-     echo $this->return_json($return_array);
-  }
-
-/**
- * Produce a list of profiles available for a given IdP
- *
- * @param int $idp_id the IdP identifier
- * @return string JSON encoded data
- */
-  public function JSON_listProfiles($idp_id,$sort = 0) {
-     $this->set_locale("web_user");
-     $return_array = [];
-     try {     
-         $idp = new IdP($idp_id);
-     }
-     catch (Exception $fail) {
-        echo $this->return_json($return_array,0);
-        return;
-     }
-     $l = 0;
-     $logo = $idp->getAttributes('general:logo_file');
-     if($logo)
-       $l = 1;
-     $profiles = $idp->listProfiles(1);
-     if($sort == 1)
-        usort($profiles,"profile_sort");
-     foreach ($profiles as $P) {
-       if($this->version == 1)
-          $return_array[] = ['id'=>$P->identifier,'display'=>$P->name, 'idp_name'=>$P->inst_name,'logo'=>$l]; 
-       else
-          $return_array[] = ['profile'=>$P->identifier,'display'=>$P->name, 'idp_name'=>$P->inst_name,'logo'=>$l]; 
-     }
-     echo $this->return_json($return_array);
-  }
-
-/**
- * Return the list of devices available for the given profile
- *
- * @param int $profile_id the Profile identifier
- * @return string JSON encoded data
- */
-  public function JSON_listDevices($profile_id) {
-     $this->set_locale("web_user");
-     $return_array = [];
-     $a = $this->profileAttributes($profile_id);
-     $thedevices = $a['devices'];
-     if(!isset($profile_redirect) || ! $profile_redirect) {
-         $profile_redirect = 0;
-         foreach ($thedevices as $D) {
-              if(isset($D['options']) && isset($D['options']['hidden']) &&  $D['options']['hidden'])
-                   continue;
-              $disp = $D['display'];
-              if($this->version == 1) {
-                 if($D['id'] === '0') {
-                     $profile_redirect = 1;
-                     $disp = $c;
-                 }
-                $return_array[] = ['id'=>$D['id'], 'display'=>$disp, 'status'=>$D['status'], 'redirect'=>$D['redirect']];
-             } else {
-                 if($D['device'] === '0') {
-                     $profile_redirect = 1;
-                     $disp = $c;
-                 }
-                $return_array[] = ['device'=>$D['id'], 'display'=>$disp, 'status'=>$D['status'], 'redirect'=>$D['redirect']];
-             }
-         }
-
-  }
-  echo $this->return_json($return_array);
-}
-  
-/**
- * Call installer generation and return the link
- *
- * @param string $device identifier as in {@link devices.php}
- * @param int $prof_id profile identifier
- * @return string JSON encoded data
- */
-  public function JSON_generateInstaller($device,$prof_id) {
-    debug(4,"JSON::generateInstaller arguments: $device,$prof_id\n");
-    $o = $this->generateInstaller($device,$prof_id);
-    debug(4,"output from GUI::generateInstaller:");
-    debug(4,$o);
-    debug(4,json_encode($o));
-//    header('Content-type: application/json; utf-8');
-    echo $this->return_json($o);
- }
-
-/**
- * Generate and send the installer
- *
- * @param string $device identifier as in {@link devices.php}
- * @param int $prof_id profile identifier
- * @return binary installerFile
- */
-
- public function downloadInstaller($device,$prof_id,$generated_for='user') {
-    debug(4,"downloadInstaller arguments: $device,$prof_id,$generated_for\n");
-    $o = $this->generateInstaller($device,$prof_id);
-    debug(4,"output from GUI::generateInstaller:");
-    debug(4,$o);
-    if(! $o['link']) {
-       header("HTTP/1.0 404 Not Found");
-       return;
-    }
-    $profile = new Profile($prof_id);
-    $profile->incrementDownloadStats($device, $generated_for);
-    $file = $this->i_path;
-    $filetype = $o['mime'];
-    debug(4,"installer MIME type:$filetype\n");
-    header("Content-type: ".$filetype);
-    header('Content-Disposition: inline; filename="'.basename($file).'"');
-    header('Content-Length: ' . filesize($file));
-    ob_clean();
-    flush();
-    readfile($file);
- }
-/**
- * Get and prepare logo file 
- *
- * When called for DiscoJuice, first check if file cache exists
- * If not then generate the file and save it in the cache
- * @param int $idp_id IdP identifier
- * @param int $disco flag turning on image generation for DiscoJuice
- * @param int $width, $height  maximum width and height of the generated image 
- * if one of these is 0 then it is treated as no upper bound
- *
- */
-
- public function sendLogo($idp_id, $disco=FALSE, $width=0, $height=0) {
-   $ExpStr = '';
-   $resize = 0;
-   if(($width || $height) && is_numeric($width) && is_numeric($height)) {
-       $resize = 1;
-       if($height == 0)
-          $height = 10000;
-       if($width == 0)
-          $width = 10000;
-       $logo_file = CAT::$root.'/web/downloads/logos/'.$idp_id.'_'.$width.'_'.$height.'.png';
-   } elseif($disco == 1) {
-       $width = 120;
-       $height = 40;
-       $resize = 1;
-       $logo_file = CAT::$root.'/web/downloads/logos/'.$idp_id.'_'.$width.'_'.$height.'.png';
-   }
-
-   if($resize && is_file($logo_file)){
-      debug(4,"Using cached logo $logo_file for: $idp_id\n");
-      $blob = file_get_contents($logo_file);
-      $filetype = 'image/png';
-   }
-   else {
-      $idp = new IdP($idp_id);
-      $at = $idp->getAttributes('general:logo_file');
-      $blob =  $at[0]['value'];
-      $info = new finfo();
-      $filetype = $info->buffer($blob, FILEINFO_MIME_TYPE);
-      $offset = 60 * 60 * 24 * 30;
-      $ExpStr = "Expires: " . gmdate( "D, d M Y H:i:s", time() + $offset ) . " GMT";
-      if($resize) {
-         $filetype = 'image/png';
-         $image = new Imagick();
-         $image->readImageBlob($blob);
-         if( $image->setImageFormat('PNG')) {
-           $image->thumbnailImage($width,$height,1);
-           $blob = $image->getImageBlob();
-           debug(4,"Writing cached logo $logo_file for: $idp_id\n");
-           file_put_contents($logo_file,$blob);
-         }
-         else
-           $blob = "XXXXXX";
-      }
-   }
-   header( "Content-type: ".$filetype );
-   header( "Cache-Control:max-age=36000, must-revalidate" );
-   header( $ExpStr );
-   echo $blob;
- }
-
- public function locateUser() {
-   $host = $_SERVER['REMOTE_ADDR'];
-   $record = geoip_record_by_name($host);
-   if($record) {
-     $result = ['status' => 'ok'];
-     $result['country'] = $record['country_code'];
-//  the two lines below are a dirty hack to take of the error in naming the UK federation
-     if($result['country'] == 'GB')
-         $result['country'] = 'UK';
-     $result['region'] = $record['region'];
-     $result['geo'] = ['lat' => (float)$record['latitude'] , 'lon' => (float)$record['longitude']];
-   } else {
-     $result = ['status' => 'error', 'error' =>'Problem listing countries']; 
-   }
-   return($result);
- }
-
-
- public function locateUser2() {
-   require_once Config::$GEOIP['geoip2-path-to-autoloader'];
-   $reader = new Reader(Config::$GEOIP['geoip2-path-to-db']);
-   $host = $_SERVER['REMOTE_ADDR'];
-   try {
-      $record = $reader->city($host);
-   } catch (Exception $e) {
-      $result = ['status' => 'error', 'error' =>'Problem listing countries']; 
-      return($result);
-   }
-   $result = ['status' => 'ok'];
-   $result['country'] = $record->country->isoCode;
-//  the two lines below are a dirty hack to take of the error in naming the UK federation
-   if($result['country'] == 'GB')
-       $result['country'] = 'UK';
-   $result['region'] = $record->continent->name;
-
-   $result['geo'] = ['lat' => (float)$record->location->latitude , 'lon' => (float)$record->location->longitude];
-   return($result);
- }
-
-public function JSON_locateUser() {
-    header('Content-type: application/json; utf-8');
-   
-    if(empty(Config::$GEOIP['version']) || Config::$GEOIP['version'] == 0)
-      echo json_encode(['status' => 'error', 'error' =>'Geolocation not supported']);
-    if(Config::$GEOIP['version'] == 1)
-      echo json_encode($this->locateUser());
-    if(Config::$GEOIP['version'] == 2)
-      echo json_encode($this->locateUser2());
-}
-
-/**
- * Produce support data prepared within {@link GUI::profileAttributes()}
- * @return string JSON encoded data
- */
-  public function JSON_profileAttributes($prof_id) {
-//    header('Content-type: application/json; utf-8');
-    echo $this->return_json($this->profileAttributes($prof_id));
-  }
-
-/**
-  * Calculate the distence in km between two points given their
-  * geo coordinates.
-  * @param array $P1 - first point as an 'lat', 'lon' array 
-  * @param array $P2 - second point as an 'lat', 'lon' array 
-  * @return float distance in km
-  */
-private function geoDistance($P1,$P2) {
-
-  $dist = sin(deg2rad($P1['lat'])) * sin(deg2rad($P2['lat'])) +  
-         cos(deg2rad($P1['lat'])) * cos(deg2rad($P2['lat'])) * cos(deg2rad($P1['lon'] - $P2['lon']));
-  $dist = rad2deg(acos($dist)) * 60 * 1.1852 ;
-  return(round($dist));
-}
-
-/**
-  * Order active identity providers according to their distance and name
-  * @param array $L - current location
-  * @return array $IdPs -  list of arrays ('id', 'name');
-  */
-
-public function orderIdentityProviders($country,$L=NULL) {
-     $idps = Federation::listAllIdentityProviders(1,$country);
-
-  if(is_null($L)) {
-     $U = $this->locateUser();
-     if($U['status'] == 'ok') {
-     $L = $U['geo'];
-     } else {
-       $L = ['lat'=>"90",'lon'=>"0"];
-     }
-  }
-  $T=[];
-  $R=[];
-     foreach ($idps as $idp) {
-        $T[$idp['entityID']] = $idp['title'];
-        $dist = 10000;
-        if(isset($idp['geo'])) {
-          $G=$idp['geo'];
-          if(isset($G['lon'])) {
-             $d1 = $this->geoDistance($L,$G); 
-             if( $d1 < $dist)
-                $dist = $d1;
-          } else {
-            foreach ($G as $g) {
-             $d1 = $this->geoDistance($L,$g); 
-             if( $d1 < $dist)
-                $dist = $d1;
-            }
-          }
+    /**
+     * Prepare the device module environment and send back the link
+     * This method creates a device module instance via the {@link DeviceFactory} call, 
+     * then sets up the device module environment for the specific profile by calling 
+     * {@link DeviceConfig::setup()} method and finally, called the devide writeInstaller meethod
+     * passing the returned path name.
+     * 
+     * @param string $device       identifier as in {@link devices.php}
+     * @param int    $profileId    profile identifier
+     * @param string $generatedFor which download area does this pertain to
+     * @param string $token        for silverbullet: invitation token to consume
+     * @param string $password     for silverbull: import PIN for the future certificate
+     *
+     * @return array|NULL array with the following fields: 
+     *  profile - the profile identifier; 
+     *  device - the device identifier; 
+     *  link - the path name of the resulting installer
+     *  mime - the mimetype of the installer
+     */
+    public function generateInstaller($device, $profileId, $generatedFor = "user", $token = NULL, $password = NULL) {
+        $this->loggerInstance->debug(4, "installer:$device:$profileId\n");
+        $validator = new \web\lib\common\InputValidation();
+        $profile = $validator->existingProfile($profileId);
+        // test if the profile is production-ready and if not if the authenticated user is an owner
+        if ($this->verifyDownloadAccess($profile) === FALSE) {
+            return;
         }
-       if($dist > 100)
-         $dist=10000;
-      $d = sprintf("%06d",$dist);
-      $R[$idp['entityID']] = $d." ".$idp['title'];
-     }
-     asort($R);
-     foreach (array_keys($R) as $r) {
-      if($this->version == 1)
-         $outarray[] = ['id'=>$r, 'title'=>$T[$r]];
-      else
-         $outarray[] = ['idp'=>$r, 'title'=>$T[$r]];
-      }
-     return($outarray);
+        $installerProperties = [];
+        $installerProperties['profile'] = $profileId;
+        $installerProperties['device'] = $device;
+        $cache = $this->getCache($device, $profile);
+        $this->installerPath = $cache['path'];
+        if ($this->installerPath !== NULL && $token === NULL && $password === NULL) {
+            $this->loggerInstance->debug(4, "Using cached installer for: $device\n");
+            $installerProperties['link'] = "API.php?action=downloadInstaller&lang=" . $this->languageInstance->getLang() . "&profile=$profileId&device=$device&generatedfor=$generatedFor";
+            $installerProperties['mime'] = $cache['mime'];
+        } else {
+            $myInstaller = $this->generateNewInstaller($device, $profile, $generatedFor, $token, $password);
+            if ($myInstaller['link'] !== 0) {
+                $installerProperties['mime'] = $myInstaller['mime'];
+            }
+            $installerProperties['link'] = $myInstaller['link'];
+        }
+        return $installerProperties;
+    }
+
+    /**
+     * checks whether the requested profile data is public, XOR was requested by
+     * its own admin.
+     * @param \core\AbstractProfile $profile the profile in question
+     * @return boolean
+     */
+    private function verifyDownloadAccess($profile) {
+        $attribs = $profile->getCollapsedAttributes();
+        if (\core\common\Entity::getAttributeValue($attribs, 'profile:production', 0) !== 'on') {
+            $this->loggerInstance->debug(4, "Attempt to download a non-production ready installer for profile: $profile->identifier\n");
+            $auth = new \web\lib\admin\Authentication();
+            if (!$auth->isAuthenticated()) {
+                $this->loggerInstance->debug(2, "User NOT authenticated, rejecting request for a non-production installer\n");
+                header("HTTP/1.0 403 Not Authorized");
+                return FALSE;
+            }
+            $auth->authenticate();
+            $userObject = new User($_SESSION['user']);
+            if (!$userObject->isIdPOwner($profile->institution)) {
+                $this->loggerInstance->debug(2, "User not an owner of a non-production profile - access forbidden\n");
+                header("HTTP/1.0 403 Not Authorized");
+                return FALSE;
+            }
+            $this->loggerInstance->debug(4, "User is the owner - allowing access\n");
+        }
+        return TRUE;
+    }
+
+    /**
+     * This function tries to find a cached copy of an installer for a given
+     * combination of Profile and device
+     * 
+     * @param string          $device  the device for which the installer is searched in cache
+     * @param AbstractProfile $profile the profile for which the installer is searched in cache
+     * @return array containing path to the installer and mime type of the file, the path is set to NULL if no cache can be returned
+     */
+    private function getCache($device, $profile) {
+        $deviceConfig = \devices\Devices::listDevices()[$device];
+        $noCache = (isset(\devices\Devices::$Options['no_cache']) && \devices\Devices::$Options['no_cache']) ? 1 : 0;
+        if (isset($deviceConfig['options']['no_cache'])) {
+            $noCache = $deviceConfig['options']['no_cache'] ? 1 : 0;
+        }
+        if ($noCache) {
+            $this->loggerInstance->debug(5, "getCache: the no_cache option set for this device\n");
+            return ['path' => NULL, 'mime' => NULL];
+        }
+        $this->loggerInstance->debug(5, "getCache: caching option set for this device\n");
+        $cache = $profile->testCache($device);
+        $iPath = $cache['cache'];
+        if ($iPath && is_file($iPath)) {
+            return ['path' => $iPath, 'mime' => $cache['mime']];
+        }
+        return ['path' => NULL, 'mime' => NULL];
+    }
+
+    /**
+     * Generates a new installer for the given combination of device and Profile
+     * 
+     * @param string          $device       the device for which we want an installer
+     * @param AbstractProfile $profile      the profile for which we want an installer
+     * @param string          $generatedFor type of download requested (admin/user/silverbullet)
+     * @param string          $token        in case of silverbullet, the token that was used to trigger the generation
+     * @param string          $password     in case of silverbullet, the import PIN for the future client certificate
+     * @return array info about the new installer (mime and link)
+     */
+    private function generateNewInstaller($device, $profile, $generatedFor, $token, $password) {
+        $this->loggerInstance->debug(5, "generateNewInstaller() - Enter");
+        $factory = new DeviceFactory($device);
+        $this->loggerInstance->debug(5, "generateNewInstaller() - created Device");
+        $dev = $factory->device;
+        $out = [];
+        if (isset($dev)) {
+            $dev->setup($profile, $token, $password);
+            $this->loggerInstance->debug(5, "generateNewInstaller() - Device setup done");
+            $installer = $dev->writeInstaller();
+            $this->loggerInstance->debug(5, "generateNewInstaller() - writeInstaller complete");
+            $iPath = $dev->FPATH . '/tmp/' . $installer;
+            if ($iPath && is_file($iPath)) {
+                if (isset($dev->options['mime'])) {
+                    $out['mime'] = $dev->options['mime'];
+                } else {
+                    $info = new \finfo();
+                    $out['mime'] = $info->file($iPath, FILEINFO_MIME_TYPE);
+                }
+                $this->installerPath = $dev->FPATH . '/' . $installer;
+                rename($iPath, $this->installerPath);
+                $integerEap = (new \core\common\EAP($dev->selectedEap))->getIntegerRep();
+                $profile->updateCache($device, $this->installerPath, $out['mime'], $integerEap);
+                if (\config\Master::DEBUG_LEVEL < 4) {
+                    \core\common\Entity::rrmdir($dev->FPATH . '/tmp');
+                }
+                $this->loggerInstance->debug(4, "Generated installer: " . $this->installerPath . ": for: $device, EAP:" . $integerEap . "\n");
+                $out['link'] = "API.php?action=downloadInstaller&lang=" . $this->languageInstance->getLang() . "&profile=" . $profile->identifier . "&device=$device&generatedfor=$generatedFor";
+            } else {
+                $this->loggerInstance->debug(2, "Installer generation failed for: " . $profile->identifier . ":$device:" . $this->languageInstance->getLang() . "\n");
+                $out['link'] = 0;
+            }
+        }
+        return $out;
+    }
+
+    /**
+     * interface to Devices::listDevices() 
+     * 
+     * @param int $showHidden whether or not hidden devices should be shown
+     * @return array the list of devices
+     * @throws Exception
+     */
+    public function listDevices($showHidden = 0) {
+        $returnList = [];
+        $count = 0;
+        if ($showHidden !== 0 && $showHidden != 1) {
+            throw new Exception("show_hidden is only be allowed to be 0 or 1, but it is $showHidden!");
+        }
+        foreach (\devices\Devices::listDevices() as $device => $deviceProperties) {
+            if (\core\common\Entity::getAttributeValue($deviceProperties, 'options', 'hidden') === 1 && $showHidden === 0) {
+                continue;
+            }
+            $count++;
+            $deviceProperties['device'] = $device;
+            $group = isset($deviceProperties['group']) ? $deviceProperties['group'] : 'other';
+            if (!isset($returnList[$group])) {
+                $returnList[$group] = [];
+            }
+            $returnList[$group][$device] = $deviceProperties;
+        }
+        return $returnList;
+    }
+
+    /**
+     * 
+     * @param string $device    identifier of the device
+     * @param int    $profileId identifier of the profile
+     * @return void
+     */
+    public function deviceInfo($device, $profileId) {
+        $validator = new \web\lib\common\InputValidation();
+        $out = 0;
+        $profile = $validator->existingProfile($profileId);
+        $factory = new DeviceFactory($device);
+        $dev = $factory->device;
+        if (isset($dev)) {
+            $dev->setup($profile);
+            $out = $dev->writeDeviceInfo();
+        }
+        echo $out;
+    }
+
+    /**
+     * Prepare the support data for a given profile
+     *
+     * @param int $profId profile identifier
+     * @return array
+     * array with the following fields:
+     * - local_email
+     * - local_phone
+     * - local_url
+     * - description
+     * - devices - an array of device names and their statuses (for a given profile)
+     */
+    public function profileAttributes($profId) {
+        $validator = new \web\lib\common\InputValidation();
+        $profile = $validator->existingProfile($profId);
+        $attribs = $profile->getCollapsedAttributes();
+        $returnArray = [];
+        $returnArray['silverbullet'] = $profile instanceof ProfileSilverbullet ? 1 : 0;
+        if (isset($attribs['support:email'])) {
+            $returnArray['local_email'] = $attribs['support:email'][0];
+        }
+        if (isset($attribs['support:phone'])) {
+            $returnArray['local_phone'] = $attribs['support:phone'][0];
+        }
+        if (isset($attribs['support:url'])) {
+            $returnArray['local_url'] = $attribs['support:url'][0];
+        }
+        if (isset($attribs['profile:description'])) {
+            $returnArray['description'] = $attribs['profile:description'][0];
+        }
+        $returnArray['devices'] = $profile->listDevices();
+        return $returnArray;
+    }
+
+    /**
+     * Generate and send the installer
+     *
+     * @param string $device        identifier as in {@link devices.php}
+     * @param int    $prof_id       profile identifier
+     * @param string $generated_for which download area does this pertain to
+     * @param string $token         for silverbullet: invitation token to consume
+     * @param string $password      for silverbull: import PIN for the future certificate
+     * @return string binary stream: installerFile
+     */
+    public function downloadInstaller($device, $prof_id, $generated_for = 'user', $token = NULL, $password = NULL) {
+        $this->loggerInstance->debug(4, "downloadInstaller arguments: $device,$prof_id,$generated_for\n");
+        $output = $this->generateInstaller($device, $prof_id, $generated_for, $token, $password);
+        $this->loggerInstance->debug(4, "output from GUI::generateInstaller:");
+        $this->loggerInstance->debug(4, print_r($output, true));
+        if (empty($output['link']) || $output['link'] === 0) {
+            header("HTTP/1.0 404 Not Found");
+            return;
+        }
+        $validator = new \web\lib\common\InputValidation();
+        $profile = $validator->existingProfile($prof_id);
+        $profile->incrementDownloadStats($device, $generated_for);
+        $file = $this->installerPath;
+        $filetype = $output['mime'];
+        $this->loggerInstance->debug(4, "installer MIME type:$filetype\n");
+        header("Content-type: " . $filetype);
+        if ($filetype !== "application/x-wifi-config") { // for those installers to work on Android, Content-Disposition MUST NOT be set
+            header('Content-Disposition: inline; filename="' . basename($file) . '"');
+        } else {
+            header('Content-Transfer-Encoding: base64');
+        }
+        header('Content-Length: ' . filesize($file));
+        ob_clean();
+        flush();
+        readfile($file);
+    }
+
+    /**
+     * resizes image files
+     * 
+     * @param string $inputImage the image we want to process
+     * @param string $destFile   the output file for the processed image
+     * @param int    $width      if resizing, the target width
+     * @param int    $height     if resizing, the target height
+     * @param bool   $resize     shall we do resizing? width and height are ignored otherwise
+     * @return array
+     */
+    private function processImage($inputImage, $destFile, $width, $height, $resize) {
+        $info = new \finfo();
+        $filetype = $info->buffer($inputImage, FILEINFO_MIME_TYPE);
+        $offset = 60 * 60 * 24 * 30;
+        // gmdate cannot fail here - time() is its default argument (and integer), and we are adding an integer to it
+        $expiresString = "Expires: " . /** @scrutinizer ignore-type */ gmdate("D, d M Y H:i:s", time() + $offset) . " GMT";
+        $blob = $inputImage;
+
+        if ($resize === TRUE) {
+            $image = new \Imagick();
+            $image->readImageBlob($inputImage);
+            $image->setImageFormat('PNG');
+            $image->thumbnailImage($width, $height, 1);
+            $blob = $image->getImageBlob();
+            $this->loggerInstance->debug(4, "Writing cached logo $destFile for IdP/Federation.\n");
+            file_put_contents($destFile, $blob);
+        }
+
+        return ["filetype" => $filetype, "expires" => $expiresString, "blob" => $blob];
+    }
+
+    /**
+     * Get and prepare logo file 
+     *
+     * When called for DiscoJuice, first check if file cache exists
+     * If not then generate the file and save it in the cache
+     * @param int|string $identifier IdP or Federation identifier
+     * @param string     $type       either 'idp' or 'federation' is allowed 
+     * @param integer    $widthIn    maximum width of the generated image - if 0 then it is treated as no upper bound
+     * @param integer    $heightIn   maximum height of the generated image - if 0 then it is treated as no upper bound
+     * @return array|null array with image information or NULL if there is no logo
+     * @throws Exception
+     */
+    protected function getLogo($identifier, $type, $widthIn, $heightIn) {
+        $expiresString = '';
+        $attributeName = [
+            'federation' => "fed:logo_file",
+            'federation_from_idp' => "fed:logo_file",
+            'idp' => "general:logo_file",
+        ];
+
+        $logoFile = "";
+        $validator = new \web\lib\common\InputValidation();
+        switch ($type) {
+            case "federation":
+                $entity = $validator->existingFederation($identifier);
+                break;
+            case "idp":
+                $entity = $validator->existingIdP($identifier);
+                break;
+            case "federation_from_idp":
+                $idp = $validator->existingIdP($identifier);
+                $entity = $validator->existingFederation($idp->federation);
+                break;
+            default:
+                throw new Exception("Unknown type of logo requested!");
+        }
+        $filetype = 'image/png'; // default, only one code path where it can become different
+        list($width, $height, $resize) = $this->testForResize($widthIn, $heightIn);
+        if ($resize) {
+            $logoFile = ROOT . '/web/downloads/logos/' . $identifier . '_' . $width . '_' . $height . '.png';
+        }
+        if (is_file($logoFile)) { // $logoFile could be an empty string but then we will get a FALSE
+            $this->loggerInstance->debug(4, "Using cached logo $logoFile for: $identifier\n");
+            $blob = file_get_contents($logoFile);
+        } else {
+            $logoAttribute = $entity->getAttributes($attributeName[$type]);
+            if (count($logoAttribute) == 0) {
+                return NULL;
+            }
+            $this->loggerInstance->debug(4, "RESIZE:$width:$height\n");
+            $meta = $this->processImage($logoAttribute[0]['value'], $logoFile, $width, $height, $resize);
+            $filetype = $meta['filetype'];
+            $expiresString = $meta['expires'];
+            $blob = $meta['blob'];
+        }
+        return ["filetype" => $filetype, "expires" => $expiresString, "blob" => $blob];
+    }
+
+    /**
+     * see if we have to resize an image
+     * 
+     * @param integer $width  the desired max width (0 = unbounded)
+     * @param integer $height the desired max height (0 = unbounded)
+     * @return array
+     */
+    private function testForResize($width, $height) {
+        if ($width > 0 || $height > 0) {
+            if ($height == 0) {
+                $height = 10000;
+            }
+            if ($width == 0) {
+                $width = 10000;
+            }
+            return [$width, $height, TRUE];
+        }
+        return [0, 0, FALSE];
+    }
+
+    /**
+     * find out where the device is currently located
+     * @return array
+     */
+    public function locateDevice() {
+        return \core\DeviceLocation::locateDevice();
+    }
+
+    /**
+     * Lists all identity providers in the database
+     * adding information required by DiscoJuice.
+     * 
+     * @param int    $activeOnly if set to non-zero will cause listing of only those institutions which have some valid profiles defined.
+     * @param string $country    if set, only list IdPs in a specific country
+     * @return array the list of identity providers
+     *
+     */
+    public function listAllIdentityProviders($activeOnly = 0, $country = "") {
+        return IdPlist::listAllIdentityProviders($activeOnly, $country);
+    }
+
+    /**
+     * Order active identity providers according to their distance and name
+     * @param string $country         NRO to work with
+     * @param array  $currentLocation current location
+     *
+     * @return array $IdPs -  list of arrays ('id', 'name');
+     */
+    public function orderIdentityProviders($country, $currentLocation) {
+        return IdPlist::orderIdentityProviders($country, $currentLocation);
+    }
+
+    /**
+     * Detect the best device driver form the browser
+     * Detects the operating system and returns its id 
+     * display name and group membership (as in devices.php)
+     * @return array|boolean OS information, indexed by 'id', 'display', 'group'
+     */
+    public function detectOS() {
+        $Dev = \devices\Devices::listDevices();
+        $devId = $this->deviceFromRequest();
+        if ($devId !== NULL) {
+            $ret = $this->returnDevice($devId, $Dev[$devId]);
+            if ($ret !== FALSE) {
+                return $ret;
+            }
+        }
+// the device has not been specified or not specified correctly, try to detect if from the browser ID
+        $browser = filter_input(INPUT_SERVER, 'HTTP_USER_AGENT', FILTER_SANITIZE_STRING);
+        $this->loggerInstance->debug(4, "HTTP_USER_AGENT=$browser\n");
+        foreach ($Dev as $devId => $device) {
+            if (!isset($device['match'])) {
+                continue;
+            }
+            if (preg_match('/' . $device['match'] . '/', $browser)) {
+                return $this->returnDevice($devId, $device);
+            }
+        }
+        $this->loggerInstance->debug(2, "Unrecognised system: $browser\n");
+        return FALSE;
+    }
+
+    /**
+     * test if devise is defined and is not hidden. If all is fine return extracted information.
+     * 
+     * @param string $devId  device id as defined as index in Devices.php
+     * @param array  $device device info as defined in Devices.php
+     * @return array|FALSE if the device has not been correctly specified
+     */
+    private function returnDevice($devId, $device) {
+        if (\core\common\Entity::getAttributeValue($device, 'options', 'hidden') !== 1) {
+            $this->loggerInstance->debug(4, "Browser_id: $devId\n");
+            return ['device' => $devId, 'display' => $device['display'], 'group' => $device['group']];
+        }
+        return FALSE;
+    }
+
+    /**
+     * This methods cheks if the devide has been specified as the HTTP parameters
+     * 
+     * @return device id|NULL if correcty specified or FALSE otherwise
+     */
+    private function deviceFromRequest() {
+        $devId = filter_input(INPUT_GET, 'device', FILTER_SANITIZE_STRING) ?? filter_input(INPUT_POST, 'device', FILTER_SANITIZE_STRING);
+        if ($devId === NULL || $devId === FALSE) {
+            $this->loggerInstance->debug(2, "Invalid device id provided\n");
+            return NULL;
+        }
+        if (!isset(\devices\Devices::listDevices()[$devId])) {
+            $this->loggerInstance->debug(2, "Unrecognised system: $devId\n");
+            return NULL;
+        }
+        return $devId;
+    }
+
+    /**
+     * finds all the user certificates that originated in a given token
+     * 
+     * @param string $token the token for which we are fetching all associated user certs
+     * @return array|boolean returns FALSE if a token is invalid, otherwise array of certs
+     */
+    public function getUserCerts($token) {
+        $validator = new \web\lib\common\InputValidation();
+        $cleanToken = $validator->token($token);
+        if ($cleanToken) {
+            // check status of this silverbullet token according to info in DB:
+            // it can be VALID (exists and not redeemed, EXPIRED, REDEEMED or INVALID (non existent)
+            $invitationObject = new \core\SilverbulletInvitation($cleanToken);
+        } else {
+            return false;
+        }
+        $profile = new \core\ProfileSilverbullet($invitationObject->profile, NULL);
+        $userdata = $profile->userStatus($invitationObject->userId);
+        $allcerts = [];
+        foreach ($userdata as $content) {
+            $allcerts = array_merge($allcerts, $content->associatedCertificates);
+        }
+        return $allcerts;
+    }
+
+    /**
+     * device name
+     * 
+     * @var string
+     */
+    public $device;
+
+    /**
+     * path to installer
+     * 
+     * @var string
+     */
+    private $installerPath;
+
+    /**
+     * helper function to sort profiles by their name
+     * @param \core\AbstractProfile $profile1 the first profile's information
+     * @param \core\AbstractProfile $profile2 the second profile's information
+     * @return int
+     */
+    private static function profileSort($profile1, $profile2) {
+        return strcasecmp($profile1->name, $profile2->name);
+    }
+
 }
-
-/**
-  * Detect the best device driver form the browser
-  *
-  * Detects the operating system and returns its id 
-  * display name and group membership (as in devices.php)
-  * @return array indexed by 'id', 'display', 'group'
-  */
-
-public function detectOS() {
-   $Dev = Devices::listDevices();
-   if( isset($_REQUEST['device']) && isset($Dev[$_REQUEST['device']]) && (!isset($device['options']['hidden']) || $device['options']['hidden'] == 0)) {
-      $dev_id = $_REQUEST['device'];
-      $device = $Dev[$dev_id];
-      if($this->version == 1)
-         return(['id'=>$dev_id,'display'=>$device['display'], 'group'=>$device['group']]);
-      else
-         return(['device'=>$dev_id,'display'=>$device['display'], 'group'=>$device['group']]);
-   }
-   $browser = $_SERVER['HTTP_USER_AGENT'];
-   debug(4,"HTTP_USER_AGENT=$browser\n");
-   foreach ($Dev as $dev_id => $device) {
-     if(!isset($device['match']))
-        continue;
-     if(preg_match('/'.$device['match'].'/',$browser)) {
-       if(!isset($device['options']['hidden']) || $device['options']['hidden'] == 0) {
-          debug(4,"Browser_id: $dev_id\n");
-          if($this->version == 1)
-             return(['id'=>$dev_id,'display'=>$device['display'], 'group'=>$device['group']]);
-          else
-             return(['device'=>$dev_id,'display'=>$device['display'], 'group'=>$device['group']]);
-       }
-       else {
-         debug(2, "Unrecognised system: ".$_SERVER['HTTP_USER_AGENT']."\n");
-         return(false);
-       }
-     }
-   }
-   debug(2, "Unrecognised system: ".$_SERVER['HTTP_USER_AGENT']."\n");
-   return(false);
-}
-
-public function JSON_detectOS() {
-     $return_array=$this->detectOS();
-     if($return_array)
-        $status = 1;
-     else
-        $status = 0;
-     echo $this->return_json($return_array,$status);
-}
-
-
-public $device;
-public $version;
-private $i_path;
-  
-}
-function profile_sort($P1,$P2) {
-   return strcasecmp($P1->name, $P2->name);
-} 

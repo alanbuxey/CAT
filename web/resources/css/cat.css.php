@@ -1,7 +1,27 @@
 <?php
-include(dirname(dirname(dirname(dirname(__FILE__)))) . "/config/_config.php");
-$colour1 = Config::$APPEARANCE['colour1'];
-$colour2 = Config::$APPEARANCE['colour2'];
+/*
+ * *****************************************************************************
+ * Contributions to this work were made on behalf of the GÉANT project, a 
+ * project that has received funding from the European Union’s Framework 
+ * Programme 7 under Grant Agreements No. 238875 (GN3) and No. 605243 (GN3plus),
+ * Horizon 2020 research and innovation programme under Grant Agreements No. 
+ * 691567 (GN4-1) and No. 731122 (GN4-2).
+ * On behalf of the aforementioned projects, GEANT Association is the sole owner
+ * of the copyright in all material which was developed by a member of the GÉANT
+ * project. GÉANT Vereniging (Association) is registered with the Chamber of 
+ * Commerce in Amsterdam with registration number 40535155 and operates in the 
+ * UK as a branch of GÉANT Vereniging.
+ * 
+ * Registered office: Hoekenrode 3, 1102BR Amsterdam, The Netherlands. 
+ * UK branch address: City House, 126-130 Hills Road, Cambridge CB2 1PQ, UK
+ *
+ * License: see the web/copyright.inc.php file in the file structure or
+ *          <base_url>/copyright.php after deploying the software
+ */
+
+require dirname(dirname(dirname(dirname(__FILE__)))) . "/config/_config.php";
+$colour1 = \config\Master::APPEARANCE['colour1'];
+$colour2 = \config\Master::APPEARANCE['colour2'];
 header('Content-type: text/css; charset=utf-8');
 ?>
 html {
@@ -10,6 +30,7 @@ html {
 
 body {
     background: <?php echo $colour1;?>;
+    color: #000000;
     font-family:Verdana, Arial, Helvetica, sans-serif;
     font-size:11px;
     height: 100%;
@@ -38,8 +59,6 @@ button {
     border-bottom-style: outset; 
     border-bottom-width: 2px; 
     border-bottom-color: #043d52;
-    border-radius: 6px;
-    box-shadow: 5px 5px 5px #666666;
 }
 
 button.pressed {
@@ -47,7 +66,6 @@ button.pressed {
     border-style:inset;
     position: relative;
     left: 3px;
-    box-shadow: 2px 2px 5px #888888;
 }
 
 button.pressedDisabled {
@@ -55,7 +73,6 @@ button.pressedDisabled {
     border-style:inset;
     position: relative;
     left: 3px;
-    box-shadow: 2px 2px 5px #888888;
 }
 
 button.delete {
@@ -91,27 +108,8 @@ button.delete {
     border-bottom-style: outset; 
     border-bottom-width: 2px; 
     border-bottom-color: #444;
-    box-shadow: 10px 10px 5px rgba(100,100,100,0.4);
 }
 
-
-.use_borders button.disabledDevice {
-    color: #444; 
-    background: #bbb; 
-    border-left-style: outset; 
-    border-left-width: 1px; 
-    border-left-color: #eee;
-    border-top-style: outset; 
-    border-top-width: 1px; 
-    border-top-color: #eee;
-    border-right-style: outset; 
-    border-right-width: 2px; 
-    border-right-color: #444;
-    border-bottom-style: outset; 
-    border-bottom-width: 2px; 
-    border-bottom-color: #444;
-    box-shadow: 10px 10px 5px rgba(100,100,100,0.4);
-}
 
 button[disabled] {
     background: #bababa;
@@ -151,13 +149,6 @@ div.infobox {
     min-width: 20em;
     min-height: 150px;
     vertical-align: top;
-    border-radius: 10px 10px 10px 10px;
-    box-shadow: 5px 5px 5px #666666;
-}
-
-div.buttongroupprofilebox {
-    position: inherit;
-    bottom: 5px;
 }
 
 div.profilemodulebuttons {
@@ -179,8 +170,6 @@ div.profilebox {
     min-width: 40em;
     min-height: 150px;
     vertical-align: top;
-    border-radius: 10px 10px 10px 10px;
-    box-shadow: 5px 5px 5px #666666;
 }
 
 div.consortium_logo {
@@ -197,17 +186,16 @@ div.sidebar {
     float: right;
     padding-right: 20px;
 }
+div.sidebar a {
+    color: white;
+}
 
 div.header {
     height: 54px;
-    background: #ffffff;
-    border-top-style:solid; 
-    border-bottom-style:solid;
-    border-top-width:5px; 
-    border-bottom-width:5px; 
-    border-color: <?php echo $colour1;?>;
+    background: #FFFFFF;
     padding-left:30px;
-    color: <?php echo $colour2;?>;
+    padding-bottom: 10px;
+    color: <?php echo $colour2?>;
 }
 
 div.pagecontent {
@@ -215,8 +203,9 @@ div.pagecontent {
     top: 54px;
     bottom: 50px;
     padding-top: 10px;
-    padding-left: 10px;
-    width:99%;
+    padding-left: 0px;
+    padding-right: 0px;
+    width:100%;
 }
 
 div.pagecontent div.trick {
@@ -224,11 +213,25 @@ div.pagecontent div.trick {
     overflow: auto;
 }
 
+#secondrow {
+    background:#1d4a74;
+    color: #FFFFFF;
+    min-height:100px;
+    overflow: auto;
+    padding-left:20px'
+}
+
+#thirdrow {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
 div.footer {
-    display: none;
     width: 100%;
-    padding-top:5px;
-    padding-bottom:10px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
     background: white;
     border-top: 1px solid #000;
 }
@@ -262,8 +265,6 @@ div.device_info {
     padding: 5px;
     padding-bottom: 22px;
     vertical-align: top;
-    border-radius: 10px 10px 10px 10px;
-    box-shadow: 5px 5px 5px #666666;
     width: 350px;
     font-weight: normal;
     font-style: normal;
@@ -290,6 +291,20 @@ div.graybox {
     text-align: left;
     width: 850px;
     margin: 0px auto 10px;
+}
+
+div.qrbox {
+    position: absolute;
+    background-color: #fbfcfc;
+    border: 1px solid #e6e6e6;
+    clear: both;
+    display: block;
+    padding: 15px;
+    text-align: left;
+    width: 850px;
+    left: 100px;
+    top: 50px;
+    z-index: 100;
 }
 
 div#msgbox {
@@ -322,23 +337,6 @@ div.graybox img {
     margin: 0px 0px 10px 10px;
 }
 
-div.mainpagehorizontalblock {
-    display:block;
-    width:100%;
-    float:left;
-    padding-top:70px;
-}
-
-div.mainpageleftside {
-    float: left;
-    width: 50%;
-}
-
-div.mainpagerightside {
-    float: right;
-    width: 50%;
-}
-
 img.icon {
     float: left;
     margin-right: 5px;
@@ -351,27 +349,28 @@ fieldset.option_container {
     margin: 5px;
     padding: 5px;
     min-width: 500px;
-    max-width: 700px;
     min-height: 150px;
     vertical-align: top;
 }
 
-
-fieldset.option_container-w {
-    display: inline-block;
-    position: relative;
-    margin: 5px;
-    padding: 5px;
-    min-width: 500px;
-    width: 95%;
-    min-height: 150px;
-    vertical-align: top;
-}
 
 div.googlemap {
     min-width: 300px;
     max-width: 500px;
     min-height: 300px;
+}
+
+div.locationmap {
+    width: 100%;
+    height: 100%;
+    min-width: 300px;
+    min-height: 200px;
+}
+
+#location-prompt {
+    display: none;
+    font-weight: bold;
+    color: #1d4a74;
 }
 
 div.sub_h {
@@ -383,10 +382,6 @@ div.acceptable {
     display: inline;
 }
 
-div.secondary {
-    color: blue;
-    display: inline;
-}
 div.notacceptable {
     color: red;
     display: inline;
@@ -411,17 +406,6 @@ div.infobox td {
     vertical-align: top;
 }
 
-div.eap_selection {
-    display: inline-table;
-    border: 1px solid #dddddd;
-    margin: 5px;
-    padding: 5px;
-}
-
-div.known_info {
-    display: block;
-}
-
 table.compatmatrix {
     border-spacing: 2px;
 }
@@ -436,32 +420,27 @@ table.compatmatrix th {
 
 table.compatmatrix td.compat_incomplete {
     background-color: gray;
-    border-radius: 5px;
     text-align: center;
 }
 
 table.compatmatrix td.compat_default {
     background-color: #3fb75e;
-    border-radius: 5px;
     text-align: left;
     white-space:nowrap;
 }
 
 table.compatmatrix td.compat_secondary {
     background-color: #00a8ff;
-    border-radius: 5px;
     text-align: center;
 }
 
 table.compatmatrix td.compat_unsupported {
     background-color: #f15151;
-    border-radius: 5px;
     text-align: center;
 }
 
 table.compatmatrix td.compat_redirected {
-    background-color: white;
-    border-radius: 5px;
+    background-color: khaki;
     text-align: left;
     white-space:nowrap;
 }
@@ -493,7 +472,6 @@ p.MOTD {
     border-bottom-style: outset; 
     border-bottom-width: 2px; 
     border-bottom-color: #043d52;
-    border-radius: 6px;
 }
 
 
@@ -566,37 +544,6 @@ td.vendor img {
     height: 40px;
 }
 
-span.redirect_link {
-    background: <?php echo $colour2;?>; color: #FFFFFF; height: 23px;
-    border-left-style: inset; border-left-width: 1px; border-left-color: #8bbacb;
-    border-top-style: inset; border-top-width: 1px; border-top-color: #8bbacb;
-    border-right-style: outset; border-right-width: 2px; border-right-color: #043d52;
-    border-bottom-style: outset; border-bottom-width: 2px; border-bottom-color: #043d52;
-    border-radius: 6px;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-top: 1px;
-    padding-bottom: 1px;
-    position: relative;
-    cursor:pointer;
-    float: right;
-    height: 14px;
-}
-
-span.redirect_link a:link {
-    color: white; 
-    text-decoration: none;
-}
-
-span.redirect_link a:visited {
-    color: white; 
-    text-decoration: none;
-}
-
-span.redirect_link a:active {
-    color: white; 
-    text-decoration: none;
-}
 
 .signin_large {
     vertical-align: top;
@@ -629,7 +576,6 @@ span.redirect_link a:active {
     border-bottom-style: outset; 
     border-bottom-width: 2px; 
     border-bottom-color: #043d52;
-    border-radius: 6px;
     padding-left: 5px;
     padding-right: 5px;
     padding-top: 1px;
@@ -659,13 +605,8 @@ span.redirect_link a:active {
     left: 200px;
     text-align: justify;
     top: 200px;
-    border-radius: 10px 10px 10px 10px;
     box-shadow: 5px 5px 5px #666666;
     border: 1px solid #dddddd;
-}
-
-#institution_list {
-    width: 30em
 }
 
 #user_info {
@@ -700,16 +641,6 @@ span.redirect_link a:active {
     box-shadow: 10px 10px 5px #888888;
 }
 
-#profile_list2 {
-    width: 30em; 
-    padding-left: 10px; 
-    padding-right: 00px; 
-    background: <?php echo $colour2;?>; 
-    color: #FFFFFF; 
-    box-shadow: 10px 10px 5px #888888;
-}
-
-
 #profile_redirect {
     padding-left: 30px;
     padding-top: 20px;
@@ -741,13 +672,6 @@ span.redirect_link a:active {
     font-size: 11px;  
     font-weight: normal; 
     font-style: normal;
-}
-
-.device_list button.more_info_b {
-    width: 23px; 
-    background-image:url("../images/icons/info_s.png");
-    background-repeat:no-repeat;
-    background-position: 2px 0px; 
 }
 
 .device_list td {
@@ -809,7 +733,6 @@ span.redirect_link a:active {
                     padding-right: 25px;
                     padding-bottom: 10px;
                     vertical-align: top;
-                    border-radius: 10px 10px 10px 10px;
                     box-shadow: 5px 5px 5px #666666;
                     text-align: justify
 }
@@ -873,7 +796,6 @@ span.redirect_link a:active {
     min-width: 30em;
     min-height: 25px;
     vertical-align: top;
-    border-radius: 6px;
     box-shadow: 5px 5px 5px #666666;
 }
 
@@ -923,14 +845,6 @@ span.redirect_link a:active {
     font-size:16px;
 }
 
-
-#left_menu td {
-    border: 0 none;
-    padding: 0;
-    padding-top: 3px;
-    padding-bottom: 3px;
-}
-
 .img.img_roll {
     z-index: 90;
 }
@@ -942,17 +856,6 @@ span.redirect_link a:active {
     border-collapse:collapse;
     padding-left:200px;
     padding-top:10px;
-}
-
-#menu_column {
-    border-right:solid;
-    border-color: <?php echo $colour1;?>;
-    border-width:5px;
-    min-height:400px;
-    padding-left: 10px;
-    vertical-align:top;
-    width:110px;
-    padding-top:30px;
 }
 
 #front_page_leftmenu {
@@ -972,10 +875,6 @@ span.redirect_link a:active {
     background: #fff;
     padding-left: 20px;
     padding-right: 20px;
-}
-
-#user_button1 {
-   position: relative;
 }
 
 #user_button_td {
